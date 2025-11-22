@@ -432,16 +432,43 @@
   display: none;
 }
 
-/* 「もっと表示」トグルボタン */
+/* もっと表示・閉じるボタン（可愛いデザイン） */
 .handover-chips-toggle {
-  margin-top: 4px;
-  font-size: 11px;
-  border: none;
-  background: transparent;
-  color: #555;
-  text-decoration: underline;
+  margin-top: 6px;
+  padding: 6px 14px;
+  font-size: 12px;
+  color: #444;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 20px;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+  transition: all 0.2s ease;
 }
+
+.handover-chips-toggle:hover {
+  background: #f9f9f9;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.12);
+}
+
+.handover-chips-toggle span.arrow {
+  display: inline-block;
+  transition: transform 0.25s ease;
+}
+
+.handover-chips-toggle.open {
+  background: #ffe9c6;         /* かわいい淡い黄色 */
+  border-color: #ffc27a;
+  color: #a05a00;
+}
+
+.handover-chips-toggle.open span.arrow {
+  transform: rotate(180deg);
+}
+
 
 
 
