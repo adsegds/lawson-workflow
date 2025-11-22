@@ -764,6 +764,73 @@
       saveTasksToFirestore();
     });
 
+
+
+
+
+    // =============================
+    // 2) お知らせ（経営者ブログ）表示
+    // =============================
+    const infoListEl = document.getElementById('info-list');
+    const ownerNewsColRef = db.collection('ownerNews');
+
+    function renderOwnerNews(snapshot) {
+      if (!infoListEl) return;
+      infoListEl.innerHTML = '';
+
+      if (snapshot.empty) {
+        const li = document.createElement('li');
+        li.textContent = '現在、経営者からのお知らせはありません。';
+        infoListEl.appendChild(li);
+        return;
+      }
+
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        const li = document.createElement('li');
+
+        const title = data.title || '(タイトルなし)';
+        const body = data.body || '';
+        const ts = data.createdAt ? data.createdAt.toDate() : null;
+
+        const dateLabel = ts
+          ? ts.toLocaleString('ja-JP', {
+              month: '2-digit',
+              day: '2-digit',
+              weekday: 'short',
+              hour: '2-digit',
+              minute: '2-digit'
+            })
+          : '';
+
+        li.innerHTML = `
+          <div style="font-weight:bold; font-size:11px;">
+            ${title}
+            <span style="font-weight:normal; color:#777; font-size:10px;">${dateLabel}</span>
+          </div>
+          <div style="font-size:11px; white-space:pre-wrap; margin-top:2px;">
+            ${body}
+          </div>
+        `;
+        infoListEl.appendChild(li);
+      });
+    }
+
+    // 新しい順に 10件まで表示
+    ownerNewsColRef
+      .orderBy('createdAt', 'desc')
+      .limit(10)
+      .onSnapshot(renderOwnerNews);
+
+
+
+
+
+
+
+
+
+    
     // =============================
     // 2) 引き継ぎメモ Firestore 同期
     // =============================
