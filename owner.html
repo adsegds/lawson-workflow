@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>南部町ローソン 経営者お知らせ管理</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5f5f5;
+      color: #111;
+      line-height: 1.6;
+    }
+    .app {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+    h1 {
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+    p.desc {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 16px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 12px 14px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+      margin-bottom: 16px;
+    }
+
+    label {
+      font-size: 12px;
+      font-weight: 600;
+      display: block;
+      margin-bottom: 4px;
+    }
+    input[type="text"],
+    textarea {
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      padding: 6px 8px;
+      font-size: 13px;
+      resize: vertical;
+    }
+    textarea {
+      min-height: 120px;
+    }
+    .form-row {
+      margin-bottom: 10px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      border: none;
+      padding: 6px 16px;
+      font-size: 13px;
+      cursor: pointer;
+      background: #111;
+      color: #fff;
+    }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+
+    .status {
+      font-size: 11px;
+      color: #666;
+      margin-top: 6px;
+      min-height: 14px;
+    }
+
+    .list-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .notice-list {
+      list-style: none;
+      font-size: 12px;
+    }
+    .notice-item {
+      border-bottom: 1px solid #eee;
+      padding: 8px 0;
+    }
+    .notice-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .notice-title {
+      font-weight: 600;
+      margin-right: 6px;
+    }
+    .notice-date {
+      font-size: 10px;
+      color: #777;
+      white-space: nowrap;
+    }
+    .notice-body {
+      margin-top: 4px;
+      white-space: pre-wrap;
+    }
+    .notice-actions {
+      margin-top: 4px;
+      text-align: right;
+    }
+    .btn-sm {
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      background: #eee;
+      color: #333;
+    }
+    .btn-sm.danger {
+      background: #fbe3e3;
+      color: #c00;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <h1>経営者専用 お知らせ管理</h1>
+    <p class="desc">
+      ここで登録した内容が、スタッフ用チェックリスト画面の「お知らせ」に表示されます。<br>
+      店の PC だけで開けるようにしておくと安心です。（例：ブックマークに「経営者用」など）
+    </p>
+
+    <!-- 投稿フォーム -->
+    <section class="card">
+      <div class="form-row">
+        <label for="notice-title">タイトル</label>
+        <input type="text" id="notice-title" placeholder="例）今週の清掃重点エリア について">
+      </div>
+      <div class="form-row">
+        <label for="notice-body">本文</label>
+        <textarea id="notice-body" placeholder="スタッフへのメッセージや、重点ポイントなどを自由に書いてください。"></textarea>
+      </div>
+      <button type="button" class="btn" id="post-btn">お知らせを投稿する</button>
+      <div class="status" id="status-msg"></div>
+    </section>
+
+    <!-- 投稿済み一覧 -->
+    <section class="card">
+      <div class="list-title">投稿済みお知らせ（新しい順 最大50件）</div>
+      <ul class="notice-list" id="notice-list">
+        <li>読み込み中です…</li>
+      </ul>
+    </section>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+
+  <script>
+    // Firebase 設定（チェックリストと同じ）
+    const firebaseConfig = {
+      apiKey: "AIzaSyAPBMvTpzKCcPxLETncBqVR8fzf0cqKirc",
+      authDomain: "lawson-workflow.firebaseapp.com",
+      projectId: "lawson-workflow",
+      storageBucket: "lawson-workflow.firebasestorage.app",
+      messagingSenderId: "335371795694",
+      appId: "1:335371795694:web:3b0950a616d368b284c7ff",
+      measurementId: "G-BGENZNZMRC"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const titleInput = document.getElementById('notice-title');
+      const bodyInput = document.getElementById('notice-body');
+      const postBtn = document.getElementById('post-btn');
+      const statusMsg = document.getElementById('status-msg');
+      const listEl = document.getElementById('notice-list');
+
+      const ownerNewsColRef = db.collection('ownerNews');
+
+      // 投稿
+      postBtn.addEventListener('click', async () => {
+        const title = (titleInput.value || '').trim();
+        const body = (bodyInput.value || '').trim();
+
+        if (!title && !body) {
+          statusMsg.textContent = 'タイトルか本文のどちらかは入力してください。';
+          return;
+        }
+
+        postBtn.disabled = true;
+        statusMsg.textContent = '投稿中…';
+
+        try {
+          await ownerNewsColRef.add({
+            title,
+            body,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+
+          titleInput.value = '';
+          bodyInput.value = '';
+          statusMsg.textContent = '投稿しました。';
+        } catch (e) {
+          console.error(e);
+          statusMsg.textContent = '投稿に失敗しました。ネット接続や設定を確認してください。';
+        } finally {
+          postBtn.disabled = false;
+          setTimeout(() => { statusMsg.textContent = ''; }, 3000);
+        }
+      });
+
+      // 投稿一覧
+      function renderList(snapshot) {
+        listEl.innerHTML = '';
+
+        if (snapshot.empty) {
+          const li = document.createElement('li');
+          li.textContent = 'まだお知らせはありません。';
+          listEl.appendChild(li);
+          return;
+        }
+
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          const li = document.createElement('li');
+          li.className = 'notice-item';
+
+          const ts = data.createdAt ? data.createdAt.toDate() : null;
+          const dateLabel = ts
+            ? ts.toLocaleString('ja-JP', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                weekday: 'short',
+                hour: '2-digit',
+                minute: '2-digit'
+              })
+            : '';
+
+          li.innerHTML = `
+            <div class="notice-header">
+              <div class="notice-title">${data.title || '(タイトルなし)'}</div>
+              <div class="notice-date">${dateLabel}</div>
+            </div>
+            <div class="notice-body">${(data.body || '').replace(/\n/g, '<br>')}</div>
+            <div class="notice-actions">
+              <button class="btn-sm danger">削除</button>
+            </div>
+          `;
+
+          const deleteBtn = li.querySelector('.btn-sm.danger');
+          deleteBtn.addEventListener('click', async () => {
+            if (!confirm('このお知らせを削除しますか？')) return;
+            await doc.ref.delete();
+          });
+
+          listEl.appendChild(li);
+        });
+      }
+
+      ownerNewsColRef
+        .orderBy('createdAt', 'desc')
+        .limit(50)
+        .onSnapshot(renderList);
+    });
+  </script>
+</body>
+</html>
