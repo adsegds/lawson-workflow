@@ -1182,19 +1182,26 @@ handoverColRef
           });
         });
 
-        if (clearBtn) {
-          clearBtn.addEventListener('click', async () => {
-            if (!confirm('この時間帯の引き継ぎメモを全部消しますか？')) return;
+       if (clearBtn) {
+  clearBtn.addEventListener('click', async () => {
+    if (!confirm('この時間帯の引き継ぎメモを全部消しますか？')) return;
 
-           
+    const businessKey = getCurrentBusinessKey();
 
+    // ★ この時間帯（slotId）＋今日の営業日（businessKey）だけ取得
+    const snap = await handoverColRef
+      .where('slotId', '==', slotId)
+      .where('businessKey', '==', businessKey)
+      .get();
 
-            const batch = db.batch();
-            snap.forEach((doc) => batch.delete(doc.ref));
-            await batch.commit();
-          });
-        }
-      });
+    if (snap.empty) return;
+
+    const batch = db.batch();
+    snap.forEach((doc) => batch.delete(doc.ref));
+    await batch.commit();
+  });
+}
+
 
 
 
