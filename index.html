@@ -579,6 +579,51 @@
           </ul>
         </div>
       </section>
+
+
+ <!-- お知らせ & 引き継ぎ -->
+      <section class="slot">
+        <div class="slot-header">
+          <div class="slot-title">お知らせ・引き継ぎ</div>
+          <div class="slot-note">経営者からの指示と、今日の引き継ぎメモ</div>
+        </div>
+
+        <!-- 経営者が GitHub で編集する「お知らせ」 -->
+        <div class="tasks-group">
+          <h3><span class="badge badge-a">お知らせ</span></h3>
+          <ul class="info-list">
+            <!-- ★ここを好きに書き換えてOK（GitHubで編集すると全員に反映される） -->
+            <li>【重要】水・土は21時半DDCがありません → 清掃を優先してください。</li>
+            <li>【確認】今週はアイスの前陳をいつもより丁寧にお願いします。</li>
+          </ul>
+        </div>
+
+        <!-- 引き継ぎメモ：この端末だけに保存される -->
+        <div class="handover">
+          <div class="handover-title">引き継ぎメモ（この端末に保存）</div>
+          <p class="handover-note">
+            文章を書くのがだるい人向け。下のボタンをタップするとメモに追加されます。
+          </p>
+
+          <!-- 定型文ボタン -->
+          <div class="handover-chips">
+            <button type="button" class="handover-chip" data-text="FFケース清掃済み">FFケース清掃済み</button>
+            <button type="button" class="handover-chip" data-text="ホット・常温FF 補充済み">ホット・常温FF 補充済み</button>
+            <button type="button" class="handover-chip" data-text="米飯・おにぎり 前陳＆整理済み">米飯・おにぎり 前陳＆整理済み</button>
+            <button type="button" class="handover-chip" data-text="たばこ補充済み">たばこ補充済み</button>
+            <button type="button" class="handover-chip" data-text="DDC遅延あり → 品出し途中">DDC遅延あり → 品出し途中</button>
+            <button type="button" class="handover-chip" data-text="清掃優先のため品出し一部未完了">清掃優先のため品出し一部未完了</button>
+          </div>
+
+          <!-- メモ一覧 -->
+          <ul class="handover-log" id="handover-log"></ul>
+          <div class="handover-clear">
+            <button type="button" id="handover-clear-btn">メモを全部消す</button>
+          </div>
+        </div>
+      </section>
+
+      
     </main>
 
     <div class="footer-note">
