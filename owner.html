@@ -11,35 +11,116 @@
       background: #f5f5f5;
       color: #111;
       line-height: 1.6;
-      padding: 16px;
     }
 
-    .app {
-      max-width: 1000px;
-      margin: 0 auto;
+    .layout {
+      display: flex;
+      min-height: 100vh;
     }
 
-    header {
-      margin-bottom: 16px;
+    /* ===== 左サイドバー（タイミー風） ===== */
+    .sidebar {
+      width: 230px;
+      background: #f7f7f8;
+      border-right: 1px solid #ddd;
+      padding: 12px 10px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      align-self: flex-start;
     }
-    header h1 {
+
+    .sidebar-header {
+      padding: 4px 8px 6px;
+    }
+    .sidebar-store {
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .sidebar-role {
+      font-size: 11px;
+      color: #777;
+      margin-top: 2px;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .sidebar-nav button {
+      text-align: left;
+      border-radius: 6px;
+      border: none;
+      padding: 7px 10px;
+      font-size: 13px;
+      background: transparent;
+      cursor: pointer;
+      color: #333;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-nav button span.label {
+      flex: 1;
+    }
+    .sidebar-nav button span.badge {
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: #eee;
+      color: #666;
+      margin-left: 4px;
+    }
+
+    .sidebar-nav button:hover {
+      background: #e9eefc;
+    }
+
+    .sidebar-nav button.active {
+      background: #1a73e8;
+      color: #fff;
+    }
+    .sidebar-nav button.active span.badge {
+      background: rgba(255,255,255,0.2);
+      color: #fff;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      font-size: 10px;
+      color: #999;
+      padding: 0 8px;
+    }
+
+    /* ===== 右メインエリア ===== */
+    .main {
+      flex: 1;
+      padding: 16px 20px 24px;
+    }
+
+    .main-header {
+      margin-bottom: 12px;
+    }
+    .main-header-title {
       font-size: 18px;
-      margin-bottom: 4px;
+      font-weight: 600;
+      margin-bottom: 2px;
     }
-    header p {
+    .main-header-sub {
       font-size: 12px;
-      color: #555;
+      color: #666;
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
-      gap: 16px;
+    .view-panel {
+      display: none;
     }
-    @media (max-width: 900px) {
-      .grid {
-        grid-template-columns: minmax(0, 1fr);
-      }
+    .view-panel.active {
+      display: block;
     }
 
     .card {
@@ -92,6 +173,12 @@
       padding: 4px 8px;
       font-size: 13px;
       background: #fff;
+    }
+
+    /* A/Bタスクのtextareaは縦長にする */
+    #tasksAInput,
+    #tasksBInput {
+      min-height: 220px; /* ←ここで縦を長くした */
     }
 
     .row {
@@ -180,7 +267,6 @@
       color: #888;
       margin-top: 2px;
     }
-
     .news-actions {
       display: flex;
       flex-direction: column;
@@ -188,7 +274,6 @@
       align-items: flex-end;
     }
 
-    /* タスク表示 */
     .slot-note {
       font-size: 11px;
       color: #666;
@@ -196,107 +281,209 @@
       margin-bottom: 6px;
     }
 
-    .small-list {
-      list-style: disc;
-      padding-left: 16px;
+    /* 引き継ぎメモ テンプレ preview */
+    .handover-preview {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+      padding: 6px 4px;
+      background: #fafafa;
+      border-radius: 8px;
+      border: 1px dashed #ddd;
+    }
+    .handover-preview-chip {
       font-size: 11px;
-      color: #555;
-      margin-top: 4px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid #ddd;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        flex-direction: row;
+        align-items: center;
+        position: static;
+      }
+      .sidebar-header {
+        flex: 1;
+      }
+      .sidebar-nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 4px;
+        justify-content: flex-end;
+      }
+      .sidebar-footer {
+        display: none;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="app">
-    <header>
-      <h1>南部町ローソン 管理画面（オーナー用）</h1>
-      <p>
-        スタッフ画面（業務チェック）の「中身」を編集するための管理ツールです。<br>
-        ・左：お知らせ（ownerNews）編集　・右：時間帯ごとのタスク定義編集
-      </p>
-    </header>
+  <div class="layout">
+    <!-- ================= 左メニュー ================= -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-store">南部町ローソン</div>
+        <div class="sidebar-role">オーナー管理画面</div>
+      </div>
 
-    <div class="grid">
-      <!-- =========================
-           ① お知らせ（ownerNews）編集
-           ========================= -->
-      <section class="card" id="news-card">
-        <h2>お知らせ管理（ownerNews）</h2>
-        <p class="card-sub">
-          スタッフ画面の「お知らせ」欄に表示される内容を登録・削除できます。
-        </p>
+      <nav class="sidebar-nav">
+        <button type="button" data-view="news" class="active">
+          <span class="label">お知らせ管理</span>
+          <span class="badge">ownerNews</span>
+        </button>
+        <button type="button" data-view="tasks">
+          <span class="label">時間帯ごとのタスク編集</span>
+          <span class="badge">taskSlots</span>
+        </button>
+        <button type="button" data-view="handover">
+          <span class="label">引き継ぎメモ（ボタン編集）</span>
+          <span class="badge">handoverTemplates</span>
+        </button>
+      </nav>
 
-        <div class="row">
-          <label for="newsTitle">タイトル</label>
-          <input type="text" id="newsTitle" placeholder="例）FF油交換について" />
+      <div class="sidebar-footer">
+        この画面で設定した内容が、スタッフ用チェック画面に反映されます。
+      </div>
+    </aside>
+
+    <!-- ================= 右メイン ================= -->
+    <main class="main">
+      <header class="main-header">
+        <div class="main-header-title">管理メニュー</div>
+        <div class="main-header-sub">
+          左のメニューから編集したい項目を選んでください。
         </div>
-        <div class="row">
-          <label for="newsBody">本文</label>
-          <textarea id="newsBody" placeholder="例）今週は油交換の頻度を1日2回に増やしてください。夜勤帯で対応お願いします。"></textarea>
-        </div>
+      </header>
 
-        <div class="btn-row">
-          <button type="button" class="btn-primary" id="newsAddBtn">お知らせを追加</button>
-          <button type="button" class="btn-secondary" id="newsClearFormBtn">入力をクリア</button>
-        </div>
-        <div class="status" id="newsStatus"></div>
+      <!-- ① お知らせ管理 -->
+      <section id="view-news" class="view-panel active">
+        <section class="card" id="news-card">
+          <h2>お知らせ管理（ownerNews）</h2>
+          <p class="card-sub">
+            スタッフ画面の「お知らせ」欄に表示される内容を登録・削除できます。
+          </p>
 
-        <hr>
+          <div class="row">
+            <label for="newsTitle">タイトル</label>
+            <input type="text" id="newsTitle" placeholder="例）FF油交換について" />
+          </div>
+          <div class="row">
+            <label for="newsBody">本文</label>
+            <textarea id="newsBody" placeholder="例）今週は油交換の頻度を1日2回に増やしてください。夜勤帯で対応お願いします。"></textarea>
+          </div>
 
-        <p class="hint">※最新20件まで表示。古いものから順に削除してOKです。</p>
-        <ul class="news-list" id="newsList"></ul>
+          <div class="btn-row">
+            <button type="button" class="btn-primary" id="newsAddBtn">お知らせを追加</button>
+            <button type="button" class="btn-secondary" id="newsClearFormBtn">入力をクリア</button>
+          </div>
+          <div class="status" id="newsStatus"></div>
+
+          <hr>
+
+          <p class="hint">※最新20件まで表示。古いものから順に削除してOKです。</p>
+          <ul class="news-list" id="newsList"></ul>
+        </section>
       </section>
 
-      <!-- =========================
-           ② タスク定義（taskSlots）編集
-           ========================= -->
-      <section class="card" id="tasks-card">
-        <h2>時間帯ごとのタスク編集（taskSlots）</h2>
-        <p class="card-sub">
-          各時間帯の Aタスク（必須）・Bタスク（余裕）を編集できます。<br>
-          スタッフ画面のチェックリストはここで定義された内容から自動生成されます。
-        </p>
+      <!-- ② タスク定義編集 -->
+      <section id="view-tasks" class="view-panel">
+        <section class="card" id="tasks-card">
+          <h2>時間帯ごとのタスク編集（taskSlots）</h2>
+          <p class="card-sub">
+            各時間帯の Aタスク（必須）・Bタスク（余裕）を編集できます。<br>
+            スタッフ画面のチェックリストはここで定義された内容から自動生成されます。
+          </p>
 
-        <div class="row">
-          <label for="slotSelect">編集する時間帯</label>
-          <select id="slotSelect">
-            <option value="t6-8">6:00〜8:00（朝の立ち上げ）</option>
-            <option value="t9-11">9:00〜11:00（午前帯）</option>
-            <option value="t12-14">12:00〜14:00（昼帯）</option>
-            <option value="t15-17">15:00〜17:00（夕方前）</option>
-            <option value="t18-20">18:00〜20:00（夕方〜夜）</option>
-            <option value="t21-23">21:00〜23:00（夜帯）</option>
-            <option value="t0-2">0:00〜2:00（深夜前半）</option>
-            <option value="t3-5">3:00〜5:00（早朝）</option>
-          </select>
-          <p class="slot-note">時間帯を変更すると、その時間帯のタスク定義を Firestore から読み込みます。</p>
-        </div>
+          <div class="row">
+            <label for="slotSelect">編集する時間帯</label>
+            <select id="slotSelect">
+              <option value="t6-8">6:00〜8:00（朝の立ち上げ）</option>
+              <option value="t9-11">9:00〜11:00（午前帯）</option>
+              <option value="t12-14">12:00〜14:00（昼帯）</option>
+              <option value="t15-17">15:00〜17:00（夕方前）</option>
+              <option value="t18-20">18:00〜20:00（夕方〜夜）</option>
+              <option value="t21-23">21:00〜23:00（夜帯）</option>
+              <option value="t0-2">0:00〜2:00（深夜前半）</option>
+              <option value="t3-5">3:00〜5:00（早朝）</option>
+            </select>
+            <p class="slot-note">時間帯を変更すると、その時間帯のタスク定義を Firestore から読み込みます。</p>
+          </div>
 
-        <div class="row">
-          <label for="tasksAInput">Aタスク（必須）</label>
-          <textarea id="tasksAInput" placeholder="例）&#10;CDC納品・片づけ（2便）&#10;ベーカリー納品・片づけ（2便）"></textarea>
-          <div class="hint">1行につき1タスク。空行は無視されます。</div>
-        </div>
+          <div class="row">
+            <label for="tasksAInput">Aタスク（必須）</label>
+            <textarea id="tasksAInput" placeholder="例）&#10;CDC納品・片づけ（2便）&#10;ベーカリー納品・片づけ（2便）"></textarea>
+            <div class="hint">1行につき1タスク。空行は無視されます。</div>
+          </div>
 
-        <div class="row">
-          <label for="tasksBInput">Bタスク（余裕あれば）</label>
-          <textarea id="tasksBInput" placeholder="例）&#10;店内・店頭ゴミ箱の清掃&#10;サービスコーナー清掃"></textarea>
-          <div class="hint">1行につき1タスク。空行は無視されます。</div>
-        </div>
+          <div class="row">
+            <label for="tasksBInput">Bタスク（余裕あれば）</label>
+            <textarea id="tasksBInput" placeholder="例）&#10;店内・店頭ゴミ箱の清掃&#10;サービスコーナー清掃"></textarea>
+            <div class="hint">1行につき1タスク。空行は無視されます。</div>
+          </div>
 
-        <div class="btn-row">
-          <button type="button" class="btn-secondary" id="reloadSlotBtn">選択中の時間帯を再読み込み</button>
-          <button type="button" class="btn-primary" id="saveSlotBtn">この内容で保存</button>
-        </div>
-        <div class="status" id="taskStatus"></div>
+          <div class="btn-row">
+            <button type="button" class="btn-secondary" id="reloadSlotBtn">選択中の時間帯を再読み込み</button>
+            <button type="button" class="btn-primary" id="saveSlotBtn">この内容で保存</button>
+          </div>
+          <div class="status" id="taskStatus"></div>
 
-        <hr>
+          <hr>
 
-        <p class="hint">
-          ※保存すると、その時間帯のチェック状態（完了チェック）だけリセットされます（他の時間帯はそのまま）。<br>
-          ※チェックリスト本体の HTML（スタッフ用画面）は書き換え不要です。この画面は定義だけをいじる役割。
-        </p>
+          <p class="hint">
+            ※保存すると、その時間帯のチェック状態（完了チェック）だけリセットされます（他の時間帯はそのまま）。<br>
+            ※チェックリスト本体の HTML（スタッフ用画面）は書き換え不要です。この画面は定義だけをいじる役割。
+          </p>
+        </section>
       </section>
-    </div>
+
+      <!-- ③ 引き継ぎメモ用ボタン編集 -->
+      <section id="view-handover" class="view-panel">
+        <section class="card" id="handover-card">
+          <h2>引き継ぎメモ（ボタン文言の編集）</h2>
+          <p class="card-sub">
+            スタッフ画面の「引き継ぎメモ（全員で共有）」に並んでいるボタンの文言を編集できます。<br>
+            今は全時間帯で共通のボタンセット（global）を使います。
+          </p>
+
+          <div class="row">
+            <label for="handoverChipsInput">ボタン文言リスト</label>
+            <textarea id="handoverChipsInput"
+              placeholder="例）&#10;FFケース清掃済み&#10;ホット・常温FF 補充済み&#10;米飯・おにぎり 前陳＆整理済み"></textarea>
+            <div class="hint">
+              1行につき1ボタンになります。空行は無視されます。<br>
+              保存すると、全ての時間帯の「引き継ぎメモボタン」がこの内容で上書きされます。
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button type="button" class="btn-secondary" id="handoverReloadBtn">現在の設定を読み込み</button>
+            <button type="button" class="btn-primary" id="handoverSaveBtn">この内容で保存</button>
+          </div>
+          <div class="status" id="handoverStatus"></div>
+
+          <hr>
+
+          <label>プレビュー</label>
+          <div class="handover-preview" id="handoverPreview">
+            <!-- JSでボタンイメージを表示 -->
+          </div>
+
+          <p class="hint" style="margin-top:6px;">
+            ※スタッフ画面側では <code>handoverTemplates/global</code> の内容を読みにいきます。<br>
+            ※スタッフ画面のHTMLでは、ボタン部分は空の <code>&lt;div class="handover-chips"&gt;&lt;/div&gt;</code> にしておいてください。
+          </p>
+        </section>
+      </section>
+    </main>
   </div>
 
   <!-- Firebase SDK -->
@@ -339,6 +526,27 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      // ----------------------------------
+      // 左メニュー → 表示切り替え
+      // ----------------------------------
+      const navButtons = document.querySelectorAll('.sidebar-nav button');
+      const panels = {
+        news: document.getElementById('view-news'),
+        tasks: document.getElementById('view-tasks'),
+        handover: document.getElementById('view-handover'),
+      };
+
+      navButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const view = btn.dataset.view;
+          navButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          Object.keys(panels).forEach(key => {
+            panels[key].classList.toggle('active', key === view);
+          });
+        });
+      });
+
       // ==================================
       // ① お知らせ（ownerNews）管理
       // ==================================
@@ -356,7 +564,6 @@
         newsStatusEl.className = 'status ' + (type ? type : '');
       }
 
-      // 追加ボタン
       newsAddBtn.addEventListener('click', async () => {
         const title = newsTitleEl.value.trim();
         const body  = newsBodyEl.value.trim();
@@ -377,21 +584,18 @@
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
           });
           setNewsStatus('追加しました。', 'ok');
-          // フォームは残しておく（連続投稿用）。消したければ「入力をクリア」を押す運用。
         } catch (e) {
           console.error(e);
           setNewsStatus('追加エラー：' + e.message, 'err');
         }
       });
 
-      // 入力クリア
       newsClearFormBtn.addEventListener('click', () => {
         newsTitleEl.value = '';
         newsBodyEl.value = '';
         setNewsStatus('入力をクリアしました。', 'ok');
       });
 
-      // リアルタイムに ownerNews 一覧表示
       ownerNewsColRef
         .orderBy('createdAt', 'desc')
         .limit(20)
@@ -499,7 +703,6 @@
         taskStatusEl.className = 'status ' + (type ? type : '');
       }
 
-      // 現在選択中スロットの定義読み込み
       async function loadCurrentSlot() {
         const slotId = slotSelectEl.value;
         setTaskStatus('読み込み中...');
@@ -514,7 +717,6 @@
             tasksBInputEl.value = tasksB.join('\n');
             setTaskStatus('読み込み完了：' + slotId, 'ok');
           } else {
-            // 未定義なら空
             tasksAInputEl.value = '';
             tasksBInputEl.value = '';
             setTaskStatus('まだ定義がありません（新規作成）：' + slotId, 'ok');
@@ -525,7 +727,6 @@
         }
       }
 
-      // 保存：taskSlots を更新 ＋ その時間帯のチェック状態リセット
       async function saveCurrentSlot() {
         const slotId = slotSelectEl.value;
 
@@ -546,13 +747,11 @@
         setTaskStatus('保存中...');
 
         try {
-          // 1) 定義を保存
           await taskSlotsRef.doc(slotId).set(
             { tasksA, tasksB },
             { merge: true }
           );
 
-          // 2) チェック状態から、この時間帯のIDだけ削除
           const snap = await taskDocRef.get();
           if (snap.exists) {
             const data = snap.data() || {};
@@ -565,7 +764,6 @@
             };
             await taskDocRef.set(updateData, { merge: true });
           } else {
-            // まだ tasks/lawson-main が無ければ作るだけ
             await taskDocRef.set(
               {
                 checkedIds: [],
@@ -582,13 +780,101 @@
         }
       }
 
-      // イベント
       slotSelectEl.addEventListener('change', loadCurrentSlot);
       reloadSlotBtn.addEventListener('click', loadCurrentSlot);
       saveSlotBtn.addEventListener('click', saveCurrentSlot);
+      loadCurrentSlot(); // 初期
 
-      // 初期ロード
-      loadCurrentSlot();
+      // ==================================
+      // ③ 引き継ぎメモボタン（handoverTemplates/global）
+      // ==================================
+      const handoverInputEl   = document.getElementById('handoverChipsInput');
+      const handoverReloadBtn = document.getElementById('handoverReloadBtn');
+      const handoverSaveBtn   = document.getElementById('handoverSaveBtn');
+      const handoverStatusEl  = document.getElementById('handoverStatus');
+      const handoverPreviewEl = document.getElementById('handoverPreview');
+
+      const handoverTplRef = db.collection('handoverTemplates').doc('global');
+
+      function setHandoverStatus(msg, type = '') {
+        handoverStatusEl.textContent = msg;
+        handoverStatusEl.className = 'status ' + (type ? type : '');
+      }
+
+      function renderHandoverPreview(chips) {
+        handoverPreviewEl.innerHTML = '';
+        if (!chips || chips.length === 0) {
+          const dummy = document.createElement('div');
+          dummy.style.fontSize = '11px';
+          dummy.style.color = '#888';
+          dummy.textContent = 'まだボタンが設定されていません。';
+          handoverPreviewEl.appendChild(dummy);
+          return;
+        }
+        chips.forEach(text => {
+          const span = document.createElement('span');
+          span.className = 'handover-preview-chip';
+          span.textContent = text;
+          handoverPreviewEl.appendChild(span);
+        });
+      }
+
+      async function loadHandoverTemplates() {
+        setHandoverStatus('読み込み中...');
+        try {
+          const snap = await handoverTplRef.get();
+          if (snap.exists) {
+            const data = snap.data() || {};
+            const chips = Array.isArray(data.chips) ? data.chips : [];
+            handoverInputEl.value = chips.join('\n');
+            renderHandoverPreview(chips);
+            setHandoverStatus('読み込み完了。', 'ok');
+          } else {
+            handoverInputEl.value = [
+              'FFケース清掃済み',
+              'ホット・常温FF 補充済み',
+              '米飯・おにぎり 前陳＆整理済み',
+              'たばこ補充済み',
+              'DDC遅延あり → 品出し途中',
+              '清掃優先のため品出し一部未完了'
+            ].join('\n');
+            renderHandoverPreview(handoverInputEl.value.split('\n'));
+            setHandoverStatus('まだ設定がないため、初期案を表示しています。', 'ok');
+          }
+        } catch (e) {
+          console.error(e);
+          setHandoverStatus('読み込みエラー：' + e.message, 'err');
+        }
+      }
+
+      async function saveHandoverTemplates() {
+        const chips = handoverInputEl.value
+          .split('\n')
+          .map(t => t.trim())
+          .filter(t => t.length > 0);
+
+        if (!confirm('この内容で引き継ぎメモ用ボタンを保存しますか？\n※全時間帯のボタンがこの内容で統一されます。')) {
+          return;
+        }
+
+        setHandoverStatus('保存中...');
+
+        try {
+          await handoverTplRef.set(
+            { chips },
+            { merge: true }
+          );
+          renderHandoverPreview(chips);
+          setHandoverStatus('保存完了！スタッフ画面のボタンにも反映されます。', 'ok');
+        } catch (e) {
+          console.error(e);
+          setHandoverStatus('保存エラー：' + e.message, 'err');
+        }
+      }
+
+      handoverReloadBtn.addEventListener('click', loadHandoverTemplates);
+      handoverSaveBtn.addEventListener('click', saveHandoverTemplates);
+      loadHandoverTemplates(); // 初期ロード
     });
   </script>
 </body>
