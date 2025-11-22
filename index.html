@@ -1352,5 +1352,166 @@
     });
   </script>
 
+
+
+
+<script type="module">
+  // ===== Firebase 読み込み =====
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+  import {
+    getFirestore,
+    collection,
+    addDoc,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+
+  // TODO: 自分のFirebase設定で埋める
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_STORAGE_BUCKET",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // ==============================
+  //  端末ラベル管理（localStorage）
+  // ==============================
+  const DEVICE_LABEL_KEY = "nb_lawson_device_label";
+
+  const deviceLabelDisplay = document.getElementById("deviceLabelDisplay");
+  const deviceLabelInput = document.getElementById("deviceLabelInput");
+  const deviceLabelSaveBtn = document.getElementById("deviceLabelSaveBtn");
+
+  let currentDeviceLabel = "未設定";
+
+  function loadDeviceLabel() {
+    const saved = localStorage.getItem(DEVICE_LABEL_KEY);
+    if (saved && saved.trim() !== "") {
+      currentDeviceLabel = saved.trim();
+      deviceLabelDisplay.textContent = currentDeviceLabel;
+      deviceLabelInput.value = currentDeviceLabel;
+    } else {
+      currentDeviceLabel = "未設定";
+      deviceLabelDisplay.textContent = "未設定";
+    }
+  }
+
+  function saveDeviceLabel() {
+    const value = deviceLabelInput.value.trim();
+    if (!value) {
+      alert("端末ラベルを入力してください（例：レジ横iPad）");
+      return;
+    }
+    currentDeviceLabel = value;
+    localStorage.setItem(DEVICE_LABEL_KEY, value);
+    deviceLabelDisplay.textContent = value;
+  }
+
+  deviceLabelSaveBtn?.addEventListener("click", saveDeviceLabel);
+  // Enterキーでも保存
+  deviceLabelInput?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      saveDeviceLabel();
+    }
+  });
+
+  // 初期ロード時に端末ラベル読み込み
+  loadDeviceLabel();
+
+  // ==============================
+  //  自動ログ用の共通関数
+  // ==============================
+  async function logChecklistAction({
+    taskId,
+    taskLabel,
+    action,
+    extra
+  }) {
+    try {
+      const docRef = await addDoc(collection(db, "checklistLogs"), {
+        taskId: taskId ?? null,
+        taskLabel: taskLabel ?? null,
+        action: action, // "check" / "uncheck" / "note-save" など自由
+        deviceLabel: currentDeviceLabel || "未設定",
+        // 残しておくと後で分析しやすい
+        createdAt: serverTimestamp(),     // サーバー時刻
+        clientTimeISO: new Date().toISOString(), // 端末側での時間
+        extra: extra ?? null              // 任意の追加入力（メモ内容など）
+      });
+      // console.log("ログ保存:", docRef.id);
+    } catch (err) {
+      console.error("ログ保存エラー:", err);
+    }
+  }
+
+  // =========================================
+  //  チェックボックスに自動ログを仕込む例
+  // =========================================
+  //  ★前提：チェックボックス側にこんな感じで属性を仕込んでおく
+  //  <input type="checkbox"
+  //         class="task-checkbox"
+  //         data-task-id="open-6-9"
+  //         data-task-label="6〜9時オープンルーチン">
+  //
+  const checkboxList = document.querySelectorAll(".task-checkbox");
+
+  checkboxList.forEach((checkbox) => {
+    checkbox.addEventListener("change", (e) => {
+      const el = e.target;
+      const checked = el.checked;
+      const taskId = el.dataset.taskId || null;
+      const taskLabel = el.dataset.taskLabel || el.closest(".task-row")?.dataset.label || null;
+
+      logChecklistAction({
+        taskId,
+        taskLabel,
+        action: checked ? "check" : "uncheck"
+      });
+    });
+  });
+
+  // =========================================
+  //  メモ入力保存にも自動ログを仕込む例（任意）
+  // =========================================
+  //  ★前提：メモtextarea側にこんな属性
+  //  <textarea class="task-note"
+  //            data-task-id="open-6-9"
+  //            data-task-label="6〜9時オープンルーチン"></textarea>
+  //
+  const noteAreas = document.querySelectorAll(".task-note");
+
+  noteAreas.forEach((textarea) => {
+    textarea.addEventListener("change", (e) => {
+      const el = e.target;
+      const taskId = el.dataset.taskId || null;
+      const taskLabel = el.dataset.taskLabel || null;
+      const noteValue = el.value;
+
+      logChecklistAction({
+        taskId,
+        taskLabel,
+        action: "note-save",
+        extra: {
+          note: noteValue
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+
+
+  
 </body>
 </html>
