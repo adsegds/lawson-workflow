@@ -1177,9 +1177,11 @@ handoverColRef
           clearBtn.addEventListener('click', async () => {
             if (!confirm('この時間帯の引き継ぎメモを全部消しますか？')) return;
 
-            const snap = await handoverColRef
-              .where('slotId', '==', slotId)
-              .get();
+           const snap = await handoverColRef
+  .where('slotId', '==', slotId)
+  .where('businessKey', '==', getCurrentBusinessKey())
+  .get();
+
 
             const batch = db.batch();
             snap.forEach((doc) => batch.delete(doc.ref));
