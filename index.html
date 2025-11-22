@@ -1253,6 +1253,64 @@ handoverColRef
           );
       }
     });
+
+
+
+
+
+
+/****************************************************
+ * 🔥 6:00 自動切り替え（businessKey を再セット）
+ ****************************************************/
+function setupDailyResetAt6AM() {
+  function scheduleNextReset() {
+    const now = new Date();
+    const next = new Date();
+
+    // 次の 6:00 を計算
+    next.setHours(6, 0, 0, 0);
+    if (now >= next) {
+      next.setDate(next.getDate() + 1); // 今日の6時を過ぎてたら翌日
+    }
+
+    const ms = next - now;
+    console.log('次の 6:00 リセットまで:', ms / 1000 / 60, '分');
+
+    // 6時まで待って実行
+    setTimeout(() => {
+      console.log('🔥 6:00到達 → businessKey を自動更新します');
+      on6amReset();
+      scheduleNextReset(); // 次の日の6時もセット
+    }, ms);
+  }
+
+  scheduleNextReset();
+}
+
+/****************************************************
+ * 🔥 6:00 のときに実行する処理
+ ****************************************************/
+function on6amReset() {
+  // 1. 今日の日付を取り直す
+  const newKey = getCurrentBusinessKey();
+  console.log('新しい businessKey:', newKey);
+
+  // 2. 画面の再初期化（超重要）
+  initializeAllSlots();
+  initializeHandoverSlots();
+
+  // 3. 状態リセット（ローカルチェック済みIDもリセット）
+  checkedTaskIds = new Set();
+  renderAllCheckboxStates();
+}
+
+
+
+
+
+
+
+      
   </script>
 
 </body>
