@@ -1547,31 +1547,64 @@ if (jumpBtn) {
         }
 
         if (chipsArea) {
-          db.collection("handoverTemplates")
-            .doc("global")
-            .get()
-            .then((doc) => {
-              chipsArea.innerHTML = "";
-              if (!doc.exists) return;
+  db.collection("handoverTemplates")
+    .doc("global")
+    .get()
+    .then((doc) => {
+      chipsArea.innerHTML = "";
+      if (!doc.exists) return;
 
-              const chips = doc.data().chips || [];
-              chips.forEach((text) => {
-                const btn = document.createElement("button");
-                btn.className = "handover-chip";
-                btn.textContent = text;
-                btn.dataset.text = text;
+      const chips = doc.data().chips || [];
 
-                btn.addEventListener("click", () => {
-                  addHandoverForSlot(text);
-                });
+      // 上位だけ常時表示（並び順はFirestoreの配列順）
+      const PRIMARY_COUNT = 10; // ★ここを8とか12に変えてもOK
 
-                chipsArea.appendChild(btn);
-              });
-            })
-            .catch((e) => {
-              console.error("handoverTemplates 読み込みエラー", e);
-            });
+      // コンテナを2つ用意
+      const primaryContainer = document.createElement("div");
+      primaryContainer.className = "handover-chips-primary";
+
+      const extraContainer = document.createElement("div");
+      extraContainer.className = "handover-chips-extra is-hidden";
+
+      chipsArea.appendChild(primaryContainer);
+      chipsArea.appendChild(extraContainer);
+
+      chips.forEach((text, index) => {
+        const btn = document.createElement("button");
+        btn.className = "handover-chip";
+        btn.textContent = text;
+        btn.dataset.text = text;
+
+        btn.addEventListener("click", () => {
+          addHandoverForSlot(text);
+        });
+
+        if (index < PRIMARY_COUNT) {
+          primaryContainer.appendChild(btn); // よく使う（常時表示ゾーン）
+        } else {
+          extraContainer.appendChild(btn);   // 「もっと表示」ゾーン
         }
+      });
+
+      // 余りがある場合だけ「もっと表示」トグルを出す
+      if (chips.length > PRIMARY_COUNT) {
+        const toggleBtn = document.createElement("button");
+        toggleBtn.className = "handover-chips-toggle";
+        toggleBtn.textContent = "▼ もっと表示";
+
+        toggleBtn.addEventListener("click", () => {
+          const isHidden = extraContainer.classList.toggle("is-hidden");
+          toggleBtn.textContent = isHidden ? "▼ もっと表示" : "▲ 閉じる";
+        });
+
+        chipsArea.appendChild(toggleBtn);
+      }
+    })
+    .catch((e) => {
+      console.error("handoverTemplates 読み込みエラー", e);
+    });
+}
+
 
         if (clearBtn) {
           clearBtn.addEventListener('click', async () => {
