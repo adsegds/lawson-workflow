@@ -853,7 +853,7 @@
   </div>
 
   <!-- Firebase SDK -->
-   <!-- Firebase SDK -->
+     <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
 
@@ -896,62 +896,92 @@
       return `${yy}-${mm}-${dd}`; // 例: "2025-11-22"
     }
 
-    // =============================
-    // 現在時刻・営業日・次リセット表示
-    // =============================
-    const timeDisplay = document.getElementById('time-display');
+    /****************************************************
+     * 🔥 6:00 自動切り替え（超シンプル版：ページ再読み込み）
+     ****************************************************/
+    function setupDailyResetAt6AM() {
+      function scheduleNextReset() {
+        const now = new Date();
+        const next = new Date();
 
-    function updateTimeDisplay() {
-      if (!timeDisplay) return;
+        // 次の 6:00 を計算
+        next.setHours(6, 0, 0, 0);
+        if (now >= next) {
+          next.setDate(next.getDate() + 1); // 今日の6時を過ぎてたら翌日
+        }
 
-      const now = new Date();
-      const jp = now.toLocaleString('ja-JP', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        weekday: 'short',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-      });
+        const ms = next - now;
+        console.log('次の 6:00 リセットまで:', ms / 1000 / 60, '分');
 
-      const businessKey = getCurrentBusinessKey();
-
-      // 次の 6:00 を計算
-      let nextReset = new Date();
-      nextReset.setHours(6, 0, 0, 0);
-      if (now >= nextReset) {
-        nextReset.setDate(nextReset.getDate() + 1);
+        setTimeout(() => {
+          console.log('🔥 6:00到達 → 営業日切替のためページを再読み込み');
+          on6amReset();
+          scheduleNextReset(); // 次の日の 6:00 もセット
+        }, ms);
       }
-      const nextResetStr = nextReset.toLocaleString('ja-JP', {
-        month: '2-digit',
-        day: '2-digit',
-        weekday: 'short',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
 
-      timeDisplay.innerHTML = `
-        <div><strong>現在時刻：</strong> ${jp}</div>
-        <div><strong>今日の営業日：</strong> ${businessKey}（6:00切替）</div>
-        <div><strong>次のリセット：</strong> ${nextResetStr}</div>
-      `;
+      scheduleNextReset();
     }
 
-    setInterval(updateTimeDisplay, 1000);
-    updateTimeDisplay();
+    function on6amReset() {
+      // businessKey や handover の listener を全部切り替えるには
+      // 再読み込みが一番安全＆シンプル
+      location.reload();
+    }
 
     // =============================
     // DOM 準備できたらセットアップ
     // =============================
     document.addEventListener('DOMContentLoaded', () => {
 
+      // 🔥 朝6:00 自動リセット開始
+      setupDailyResetAt6AM();
 
+      // =============================
+      // 現在時刻・営業日・次リセット表示
+      // =============================
+      const timeDisplay = document.getElementById('time-display');
 
- // ★ これ入れて！ここがベスト！ ★
-  setupDailyResetAt6AM();
+      function updateTimeDisplay() {
+        if (!timeDisplay) return;
 
-      
+        const now = new Date();
+        const jp = now.toLocaleString('ja-JP', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          weekday: 'short',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        });
+
+        const businessKey = getCurrentBusinessKey();
+
+        // 次の 6:00 を計算
+        let nextReset = new Date();
+        nextReset.setHours(6, 0, 0, 0);
+        if (now >= nextReset) {
+          nextReset.setDate(nextReset.getDate() + 1);
+        }
+        const nextResetStr = nextReset.toLocaleString('ja-JP', {
+          month: '2-digit',
+          day: '2-digit',
+          weekday: 'short',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+
+        timeDisplay.innerHTML = `
+          <div><strong>現在時刻：</strong> ${jp}</div>
+          <div><strong>今日の営業日：</strong> ${businessKey}（6:00切替）</div>
+          <div><strong>次のリセット：</strong> ${nextResetStr}</div>
+        `;
+      }
+
+      updateTimeDisplay();
+      setInterval(updateTimeDisplay, 1000);
+
       // --------------------------------
       // 1) タスク定義（taskSlots）からチェックリストを生成
       // --------------------------------
@@ -1081,70 +1111,67 @@
       // 先にタスク定義をロード（チェック状態は onSnapshot で後から追従）
       loadTaskDefinitions();
 
-                     // --------------------------------
-      // 3) 引き継ぎメモ（時間帯ごとに別表示）
-      //    handover-slot の data-slot ごとにFirestoreを絞る
+      // --------------------------------
+      // 3) 引き継ぎメモ（時間帯ごと）
       // --------------------------------
       const handoverSlots  = document.querySelectorAll('.handover-slot');
       const handoverColRef = db.collection('handover');
 
-     function renderHandoverForSlot(snapshot, logEl, slotId) {
-  if (!logEl) return;
+      function renderHandoverForSlot(snapshot, logEl, slotId) {
+        if (!logEl) return;
 
-  logEl.innerHTML = '';
+        logEl.innerHTML = '';
 
-  if (snapshot.empty) {
-    const li = document.createElement('li');
-    li.textContent = 'まだ引き継ぎメモはありません。';
-    li.style.fontSize = '10px';
-    li.style.color = '#999';
-    logEl.appendChild(li);
-    return;
-  }
+        if (snapshot.empty) {
+          const li = document.createElement('li');
+          li.textContent = 'まだ引き継ぎメモはありません。';
+          li.style.fontSize = '10px';
+          li.style.color = '#999';
+          logEl.appendChild(li);
+          return;
+        }
 
-  const docs = [];
-  snapshot.forEach((doc) => {
-    docs.push(doc);
-  });
+        const docs = [];
+        snapshot.forEach((doc) => {
+          docs.push(doc);
+        });
 
-  // createdAt で降順ソート（新しい順）
-  docs.sort((a, b) => {
-    const da = a.data().createdAt ? a.data().createdAt.toMillis() : 0;
-    const db = b.data().createdAt ? b.data().createdAt.toMillis() : 0;
-    return db - da;
-  });
+        // createdAt で降順ソート（新しい順）
+        docs.sort((a, b) => {
+          const da = a.data().createdAt ? a.data().createdAt.toMillis() : 0;
+          const db = b.data().createdAt ? b.data().createdAt.toMillis() : 0;
+          return db - da;
+        });
 
-  docs.forEach((doc) => {
-    const data = doc.data();
+        docs.forEach((doc) => {
+          const data = doc.data();
+          if (data.slotId !== slotId) return;
 
-    if (data.slotId !== slotId) return;
+          const li = document.createElement('li');
+          li.className = 'handover-item';
 
-    const li = document.createElement('li');
-    li.className = 'handover-item';
+          const textSpan = document.createElement('span');
+          textSpan.className = 'handover-text';
+          textSpan.textContent = data.text || '';
 
-    const textSpan = document.createElement('span');
-    textSpan.className = 'handover-text';
-    textSpan.textContent = data.text || '';
+          const timeSpan = document.createElement('span');
+          timeSpan.className = 'handover-time';
+          timeSpan.textContent = data.timeLabel || '';
 
-    const timeSpan = document.createElement('span');
-    timeSpan.className = 'handover-time';
-    timeSpan.textContent = data.timeLabel || '';
+          const delBtn = document.createElement('button');
+          delBtn.className = 'handover-remove';
+          delBtn.textContent = '✕';
+          delBtn.addEventListener('click', () => {
+            doc.ref.delete();
+          });
 
-    const delBtn = document.createElement('button');
-    delBtn.className = 'handover-remove';
-    delBtn.textContent = '✕';
-    delBtn.addEventListener('click', () => {
-      doc.ref.delete();
-    });
+          li.appendChild(textSpan);
+          li.appendChild(timeSpan);
+          li.appendChild(delBtn);
 
-    li.appendChild(textSpan);
-    li.appendChild(timeSpan);
-    li.appendChild(delBtn);
-
-    logEl.appendChild(li);
-  });
-}
-
+          logEl.appendChild(li);
+        });
+      }
 
       handoverSlots.forEach((slotEl) => {
         const slotId = slotEl.dataset.slot || 'global';
@@ -1152,35 +1179,31 @@
         const clearBtn = slotEl.querySelector('.handover-clear-btn');
         const chipButtons = slotEl.querySelectorAll('.handover-chip');
 
-        // この時間帯専用の listener
-handoverColRef
-  .where('businessKey', '==', getCurrentBusinessKey())
-  .where('slotId', '==', slotId)
-  .onSnapshot((snapshot) => {
-    renderHandoverForSlot(snapshot, logEl, slotId);
-  });
-
-
-
+        // この時間帯専用の listener（businessKey は作成時点のキー）
+        handoverColRef
+          .where('businessKey', '==', getCurrentBusinessKey())
+          .where('slotId', '==', slotId)
+          .onSnapshot((snapshot) => {
+            renderHandoverForSlot(snapshot, logEl, slotId);
+          });
 
         function addHandoverForSlot(text) {
-  const now = new Date();
-  const timeLabel = now.toLocaleTimeString('ja-JP', {
-    hour: '2-digit',
-    minute: '2-digit'
-  });
+          const now = new Date();
+          const timeLabel = now.toLocaleTimeString('ja-JP', {
+            hour: '2-digit',
+            minute: '2-digit'
+          });
 
-  const businessKey = getCurrentBusinessKey(); // ★ 今日の営業日キー
+          const businessKey = getCurrentBusinessKey(); // 今日の営業日キー
 
-  handoverColRef.add({
-    text,
-    slotId,
-    businessKey, // ★ ここで一緒に保存
-    timeLabel,
-    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-  });
-}
-
+          handoverColRef.add({
+            text,
+            slotId,
+            businessKey,
+            timeLabel,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        }
 
         chipButtons.forEach((btn) => {
           btn.addEventListener('click', () => {
@@ -1189,29 +1212,26 @@ handoverColRef
           });
         });
 
-       if (clearBtn) {
-  clearBtn.addEventListener('click', async () => {
-    if (!confirm('この時間帯の引き継ぎメモを全部消しますか？')) return;
+        if (clearBtn) {
+          clearBtn.addEventListener('click', async () => {
+            if (!confirm('この時間帯の引き継ぎメモを全部消しますか？')) return;
 
-    const businessKey = getCurrentBusinessKey();
+            const businessKey = getCurrentBusinessKey();
 
-    // ★ この時間帯（slotId）＋今日の営業日（businessKey）だけ取得
-    const snap = await handoverColRef
-      .where('slotId', '==', slotId)
-      .where('businessKey', '==', businessKey)
-      .get();
+            // この時間帯（slotId）＋今日の営業日（businessKey）だけ取得
+            const snap = await handoverColRef
+              .where('slotId', '==', slotId)
+              .where('businessKey', '==', businessKey)
+              .get();
 
-    if (snap.empty) return;
+            if (snap.empty) return;
 
-    const batch = db.batch();
-    snap.forEach((doc) => batch.delete(doc.ref));
-    await batch.commit();
-  });
-}
-
-
-
-
+            const batch = db.batch();
+            snap.forEach((doc) => batch.delete(doc.ref));
+            await batch.commit();
+          });
+        }
+      });
 
       // --------------------------------
       // 4) 経営者お知らせ（ownerNews）読み込み
@@ -1260,65 +1280,8 @@ handoverColRef
           );
       }
     });
-
-
-
-
-
-
-/****************************************************
- * 🔥 6:00 自動切り替え（businessKey を再セット）
- ****************************************************/
-function setupDailyResetAt6AM() {
-  function scheduleNextReset() {
-    const now = new Date();
-    const next = new Date();
-
-    // 次の 6:00 を計算
-    next.setHours(6, 0, 0, 0);
-    if (now >= next) {
-      next.setDate(next.getDate() + 1); // 今日の6時を過ぎてたら翌日
-    }
-
-    const ms = next - now;
-    console.log('次の 6:00 リセットまで:', ms / 1000 / 60, '分');
-
-    // 6時まで待って実行
-    setTimeout(() => {
-      console.log('🔥 6:00到達 → businessKey を自動更新します');
-      on6amReset();
-      scheduleNextReset(); // 次の日の6時もセット
-    }, ms);
-  }
-
-  scheduleNextReset();
-}
-
-/****************************************************
- * 🔥 6:00 のときに実行する処理
- ****************************************************/
-function on6amReset() {
-  // 1. 今日の日付を取り直す
-  const newKey = getCurrentBusinessKey();
-  console.log('新しい businessKey:', newKey);
-
-  // 2. 画面の再初期化（超重要）
-  initializeAllSlots();
-  initializeHandoverSlots();
-
-  // 3. 状態リセット（ローカルチェック済みIDもリセット）
-  checkedTaskIds = new Set();
-  renderAllCheckboxStates();
-}
-
-
-
-
-
-
-
-      
   </script>
+
 
 </body>
 </html>
