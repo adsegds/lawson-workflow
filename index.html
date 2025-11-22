@@ -13,7 +13,7 @@
     line-height: 1.6;
   }
 
-  /* ここを広くした：max-width: 1400px に */
+  /* 幅広め */
   .app {
     max-width: 1400px;
     margin: 0 auto;
@@ -124,22 +124,20 @@
     border-left-color: #bbb;
   }
 
-  /* li→チェック付きの行に変換したときの見た目 */
-.task-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 6px;
-  font-size: 11px;
-  padding: 2px 0;
-}
-.task-item input[type="checkbox"] {
-  margin-top: 2px;
-}
-.task-text {
-  flex: 1;
-}
-
-  
+  /* li→チェック付きの行 */
+  .task-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    font-size: 11px;
+    padding: 2px 0;
+  }
+  .task-item input[type="checkbox"] {
+    margin-top: 2px;
+  }
+  .task-text {
+    flex: 1;
+  }
 
   .footer-note {
     font-size: 10px;
@@ -160,7 +158,7 @@
   }
 
   .handover {
-    margin-top: 8px;
+    margin-top: 4px;
   }
   .handover-title {
     font-size: 13px;
@@ -235,8 +233,7 @@
     font-size: 10px;
     cursor: pointer;
   }
-</style>
-
+  </style>
 </head>
 <body>
   <div class="app">
@@ -256,13 +253,25 @@
     </header>
 
     <main>
+      <!-- 現在時刻表示 -->
+      <div id="time-display" style="padding: 10px; font-size: 14px; color: #333;">
+        時刻を読み込み中…
+      </div>
 
-<div id="time-display" style="padding: 10px; font-size: 14px; color: #333;">
-  時刻を読み込み中…
-</div>
+      <!-- ★ お知らせ（経営者専用 ownerNews）★ -->
+      <section class="slot">
+        <div class="slot-header">
+          <div class="slot-title">お知らせ</div>
+          <div class="slot-note">経営者からの共有事項</div>
+        </div>
+        <div class="tasks-group">
+          <h3><span class="badge badge-a">お知らせ</span></h3>
+          <ul class="info-list" id="notice-list">
+            <li>お知らせを読み込み中...</li>
+          </ul>
+        </div>
+      </section>
 
-
-      
       <!-- 6〜8時 -->
       <section id="t6-8" class="slot">
         <div class="slot-header">
@@ -337,6 +346,36 @@
         </div>
       </section>
 
+      <!-- ★ 6〜8時のあとに 引き継ぎメモ ★ -->
+      <section class="slot handover-slot">
+        <div class="slot-header">
+          <div class="slot-title">引き継ぎメモ（全員で共有）</div>
+          <div class="slot-note">時間帯をまたぐ時の共有メモ</div>
+        </div>
+
+        <div class="handover">
+          <p class="handover-note">
+            文章を書くのがだるい人向け。下のボタンをタップするとメモに追加されます。
+          </p>
+
+          <!-- 定型文ボタン -->
+          <div class="handover-chips">
+            <button type="button" class="handover-chip" data-text="FFケース清掃済み">FFケース清掃済み</button>
+            <button type="button" class="handover-chip" data-text="ホット・常温FF 補充済み">ホット・常温FF 補充済み</button>
+            <button type="button" class="handover-chip" data-text="米飯・おにぎり 前陳＆整理済み">米飯・おにぎり 前陳＆整理済み</button>
+            <button type="button" class="handover-chip" data-text="たばこ補充済み">たばこ補充済み</button>
+            <button type="button" class="handover-chip" data-text="DDC遅延あり → 品出し途中">DDC遅延あり → 品出し途中</button>
+            <button type="button" class="handover-chip" data-text="清掃優先のため品出し一部未完了">清掃優先のため品出し一部未完了</button>
+          </div>
+
+          <!-- メモ一覧（全スロット共有） -->
+          <ul class="handover-log"></ul>
+          <div class="handover-clear">
+            <button type="button" class="handover-clear-btn">メモを全部消す</button>
+          </div>
+        </div>
+      </section>
+
       <!-- 9〜11時 -->
       <section id="t9-11" class="slot">
         <div class="slot-header">
@@ -379,6 +418,20 @@
         </div>
       </section>
 
+      <!-- 9〜11時後の引き継ぎメモ -->
+      <section class="slot handover-slot">
+        <div class="slot-header">
+          <div class="slot-title">引き継ぎメモ（全員で共有）</div>
+          <div class="slot-note">次の時間帯への一言メモ</div>
+        </div>
+        <div class="handover">
+          <ul class="handover-log"></ul>
+          <div class="handover-clear">
+            <button type="button" class="handover-clear-btn">メモを全部消す</button>
+          </div>
+        </div>
+      </section>
+
       <!-- 12〜14時 -->
       <section id="t12-14" class="slot">
         <div class="slot-header">
@@ -415,6 +468,20 @@
         </div>
       </section>
 
+      <!-- 12〜14時後の引き継ぎメモ -->
+      <section class="slot handover-slot">
+        <div class="slot-header">
+          <div class="slot-title">引き継ぎメモ（全員で共有）</div>
+          <div class="slot-note">次の時間帯への一言メモ</div>
+        </div>
+        <div class="handover">
+          <ul class="handover-log"></ul>
+          <div class="handover-clear">
+            <button type="button" class="handover-clear-btn">メモを全部消す</button>
+          </div>
+        </div>
+      </section>
+
       <!-- 15〜17時 -->
       <section id="t15-17" class="slot">
         <div class="slot-header">
@@ -446,6 +513,20 @@
             <li><label class="task-item"><input type="checkbox"><span class="task-text">入口ドア拭き上げ</span></label></li>
             <li><label class="task-item"><input type="checkbox"><span class="task-text">月曜のみ：販促物設置</span></label></li>
           </ul>
+        </div>
+      </section>
+
+      <!-- 15〜17時後の引き継ぎメモ -->
+      <section class="slot handover-slot">
+        <div class="slot-header">
+          <div class="slot-title">引き継ぎメモ（全員で共有）</div>
+          <div class="slot-note">次の時間帯への一言メモ</div>
+        </div>
+        <div class="handover">
+          <ul class="handover-log"></ul>
+          <div class="handover-clear">
+            <button type="button" class="handover-clear-btn">メモを全部消す</button>
+          </div>
         </div>
       </section>
 
@@ -489,6 +570,20 @@
         </div>
       </section>
 
+      <!-- 18〜20時後の引き継ぎメモ -->
+      <section class="slot handover-slot">
+        <div class="slot-header">
+          <div class="slot-title">引き継ぎメモ（全員で共有）</div>
+          <div class="slot-note">次の時間帯への一言メモ</div>
+        </div>
+        <div class="handover">
+          <ul class="handover-log"></ul>
+          <div class="handover-clear">
+            <button type="button" class="handover-clear-btn">メモを全部消す</button>
+          </div>
+        </div>
+      </section>
+
       <!-- 21〜23時 -->
       <section id="t21-23" class="slot">
         <div class="slot-header">
@@ -526,6 +621,20 @@
         </div>
       </section>
 
+      <!-- 21〜23時後の引き継ぎメモ -->
+      <section class="slot handover-slot">
+        <div class="slot-header">
+          <div class="slot-title">引き継ぎメモ（全員で共有）</div>
+          <div class="slot-note">次の時間帯への一言メモ</div>
+        </div>
+        <div class="handover">
+          <ul class="handover-log"></ul>
+          <div class="handover-clear">
+            <button type="button" class="handover-clear-btn">メモを全部消す</button>
+          </div>
+        </div>
+      </section>
+
       <!-- 0〜2時 -->
       <section id="t0-2" class="slot">
         <div class="slot-header">
@@ -560,6 +669,20 @@
         </div>
       </section>
 
+      <!-- 0〜2時後の引き継ぎメモ -->
+      <section class="slot handover-slot">
+        <div class="slot-header">
+          <div class="slot-title">引き継ぎメモ（全員で共有）</div>
+          <div class="slot-note">次の時間帯への一言メモ</div>
+        </div>
+        <div class="handover">
+          <ul class="handover-log"></ul>
+          <div class="handover-clear">
+            <button type="button" class="handover-clear-btn">メモを全部消す</button>
+          </div>
+        </div>
+      </section>
+
       <!-- 3〜5時 -->
       <section id="t3-5" class="slot">
         <div class="slot-header">
@@ -589,49 +712,20 @@
         </div>
       </section>
 
-
- <!-- お知らせ & 引き継ぎ -->
-      <section class="slot">
+      <!-- 3〜5時後の引き継ぎメモ -->
+      <section class="slot handover-slot">
         <div class="slot-header">
-          <div class="slot-title">お知らせ・引き継ぎ</div>
-          <div class="slot-note">経営者からの指示と、今日の引き継ぎメモ</div>
+          <div class="slot-title">引き継ぎメモ（全員で共有）</div>
+          <div class="slot-note">次の時間帯への一言メモ</div>
         </div>
-
-        <!-- 経営者が GitHub で編集する「お知らせ」 -->
-        <div class="tasks-group">
-          <h3><span class="badge badge-a">お知らせ</span></h3>
-          <ul class="info-list" id="notice-list">
-  <li>お知らせを読み込み中...</li>
-</ul>
-
-        </div>
-
-        <!-- 引き継ぎメモ：この端末だけに保存される -->
         <div class="handover">
-          <div class="handover-title">引き継ぎメモ（全員で共有）</div>
-          <p class="handover-note">
-            文章を書くのがだるい人向け。下のボタンをタップするとメモに追加されます。
-          </p>
-
-          <!-- 定型文ボタン -->
-          <div class="handover-chips">
-            <button type="button" class="handover-chip" data-text="FFケース清掃済み">FFケース清掃済み</button>
-            <button type="button" class="handover-chip" data-text="ホット・常温FF 補充済み">ホット・常温FF 補充済み</button>
-            <button type="button" class="handover-chip" data-text="米飯・おにぎり 前陳＆整理済み">米飯・おにぎり 前陳＆整理済み</button>
-            <button type="button" class="handover-chip" data-text="たばこ補充済み">たばこ補充済み</button>
-            <button type="button" class="handover-chip" data-text="DDC遅延あり → 品出し途中">DDC遅延あり → 品出し途中</button>
-            <button type="button" class="handover-chip" data-text="清掃優先のため品出し一部未完了">清掃優先のため品出し一部未完了</button>
-          </div>
-
-          <!-- メモ一覧 -->
-          <ul class="handover-log" id="handover-log"></ul>
+          <ul class="handover-log"></ul>
           <div class="handover-clear">
-            <button type="button" id="handover-clear-btn">メモを全部消す</button>
+            <button type="button" class="handover-clear-btn">メモを全部消す</button>
           </div>
         </div>
       </section>
 
-      
     </main>
 
     <div class="footer-note">
@@ -639,13 +733,7 @@
     </div>
   </div>
 
-
-
-
-  <!-- ↓↓↓ ここから下で、今ある <script> を全部入れ替えてね ↓↓↓ -->
-
-    <!-- Firebase SDK（CDN版）-->
-      <!-- Firebase SDK（CDN版）-->
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
 
@@ -663,7 +751,6 @@
       measurementId: "G-BGENZNZMRC"
     };
 
-    // Firebase 初期化
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
@@ -671,14 +758,14 @@
     // 営業日キー計算（6:00切り替え）
     // =============================
     function getCurrentBusinessKey() {
-      const now = new Date(); // 店のPCが日本時間ならそのままJST
+      const now = new Date();
       const y = now.getFullYear();
       const m = now.getMonth();
       const d = now.getDate();
 
       const base = new Date(y, m, d);
 
-      // 0:00〜5:59 は「前日扱い」
+      // 0:00〜5:59 は前日扱い
       if (now.getHours() < 6) {
         base.setDate(base.getDate() - 1);
       }
@@ -686,7 +773,7 @@
       const yy = base.getFullYear();
       const mm = String(base.getMonth() + 1).padStart(2, '0');
       const dd = String(base.getDate()).padStart(2, '0');
-      return `${yy}-${mm}-${dd}`; // 例: "2025-11-22"
+      return `${yy}-${mm}-${dd}`;
     }
 
     // =============================
@@ -710,7 +797,6 @@
 
       const businessKey = getCurrentBusinessKey();
 
-      // 次の 6:00 を計算
       let nextReset = new Date();
       nextReset.setHours(6, 0, 0, 0);
       if (now >= nextReset) {
@@ -735,7 +821,7 @@
     updateTimeDisplay();
 
     // =============================
-    // DOM 準備できたら色々セット
+    // DOM 準備できたらセット
     // =============================
     document.addEventListener('DOMContentLoaded', () => {
       // --------------------------------
@@ -775,7 +861,6 @@
         const storedKey = data.businessKey;
         const currentKey = getCurrentBusinessKey();
 
-        // 営業日が変わっていたら全リセット
         if (storedKey !== currentKey) {
           taskDocRef.set(
             { checkedIds: [], businessKey: currentKey },
@@ -804,40 +889,47 @@
       });
 
       // --------------------------------
-      // 2) 引き継ぎメモ Firestore 同期
+      // 2) 引き継ぎメモ Firestore 同期（全スロット共通）
       // --------------------------------
-      const logEl = document.getElementById('handover-log');
-      const clearBtn = document.getElementById('handover-clear-btn');
+      const logEls = document.querySelectorAll('.handover-log');
+      const clearBtns = document.querySelectorAll('.handover-clear-btn');
       const chipButtons = document.querySelectorAll('.handover-chip');
       const handoverColRef = db.collection('handover');
 
       function renderHandover(snapshot) {
-        if (!logEl) return;
-        logEl.innerHTML = '';
+        logEls.forEach((logEl) => {
+          logEl.innerHTML = '';
+        });
+
         snapshot.forEach((doc) => {
           const data = doc.data();
-          const li = document.createElement('li');
-          li.className = 'handover-item';
+          const text = data.text || '';
+          const timeLabel = data.timeLabel || '';
 
-          const textSpan = document.createElement('span');
-          textSpan.className = 'handover-text';
-          textSpan.textContent = data.text || '';
+          logEls.forEach((logEl) => {
+            const li = document.createElement('li');
+            li.className = 'handover-item';
 
-          const timeSpan = document.createElement('span');
-          timeSpan.className = 'handover-time';
-          timeSpan.textContent = data.timeLabel || '';
+            const textSpan = document.createElement('span');
+            textSpan.className = 'handover-text';
+            textSpan.textContent = text;
 
-          const delBtn = document.createElement('button');
-          delBtn.className = 'handover-remove';
-          delBtn.textContent = '✕';
-          delBtn.addEventListener('click', () => {
-            doc.ref.delete();
+            const timeSpan = document.createElement('span');
+            timeSpan.className = 'handover-time';
+            timeSpan.textContent = timeLabel;
+
+            const delBtn = document.createElement('button');
+            delBtn.className = 'handover-remove';
+            delBtn.textContent = '✕';
+            delBtn.addEventListener('click', () => {
+              doc.ref.delete();
+            });
+
+            li.appendChild(textSpan);
+            li.appendChild(timeSpan);
+            li.appendChild(delBtn);
+            logEl.appendChild(li);
           });
-
-          li.appendChild(textSpan);
-          li.appendChild(timeSpan);
-          li.appendChild(delBtn);
-          logEl.appendChild(li);
         });
       }
 
@@ -863,15 +955,15 @@
         });
       });
 
-      if (clearBtn) {
-        clearBtn.addEventListener('click', async () => {
+      clearBtns.forEach((btn) => {
+        btn.addEventListener('click', async () => {
           if (!confirm('引き継ぎメモを全部消しますか？')) return;
           const snap = await handoverColRef.get();
           const batch = db.batch();
           snap.forEach((doc) => batch.delete(doc.ref));
           await batch.commit();
         });
-      }
+      });
 
       // --------------------------------
       // 3) 経営者お知らせ（ownerNews）読み込み
@@ -900,7 +992,6 @@
                 const body = data.body || '';
 
                 const li = document.createElement('li');
-                // 「【タイトル】本文」みたいな1行にまとめる
                 if (title && body) {
                   li.textContent = `【${title}】 ${body}`;
                 } else if (title) {
@@ -922,17 +1013,5 @@
       }
     });
   </script>
-
-
-
-
-
-  <!-- ↑↑↑ ここまでが差し替え部分。すぐ上に </body></html> が来る形でOK ↑↑↑ -->
-
-
-
-
-
-  
 </body>
 </html>
