@@ -1083,45 +1083,47 @@
       const chipButtons = document.querySelectorAll('.handover-chip');
       const handoverColRef = db.collection('handover');
 
-      function renderHandover(snapshot) {
-        // ログが1つも無い（HTMLに無い）なら何もしない
-        if (!logEls.length) return;
+     function renderHandover(snapshot) {
+  // ログが1つも無い（HTMLに無い）なら何もしない
+  if (!logEls.length) return;
 
-        // いったん全部クリア
-        logEls.forEach((logEl) => {
-          logEl.innerHTML = '';
-        });
+  // いったん全部クリア
+  logEls.forEach((logEl) => {
+    logEl.innerHTML = '';
+  });
 
-        snapshot.forEach((doc) => {
-          const data = doc.data();
-          const li = document.createElement('li');
-          li.className = 'handover-item';
+  snapshot.forEach((doc) => {
+    const data = doc.data();
 
-          const textSpan = document.createElement('span');
-          textSpan.className = 'handover-text';
-          textSpan.textContent = data.text || '';
+    // すべての handover-log に同じ内容を追加
+    logEls.forEach((logEl) => {
+      const li = document.createElement('li');
+      li.className = 'handover-item';
 
-          const timeSpan = document.createElement('span');
-          timeSpan.className = 'handover-time';
-          timeSpan.textContent = data.timeLabel || '';
+      const textSpan = document.createElement('span');
+      textSpan.className = 'handover-text';
+      textSpan.textContent = data.text || '';
 
-          const delBtn = document.createElement('button');
-          delBtn.className = 'handover-remove';
-          delBtn.textContent = '✕';
-          delBtn.addEventListener('click', () => {
-            doc.ref.delete();
-          });
+      const timeSpan = document.createElement('span');
+      timeSpan.className = 'handover-time';
+      timeSpan.textContent = data.timeLabel || '';
 
-          li.appendChild(textSpan);
-          li.appendChild(timeSpan);
-          li.appendChild(delBtn);
+      const delBtn = document.createElement('button');
+      delBtn.className = 'handover-remove';
+      delBtn.textContent = '✕';
+      delBtn.addEventListener('click', () => {
+        doc.ref.delete();
+      });
 
-          // すべての handover-log に同じ内容を追加
-          logEls.forEach((logEl) => {
-            logEl.appendChild(li.cloneNode(true));
-          });
-        });
-      }
+      li.appendChild(textSpan);
+      li.appendChild(timeSpan);
+      li.appendChild(delBtn);
+
+      logEl.appendChild(li);
+    });
+  });
+}
+
 
       handoverColRef.orderBy('createdAt', 'desc').onSnapshot(renderHandover);
 
