@@ -1135,13 +1135,17 @@
         const chipButtons = slotEl.querySelectorAll('.handover-chip');
 
         // この時間帯専用の listener
-        handoverColRef
-          .orderBy('createdAt', 'desc')
-          .limit(50) // 念のため上限
-          .onSnapshot((snapshot) => {
-            // snapshot 全体から、この slotId のものだけ表示
-            renderHandoverForSlot(snapshot, logEl, slotId);
-          });
+const currentBusinessKey = getCurrentBusinessKey();
+
+handoverColRef
+  .where('businessKey', '==', currentBusinessKey) // ★ 当日分だけ
+  .orderBy('createdAt', 'desc')
+  .limit(50) // 念のため上限
+  .onSnapshot((snapshot) => {
+    // snapshot 全体から、この slotId のものだけ表示
+    renderHandoverForSlot(snapshot, logEl, slotId);
+  });
+
 
         function addHandoverForSlot(text) {
           const now = new Date();
