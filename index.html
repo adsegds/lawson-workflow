@@ -326,28 +326,27 @@
 
 
 
-.time-tabs-row {
+.jump-wrap {
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
   align-items: center;
+  gap: 12px; /* ← ボタンとの距離（調整可） */
+  margin-top: 20px;
 }
 
-/* 既存のタブボタンはそのままでOK */
+.jump-text {
+  color: #c00; /* 赤文字 */
+  font-size: 14px;
+}
 
-.slot-jump-btn {
-  margin-left: auto;          /* 右端に寄せる */
-  border-radius: 999px;
-  border: none;
-  padding: 6px 14px;
-  font-size: 12px;
+.jump-btn {
   background: #111;
   color: #fff;
+  padding: 8px 14px;
+  border-radius: 18px;
+  border: none;
   cursor: pointer;
 }
-.slot-jump-btn:hover {
-  opacity: 0.85;
-}
+
 
 
 .notice-lead {
