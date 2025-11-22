@@ -13,9 +13,17 @@
       line-height: 1.6;
     }
     .app {
-  max-width: 520px;
+  width: 100%;
+  max-width: 1000px;   /* ← iPad & PCでも横幅広がる */
   margin: 0 auto;
   padding-bottom: 80px;
+}
+
+/* iPhone 〜 iPad miniくらいの表示はスマホUI維持 */
+@media (max-width: 599px) {
+  .app {
+    max-width: 520px;
+  }
 }
     header {
       position: sticky;
