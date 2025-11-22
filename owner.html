@@ -26,6 +26,11 @@
       color: #666;
       margin-bottom: 16px;
     }
+    p.desc.small {
+      font-size: 11px;
+      margin-top: -6px;
+      margin-bottom: 10px;
+    }
 
     .card {
       background: #fff;
@@ -42,7 +47,8 @@
       margin-bottom: 4px;
     }
     input[type="text"],
-    textarea {
+    textarea,
+    select {
       width: 100%;
       border-radius: 8px;
       border: 1px solid #ddd;
@@ -51,7 +57,7 @@
       resize: vertical;
     }
     textarea {
-      min-height: 120px;
+      min-height: 80px;
     }
     .form-row {
       margin-bottom: 10px;
@@ -139,7 +145,7 @@
       店の PC だけで開けるようにしておくと安心です。（例：ブックマークに「経営者用」など）
     </p>
 
-    <!-- 投稿フォーム -->
+    <!-- ◆ 経営者お知らせ 投稿フォーム -->
     <section class="card">
       <div class="form-row">
         <label for="notice-title">タイトル</label>
@@ -153,12 +159,48 @@
       <div class="status" id="status-msg"></div>
     </section>
 
-    <!-- 投稿済み一覧 -->
+    <!-- ◆ 投稿済みお知らせ一覧 -->
     <section class="card">
       <div class="list-title">投稿済みお知らせ（新しい順 最大50件）</div>
       <ul class="notice-list" id="notice-list">
         <li>読み込み中です…</li>
       </ul>
+    </section>
+
+    <!-- ◆ タスク編集（時間帯ごと） -->
+    <section class="card">
+      <div class="list-title">タスク編集（時間帯ごと）</div>
+      <p class="desc small">
+        A＝必須 / B＝余裕があれば。<br>
+        各テキストエリアで「1行 = 1タスク」として編集すると、スタッフ画面にそのまま反映されます。
+      </p>
+
+      <div class="form-row">
+        <label for="slot-select">編集する時間帯</label>
+        <select id="slot-select">
+          <option value="t6-8">6:00〜8:00（朝の立ち上げ）</option>
+          <option value="t9-11">9:00〜11:00（午前帯）</option>
+          <option value="t12-14">12:00〜14:00（昼帯）</option>
+          <option value="t15-17">15:00〜17:00（夕方前）</option>
+          <option value="t18-20">18:00〜20:00（夕方〜夜）</option>
+          <option value="t21-23">21:00〜23:00（夜帯）</option>
+          <option value="t0-2">0:00〜2:00（深夜前半）</option>
+          <option value="t3-5">3:00〜5:00（早朝）</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label for="tasksA-input">A 必須タスク（1行1タスク）</label>
+        <textarea id="tasksA-input" placeholder="例）CDC納品・片づけ（2便）&#10;例）コーヒーマシン清掃（本体・コンディメント什器・周辺）"></textarea>
+      </div>
+
+      <div class="form-row">
+        <label for="tasksB-input">B 余裕タスク（1行1タスク）</label>
+        <textarea id="tasksB-input" placeholder="例）店内・店頭ゴミ箱の清掃&#10;例）サービスコーナー・イートイン清掃"></textarea>
+      </div>
+
+      <button type="button" class="btn" id="slot-save-btn">この時間帯のタスクを保存</button>
+      <div class="status" id="slot-status"></div>
     </section>
   </div>
 
@@ -182,18 +224,21 @@
     const db = firebase.firestore();
 
     document.addEventListener('DOMContentLoaded', () => {
+      // =============================
+      // 1) 経営者お知らせ
+      // =============================
       const titleInput = document.getElementById('notice-title');
-      const bodyInput = document.getElementById('notice-body');
-      const postBtn = document.getElementById('post-btn');
-      const statusMsg = document.getElementById('status-msg');
-      const listEl = document.getElementById('notice-list');
+      const bodyInput  = document.getElementById('notice-body');
+      const postBtn    = document.getElementById('post-btn');
+      const statusMsg  = document.getElementById('status-msg');
+      const listEl     = document.getElementById('notice-list');
 
       const ownerNewsColRef = db.collection('ownerNews');
 
       // 投稿
       postBtn.addEventListener('click', async () => {
         const title = (titleInput.value || '').trim();
-        const body = (bodyInput.value || '').trim();
+        const body  = (bodyInput.value || '').trim();
 
         if (!title && !body) {
           statusMsg.textContent = 'タイトルか本文のどちらかは入力してください。';
@@ -211,7 +256,7 @@
           });
 
           titleInput.value = '';
-          bodyInput.value = '';
+          bodyInput.value  = '';
           statusMsg.textContent = '投稿しました。';
         } catch (e) {
           console.error(e);
@@ -222,8 +267,8 @@
         }
       });
 
-      // 投稿一覧
-      function renderList(snapshot) {
+      // 一覧表示
+      function renderNoticeList(snapshot) {
         listEl.innerHTML = '';
 
         if (snapshot.empty) {
@@ -235,7 +280,7 @@
 
         snapshot.forEach((doc) => {
           const data = doc.data();
-          const li = document.createElement('li');
+          const li   = document.createElement('li');
           li.className = 'notice-item';
 
           const ts = data.createdAt ? data.createdAt.toDate() : null;
@@ -274,7 +319,77 @@
       ownerNewsColRef
         .orderBy('createdAt', 'desc')
         .limit(50)
-        .onSnapshot(renderList);
+        .onSnapshot(renderNoticeList);
+
+      // =============================
+      // 2) タスク定義編集（taskSlots）
+      // =============================
+      const slotSelect    = document.getElementById('slot-select');
+      const tasksAInput   = document.getElementById('tasksA-input');
+      const tasksBInput   = document.getElementById('tasksB-input');
+      const slotSaveBtn   = document.getElementById('slot-save-btn');
+      const slotStatus    = document.getElementById('slot-status');
+      const taskSlotsRef  = db.collection('taskSlots');
+
+      async function loadSlot(slotId) {
+        slotStatus.textContent = '読み込み中…';
+
+        try {
+          const snap = await taskSlotsRef.doc(slotId).get();
+          const data = snap.exists ? snap.data() : {};
+          const tasksA = (data.tasksA || []).join('\n');
+          const tasksB = (data.tasksB || []).join('\n');
+
+          tasksAInput.value = tasksA;
+          tasksBInput.value = tasksB;
+          slotStatus.textContent = '読み込み完了。編集して「保存」を押すと反映されます。';
+        } catch (e) {
+          console.error(e);
+          slotStatus.textContent = '読み込みに失敗しました。';
+        }
+      }
+
+      // 保存
+      slotSaveBtn.addEventListener('click', async () => {
+        const slotId = slotSelect.value;
+        const tasksA = (tasksAInput.value || '')
+          .split('\n')
+          .map(line => line.trim())
+          .filter(line => line.length > 0);
+
+        const tasksB = (tasksBInput.value || '')
+          .split('\n')
+          .map(line => line.trim())
+          .filter(line => line.length > 0);
+
+        slotSaveBtn.disabled = true;
+        slotStatus.textContent = '保存中…';
+
+        try {
+          await taskSlotsRef.doc(slotId).set(
+            {
+              tasksA,
+              tasksB
+            },
+            { merge: true }
+          );
+          slotStatus.textContent = '保存しました。スタッフ画面をリロードすると反映されます。';
+        } catch (e) {
+          console.error(e);
+          slotStatus.textContent = '保存に失敗しました。';
+        } finally {
+          slotSaveBtn.disabled = false;
+          setTimeout(() => { slotStatus.textContent = ''; }, 4000);
+        }
+      });
+
+      // 時間帯切り替え
+      slotSelect.addEventListener('change', () => {
+        loadSlot(slotSelect.value);
+      });
+
+      // 初期ロード（最初の時間帯）
+      loadSlot(slotSelect.value);
     });
   </script>
 </body>
