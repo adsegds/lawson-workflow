@@ -350,6 +350,12 @@
 }
 
 
+.notice-lead {
+  font-size: 12px;
+  color: #c00;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
 
 
 
@@ -405,21 +411,6 @@
         時刻を読み込み中…
       </div>
 
-      <!-- ★ お知らせ（経営者専用 ownerNews）★ -->
-      <section class="slot">
-        <div class="slot-header">
-          <div class="slot-title">お知らせ</div>
-          <div class="slot-note">経営者からの共有事項</div>
-        </div>
-        <div class="tasks-group">
-          <h3><span class="badge badge-a">お知らせ</span></h3>
-          <ul class="info-list" id="notice-list">
-            <li>お知らせを読み込み中...</li>
-          </ul>
-        </div>
-      </section>
-
-
 
 
 
@@ -436,6 +427,9 @@
   </button>
 </div>
 
+<p class="notice-lead">
+  ※まずここを読んでから、右上の「今の時間帯へ ▶」ボタンを押してください。
+</p>
 
 
 
@@ -443,6 +437,26 @@
 
 
       
+
+
+
+      
+
+      <!-- ★ お知らせ（経営者専用 ownerNews）★ -->
+      <section class="slot">
+        <div class="slot-header">
+          <div class="slot-title">お知らせ</div>
+          <div class="slot-note">経営者からの共有事項</div>
+        </div>
+        <div class="tasks-group">
+          <h3><span class="badge badge-a">お知らせ</span></h3>
+          <ul class="info-list" id="notice-list">
+            <li>お知らせを読み込み中...</li>
+          </ul>
+        </div>
+      </section>
+
+
       <!-- 6〜8時 -->
       <section id="t6-8" class="slot">
         <div class="slot-header">
