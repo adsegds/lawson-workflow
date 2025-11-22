@@ -326,35 +326,93 @@
 
 
 
-.jump-wrap {
+/* ============================
+   今の時間帯ジャンプバナー
+============================ */
+.jump-banner {
+  margin-top: 14px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: #fff7e5;
+  border: 1px solid #ffd48a;
   display: flex;
   align-items: center;
-  gap: 12px; /* ← ボタンとの距離（調整可） */
-  margin-top: 20px;
+  gap: 12px;
+  justify-content: flex-end;
 }
 
-.jump-text {
-  color: #c00; /* 赤文字 */
-  font-size: 14px;
+.jump-banner-note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #c25a00;
+  flex: 1;
+}
+
+.jump-banner-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.jump-banner-text {
+  line-height: 1.5;
 }
 
 .jump-btn {
   background: #111;
   color: #fff;
-  padding: 8px 14px;
-  border-radius: 18px;
+  padding: 8px 16px;
+  border-radius: 999px;
   border: none;
   cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.2;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.16);
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
 }
 
-
-
-.notice-lead {
-  font-size: 12px;
-  color: #c00;
+.jump-btn-main {
   font-weight: 600;
-  margin-bottom: 4px;
 }
+
+.jump-btn-sub {
+  font-size: 10px;
+  opacity: 0.9;
+}
+
+.jump-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.22);
+}
+
+.jump-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.18);
+}
+
+@media (max-width: 640px) {
+  .jump-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    border-radius: 16px;
+  }
+  .jump-btn {
+    width: 100%;
+    align-items: center;
+  }
+  .sp-only {
+    display: inline;
+  }
+}
+
+.sp-only {
+  display: none;
+}
+
 
 
 
