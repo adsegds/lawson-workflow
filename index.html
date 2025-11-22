@@ -125,13 +125,20 @@
   }
 
   /* li→チェック付きの行に変換したときの見た目 */
-  .task-label {
-    display: flex;
-    align-items: flex-start;
-    gap: 6px;
-    font-size: 11px;
-    padding: 2px 0;
-  }
+.task-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 11px;
+  padding: 2px 0;
+}
+.task-item input[type="checkbox"] {
+  margin-top: 2px;
+}
+.task-text {
+  flex: 1;
+}
+
   .task-label input[type="checkbox"] {
     margin-top: 2px;
   }
