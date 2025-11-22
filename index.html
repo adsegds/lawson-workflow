@@ -968,20 +968,27 @@
       }
 
       function scrollToCurrentTimeSlot() {
-        const now = new Date();
-        const h = now.getHours();
-        const slotId = getCurrentSlotIdByHour(h);
-        const el = document.getElementById(slotId);
-        if (!el) return;
+  const now = new Date();
+  const h = now.getHours();
+  const slotId = getCurrentSlotIdByHour(h);
+  const el = document.getElementById(slotId);
+  if (!el) return;
 
-        // レイアウトが落ち着いてからスクロールしたいので少し待つ
-        setTimeout(() => {
-          el.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }, 400);
-      }
+  setTimeout(() => {
+    // 固定ヘッダーの高さを取得（クラス名は自分のコードに合わせてね）
+    const header = document.querySelector('.top-bar') || document.querySelector('header');
+    const headerHeight = header ? header.offsetHeight : 80; // なければだいたい80px
+
+    const rect = el.getBoundingClientRect();
+    const targetY = rect.top + window.scrollY - headerHeight - 8; // ちょい余裕を引く
+
+    window.scrollTo({
+      top: targetY,
+      behavior: 'smooth'
+    });
+  }, 400);
+}
+
 
       // 画面表示時に「今の時間帯」まで自動スクロール
       scrollToCurrentTimeSlot();
