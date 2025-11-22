@@ -630,5 +630,164 @@
       迷ったら：Aタスク → 前陳 → 清掃 の順で動けばOK。
     </div>
   </div>
+
+
+
+
+<script>
+  // ==========================
+  // 1. チェックリストのローカル保存
+  // ==========================
+  document.addEventListener('DOMContentLoaded', function () {
+    const TASK_KEY = 'lw_tasks_v1';
+
+    // 既に保存されているチェック済みIDの配列を取得
+    let stored = [];
+    try {
+      const raw = localStorage.getItem(TASK_KEY);
+      if (raw) stored = JSON.parse(raw);
+    } catch (e) {
+      stored = [];
+    }
+    let checkedSet = new Set(stored);
+
+    // 全ての li を「チェック付き行」に変換
+    const slots = Array.from(document.querySelectorAll('section.slot'));
+    slots.forEach((slotEl, slotIndex) => {
+      const taskLis = slotEl.querySelectorAll('ul.tasks li');
+      taskLis.forEach((li, taskIndex) => {
+        const text = li.textContent.trim();
+        const id = `task-${slotIndex}-${taskIndex}`;
+        li.textContent = '';
+
+        const label = document.createElement('label');
+        label.className = 'task-label';
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = id;
+        checkbox.dataset.taskId = id;
+
+        if (checkedSet.has(id)) {
+          checkbox.checked = true;
+        }
+
+        const span = document.createElement('span');
+        span.className = 'task-text';
+        span.textContent = text;
+
+        label.appendChild(checkbox);
+        label.appendChild(span);
+        li.appendChild(label);
+      });
+    });
+
+    // チェック状態が変わったら保存
+    document.body.addEventListener('change', (e) => {
+      const target = e.target;
+      if (target.matches('input[type="checkbox"][data-task-id]')) {
+        const id = target.dataset.taskId;
+        if (target.checked) {
+          checkedSet.add(id);
+        } else {
+          checkedSet.delete(id);
+        }
+        localStorage.setItem(TASK_KEY, JSON.stringify(Array.from(checkedSet)));
+      }
+    });
+
+    // ==========================
+    // 2. 引き継ぎメモのローカル保存
+    // ==========================
+    const HANDOVER_KEY = 'lw_handover_v1';
+    const logEl = document.getElementById('handover-log');
+    const clearBtn = document.getElementById('handover-clear-btn');
+    const chipButtons = document.querySelectorAll('.handover-chip');
+
+    let handoverItems = [];
+
+    function loadHandover() {
+      try {
+        const raw = localStorage.getItem(HANDOVER_KEY);
+        if (raw) handoverItems = JSON.parse(raw);
+      } catch (e) {
+        handoverItems = [];
+      }
+    }
+
+    function saveHandover() {
+      localStorage.setItem(HANDOVER_KEY, JSON.stringify(handoverItems));
+    }
+
+    function renderHandover() {
+      if (!logEl) return;
+      logEl.innerHTML = '';
+      handoverItems.forEach((item, index) => {
+        const li = document.createElement('li');
+        li.className = 'handover-item';
+
+        const textSpan = document.createElement('span');
+        textSpan.className = 'handover-text';
+        textSpan.textContent = item.text;
+
+        const timeSpan = document.createElement('span');
+        timeSpan.className = 'handover-time';
+        timeSpan.textContent = item.time;
+
+        const btn = document.createElement('button');
+        btn.className = 'handover-remove';
+        btn.textContent = '✕';
+        btn.addEventListener('click', () => {
+          handoverItems.splice(index, 1);
+          saveHandover();
+          renderHandover();
+        });
+
+        li.appendChild(textSpan);
+        li.appendChild(timeSpan);
+        li.appendChild(btn);
+        logEl.appendChild(li);
+      });
+    }
+
+    function addHandover(text) {
+      const now = new Date();
+      const timeLabel = now.toLocaleTimeString('ja-JP', {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      handoverItems.push({ text, time: timeLabel });
+      saveHandover();
+      renderHandover();
+    }
+
+    if (logEl) {
+      loadHandover();
+      renderHandover();
+    }
+
+    chipButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const text = btn.dataset.text;
+        if (text) addHandover(text);
+      });
+    });
+
+    if (clearBtn) {
+      clearBtn.addEventListener('click', () => {
+        if (confirm('引き継ぎメモを全部消しますか？')) {
+          handoverItems = [];
+          saveHandover();
+          renderHandover();
+        }
+      });
+    }
+  });
+</script>
+
+
+
+
+  
 </body>
 </html>
