@@ -1074,18 +1074,24 @@
       // 先にタスク定義をロード（チェック状態は onSnapshot で後から追従）
       loadTaskDefinitions();
 
-      // --------------------------------
+            // --------------------------------
       // 3) 引き継ぎメモ（全員で共有）
-      //    ※ 今までと同じ構造：一番下の「引き継ぎメモ（全員で共有）」を使う
+      //    → 画面上にある handover-slot 全部を同じ内容で表示
       // --------------------------------
-      const logEl    = document.getElementById('handover-log');
-      const clearBtn = document.getElementById('handover-clear-btn');
+      const logEls     = document.querySelectorAll('.handover-log');
+      const clearBtns  = document.querySelectorAll('.handover-clear-btn');
       const chipButtons = document.querySelectorAll('.handover-chip');
       const handoverColRef = db.collection('handover');
 
       function renderHandover(snapshot) {
-        if (!logEl) return;
-        logEl.innerHTML = '';
+        // ログが1つも無い（HTMLに無い）なら何もしない
+        if (!logEls.length) return;
+
+        // いったん全部クリア
+        logEls.forEach((logEl) => {
+          logEl.innerHTML = '';
+        });
+
         snapshot.forEach((doc) => {
           const data = doc.data();
           const li = document.createElement('li');
@@ -1109,7 +1115,11 @@
           li.appendChild(textSpan);
           li.appendChild(timeSpan);
           li.appendChild(delBtn);
-          logEl.appendChild(li);
+
+          // すべての handover-log に同じ内容を追加
+          logEls.forEach((logEl) => {
+            logEl.appendChild(li.cloneNode(true));
+          });
         });
       }
 
@@ -1135,7 +1145,7 @@
         });
       });
 
-      if (clearBtn) {
+      clearBtns.forEach((clearBtn) => {
         clearBtn.addEventListener('click', async () => {
           if (!confirm('引き継ぎメモを全部消しますか？')) return;
           const snap = await handoverColRef.get();
@@ -1143,7 +1153,8 @@
           snap.forEach((doc) => batch.delete(doc.ref));
           await batch.commit();
         });
-      }
+      });
+
 
       // --------------------------------
       // 4) 経営者お知らせ（ownerNews）読み込み
