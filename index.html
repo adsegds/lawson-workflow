@@ -889,6 +889,41 @@
       // 🔥 朝6:00 自動リセット開始
       setupDailyResetAt6AM();
 
+
+// ===============================
+// 引き継ぎメモ：定型文チップの読み込み
+// ===============================
+db.collection("handoverTemplates")
+  .doc("global")
+  .get()
+  .then(doc => {
+    const area = document.querySelector(".handover-chips");
+    if (!area) return;
+
+    area.innerHTML = "";
+
+    if (!doc.exists) return;
+
+    const chips = doc.data().chips || [];
+
+    chips.forEach(text => {
+      const btn = document.createElement("button");
+      btn.className = "handover-chip";
+      btn.textContent = text;
+      btn.dataset.text = text;
+
+      // 押す → メモに追加
+      btn.addEventListener("click", () => {
+        addMemo(text);  
+      });
+
+      area.appendChild(btn);
+    });
+  });
+
+
+      
+
       // =============================
       // 現在時刻・営業日・次リセット表示
       // =============================
