@@ -870,7 +870,7 @@
 
       loadHandoverTemplate();
 
-      // =============================
+            // =============================
       // 4) checklistLogs（スタッフログ）
       // =============================
       const logDateInput = document.getElementById("logDate");
@@ -880,6 +880,7 @@
       const logEmptyMsg = document.getElementById("logEmptyMsg");
       const logStatus = document.getElementById("logStatus");
       const logsColRef = db.collection("checklistLogs");
+      let logsUnsub = null;
 
       function setLogStatus(msg, ok) {
         logStatus.textContent = msg || "";
@@ -946,7 +947,7 @@
         });
       }
 
-      async function loadLogsOnce() {
+      function startLogsListener() {
         const dateStr = logDateInput.value;
         const businessKey = businessKeyFromDateInput(dateStr);
         const deviceFilter = logDeviceInput.value.trim();
@@ -955,7 +956,12 @@
           // 営業日未指定なら当日扱い
           const todayKey = getCurrentBusinessKey();
           logDateInput.value = todayKey;
-          return loadLogsOnce();
+          return startLogsListener();
+        }
+
+        if (logsUnsub) {
+          logsUnsub();
+          logsUnsub = null;
         }
 
         setLogStatus("読み込み中…", true);
@@ -963,55 +969,55 @@
           "<tr><td colspan='5'>ログを読み込み中...</td></tr>";
         logEmptyMsg.style.display = "none";
 
-        try {
-          // 1営業日あたり最大300件まで取得（JS側でソート＆端末フィルタ）
-          const snapshot = await logsColRef
-            .where("businessKey", "==", businessKey)
-            .limit(300)
-            .get();
+        logsUnsub = logsColRef
+          .where("businessKey", "==", businessKey)
+          .onSnapshot(
+            (snapshot) => {
+              const docs = [];
+              snapshot.forEach((doc) => docs.push(doc));
 
-          const docs = [];
-          snapshot.forEach((doc) => docs.push(doc));
+              // JS側で createdAt 降順ソート
+              docs.sort((a, b) => {
+                const da = a.data().createdAt
+                  ? a.data().createdAt.toMillis()
+                  : 0;
+                const db = b.data().createdAt
+                  ? b.data().createdAt.toMillis()
+                  : 0;
+                return db - da;
+              });
 
-          // JS側で createdAt 降順ソート
-          docs.sort((a, b) => {
-            const da = a.data().createdAt
-              ? a.data().createdAt.toMillis()
-              : 0;
-            const db = b.data().createdAt
-              ? b.data().createdAt.toMillis()
-              : 0;
-            return db - da;
-          });
+              const filtered = deviceFilter
+                ? docs.filter(
+                    (doc) =>
+                      (doc.data().deviceLabel || "") === deviceFilter
+                  )
+                : docs;
 
-          const filtered = deviceFilter
-            ? docs.filter(
-                (doc) =>
-                  (doc.data().deviceLabel || "") === deviceFilter
-              )
-            : docs;
-
-          renderLogs(filtered, businessKey, deviceFilter);
-          setLogStatus(
-            `読み込み完了（${filtered.length}件 / 取得${docs.length}件）`,
-            true
+              renderLogs(filtered, businessKey, deviceFilter);
+              setLogStatus(
+                `読み込み完了（${filtered.length}件）`,
+                true
+              );
+            },
+            (error) => {
+              console.error("checklistLogs 読み込みエラー", error);
+              setLogStatus("ログの読み込みに失敗しました。", false);
+              logTableBody.innerHTML =
+                "<tr><td colspan='5'>ログの読み込みに失敗しました。</td></tr>";
+            }
           );
-        } catch (error) {
-          console.error("checklistLogs 読み込みエラー", error);
-          setLogStatus("ログの読み込みに失敗しました。", false);
-          logTableBody.innerHTML =
-            "<tr><td colspan='5'>ログの読み込みに失敗しました。</td></tr>";
-        }
       }
 
       // フィルタボタン
       logFilterBtn.addEventListener("click", () => {
-        loadLogsOnce();
+        startLogsListener();
       });
 
       // 初期値：今日の営業日
       logDateInput.value = getCurrentBusinessKey();
-      loadLogsOnce();
+      startLogsListener();
+
     });
   </script>
 </body>
