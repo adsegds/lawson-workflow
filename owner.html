@@ -1051,6 +1051,74 @@
       const shiftStatus = document.getElementById("shiftStatus");
       const shiftDocRef = db.collection("settings").doc("shiftSheet");
 
+
+
+
+
+
+
+
+
+
+// Storage の参照を用意
+const storage = firebase.storage();
+const shiftImageFileInput = document.getElementById("shiftImageFileInput");
+
+// ファイル選択 → 自動アップロード＆URL保存
+shiftImageFileInput?.addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  try {
+    setShiftStatus("画像をアップロード中…", true);
+
+    // 保存先パス（好きな名前でOK）
+    const storageRef = storage.ref().child(`shiftSheets/${file.name}`);
+
+    // Storage にアップロード
+    const snapshot = await storageRef.put(file);
+
+    // 公開URLを取得
+    const url = await snapshot.ref.getDownloadURL();
+
+    // Firestore に保存（settings/shiftSheet.imageUrl）
+    await shiftDocRef.set({ imageUrl: url }, { merge: true });
+
+    // 画面も更新
+    shiftImageUrlInput.value = url;
+    shiftImagePreview.src = url;
+    shiftImagePreview.style.display = "block";
+
+    setShiftStatus("アップロード＆URL保存が完了しました。", true);
+  } catch (err) {
+    console.error("シフト表画像アップロードエラー", err);
+    setShiftStatus("画像のアップロードに失敗しました。", false);
+  } finally {
+    // 同じファイルをもう一回選べるようにする
+    shiftImageFileInput.value = "";
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
       function setShiftStatus(msg, ok) {
         if (!shiftStatus) return;
         shiftStatus.textContent = msg || "";
