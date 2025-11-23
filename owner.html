@@ -666,7 +666,7 @@
       apiKey: "AIzaSyAPBMvTpzKCcPxLETncBqVR8fzf0cqKirc",
       authDomain: "lawson-workflow.firebaseapp.com",
       projectId: "lawson-workflow",
-      storageBucket: "lawson-workflow.firebasestorage.app",
+      storageBucket: "lawson-workflow.appspot.com", // ★ここを修正
       messagingSenderId: "335371795694",
       appId: "1:335371795694:web:3b0950a616d368b284c7ff",
       measurementId: "G-BGENZNZMRC"
@@ -996,7 +996,7 @@
 
       loadHandoverTemplate();
 
-           // =============================
+      // =============================
       // 4) shiftSheet（シフト表設定）
       // =============================
       const shiftImageUrlInput = document.getElementById("shiftImageUrlInput");
@@ -1031,7 +1031,7 @@
           // Firestore に保存（settings/shiftSheet.imageUrl）
           await shiftDocRef.set({ imageUrl: url }, { merge: true });
 
-          // 画面も更新（要素がある時だけ安全に）
+          // 画面も更新
           if (shiftImageUrlInput) {
             shiftImageUrlInput.value = url;
           }
@@ -1124,8 +1124,6 @@
 
       // （おまけ）オーナー画面を開いた直後にも一回だけ読み込んでおく
       loadShiftImageSetting();
-
-
 
       // =============================
       // 5) checklistLogs（スタッフログ）
