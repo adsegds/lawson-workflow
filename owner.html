@@ -541,7 +541,7 @@
 
 
 
-      <!-- ★ シフト表設定 -->
+            <!-- ★ シフト表設定 -->
       <section id="view-shift" class="view-panel">
         <section class="card" id="shift-card">
           <h2>シフト表設定</h2>
@@ -550,19 +550,33 @@
             画像は Googleドライブ / Gyazo / 自分のサーバーなどにアップして、公開URLを貼ればOKです。
           </p>
 
+          <!-- ★ 追加：URL を直接入れる欄 -->
           <div class="row">
-  <label for="shiftImageFileInput">シフト表画像ファイルをアップロード</label>
-  <input
-    type="file"
-    id="shiftImageFileInput"
-    accept="image/*"
-  />
-  <div class="hint">
-    ファイルを選ぶと自動で Firebase Storage にアップロードされ、
-    URL欄とプレビューが更新されます。
-  </div>
-</div>
+            <label for="shiftImageUrlInput">シフト表画像URL</label>
+            <input
+              type="text"
+              id="shiftImageUrlInput"
+              placeholder="https:// から始まる画像URLを貼ってください"
+            />
+            <div class="hint">
+              URLを直接貼ってもOKです。<br>
+              下の「画像ファイルをアップロード」で選ぶと、自動でここにURLが入ります。
+            </div>
+          </div>
 
+          <!-- 既存：ファイルアップロード欄 -->
+          <div class="row">
+            <label for="shiftImageFileInput">シフト表画像ファイルをアップロード</label>
+            <input
+              type="file"
+              id="shiftImageFileInput"
+              accept="image/*"
+            />
+            <div class="hint">
+              ファイルを選ぶと自動で Firebase Storage にアップロードされ、
+              URL欄とプレビューが更新されます。
+            </div>
+          </div>
 
           <div class="btn-row">
             <button type="button" class="btn-primary" id="shiftImageUrlSaveBtn">
@@ -577,6 +591,7 @@
           <img id="shiftImagePreview" src="" alt="シフト表プレビュー">
         </section>
       </section>
+
 
 
 
