@@ -551,16 +551,18 @@
           </p>
 
           <div class="row">
-            <label for="shiftImageUrlInput">シフト表画像のURL</label>
-            <input
-              type="text"
-              id="shiftImageUrlInput"
-              placeholder="https://...（シフト表画像のURL）"
-            />
-            <p class="hint">
-              画像を差し替えるときは、ここを書き換えて「この内容で保存」を押すだけでOKです。
-            </p>
-          </div>
+  <label for="shiftImageFileInput">シフト表画像ファイルをアップロード</label>
+  <input
+    type="file"
+    id="shiftImageFileInput"
+    accept="image/*"
+  />
+  <div class="hint">
+    ファイルを選ぶと自動で Firebase Storage にアップロードされ、
+    URL欄とプレビューが更新されます。
+  </div>
+</div>
+
 
           <div class="btn-row">
             <button type="button" class="btn-primary" id="shiftImageUrlSaveBtn">
