@@ -1022,40 +1022,34 @@
         </div>
       </section>
 
-      <!-- ===== グローバル設定メニュー ===== -->
-      <div class="app-menu-overlay" id="appMenuOverlay">
-        <div class="app-menu-sheet">
-          <div class="app-menu-header">
-            <div class="app-menu-title">表示・シフト設定</div>
-            <button type="button" class="app-menu-close" id="appMenuClose">✕</button>
-          </div>
+      <!-- ================== グローバル設定メニュー ================== -->
+<div class="app-menu-overlay" id="appMenuOverlay">
+  <div class="app-menu-sheet">
+    <div class="app-menu-header">
+      <div class="app-menu-title">表示・シフト設定</div>
+      <button type="button" class="app-menu-close" id="appMenuClose">✕</button>
+    </div>
 
-          <div class="app-menu-section">
-            <h3>シフト表</h3>
-            <button type="button" id="openShiftFromMenu" class="btn-secondary">
-              シフト表を開く
-            </button>
-          </div>
+    <!-- シフト表 -->
+    <div class="app-menu-section">
+      <h3>シフト表</h3>
+      <button type="button" id="openShiftFromMenu" class="btn-secondary">
+        シフト表を開く
+      </button>
+    </div>
 
-          <div class="app-menu-section">
-            <h3>横スクロールの時間</h3>
-            <select id="scrollSpeedSelect">
-              <option value="slow">ゆっくり</option>
-              <option value="normal" selected>ふつう</option>
-              <option value="fast">はやい</option>
-            </select>
-          </div>
-
-          <div class="app-menu-section">
-            <h3>文字の大きさ</h3>
-            <div class="btn-row">
-              <button type="button" data-size="small" class="btn-secondary">小</button>
-              <button type="button" data-size="medium" class="btn-secondary">中</button>
-              <button type="button" data-size="large" class="btn-secondary">大</button>
-            </div>
-          </div>
-        </div>
+    <!-- 文字の大きさ -->
+    <div class="app-menu-section">
+      <h3>文字の大きさ</h3>
+      <div class="btn-row">
+        <button type="button" data-font="small" class="btn-secondary">小</button>
+        <button type="button" data-font="medium" class="btn-secondary">中</button>
+        <button type="button" data-font="large" class="btn-secondary">大</button>
       </div>
+    </div>
+  </div>
+</div>
+
 
     </main>
 
