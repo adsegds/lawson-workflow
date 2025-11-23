@@ -20,8 +20,19 @@
     line-height: 1.6;
     font-size: var(--font-small);  /* デフォルト：小 */
   }
-  body.font-medium { font-size: var(--font-medium); }
-  body.font-large  { font-size: var(--font-large); }
+
+
+    /* ★ 本文だけサイズ可変にする */ 
+main {
+    font-size: var(--font-small);  /* デフォルト：小 */
+  }
+  body.font-medium main {
+  font-size: var(--font-medium);
+}
+
+body.font-large main {
+  font-size: var(--font-large);
+}
 
   .app {
     max-width: 1400px;
