@@ -588,6 +588,59 @@
 
 
 
+
+
+
+
+
+
+/* ==== 左上 DMM風 9ドットメニューアイコン ==== */
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ボタン本体 */
+.app-menu-btn {
+  border: none;
+  background: transparent;
+  padding: 4px;
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ホバーしたとき、うっすらグレー背景に */
+.app-menu-btn:hover {
+  background: rgba(0,0,0,0.05);
+}
+
+/* 3×3ドットのグリッド */
+.dots-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 4px);
+  grid-auto-rows: 4px;
+  gap: 3px;
+}
+
+/* 各ドット */
+.dots-grid span {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #555;
+}
+
+
+
+
+
+
+
+    
     
 
 
