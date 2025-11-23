@@ -65,9 +65,6 @@
       justify-content: space-between;
     }
 
-    .sidebar-nav button span.label {
-      flex: 1;
-    }
     .sidebar-nav button span.badge {
       font-size: 10px;
       padding: 1px 6px;
@@ -95,6 +92,23 @@
       font-size: 10px;
       color: #999;
       padding: 0 8px;
+    }
+
+    /* サイドバー アイコン付きラベル */
+    .sidebar-nav button .label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+    }
+    .sidebar-nav button .label-icon {
+      width: 18px;
+      text-align: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .sidebar-nav button .label-text {
+      flex: 1;
     }
 
     /* ===== 右メインエリア ===== */
@@ -323,6 +337,16 @@
       margin-top: 6px;
     }
 
+    /* シフト表プレビュー画像 */
+    #shiftImagePreview {
+      max-width: 100%;
+      max-height: 400px;
+      display: none;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      margin-top: 8px;
+    }
+
     @media (max-width: 900px) {
       .layout {
         flex-direction: column;
@@ -342,47 +366,6 @@
       }
       .sidebar-footer { display: none; }
     }
-
-
-/* サイドバーのアイコン付きラベル */
-.sidebar-nav button .label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.sidebar-nav button .label-icon {
-  width: 18px;
-  text-align: center;
-  font-size: 14px;
-  flex-shrink: 0;
-}
-
-.sidebar-nav button .label-text {
-  flex: 1;
-}
-
-
-
-
-
-
-
-
-    /* シフト表プレビュー画像 */
-    #shiftImagePreview {
-      max-width: 100%;
-      max-height: 400px;
-      display: none;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      margin-top: 8px;
-    }
-
-
-
-    
-    
   </style>
 </head>
 <body>
@@ -394,7 +377,7 @@
         <div class="sidebar-role">オーナー管理画面</div>
       </div>
 
-           <nav class="sidebar-nav">
+      <nav class="sidebar-nav">
         <button type="button" data-view="news" class="active">
           <span class="label">
             <span class="label-icon">🛎</span>
@@ -427,7 +410,7 @@
           <span class="badge">checklistLogs</span>
         </button>
 
-        <!-- ★ 追加：シフト表設定 -->
+        <!-- シフト表設定 -->
         <button type="button" data-view="shift">
           <span class="label">
             <span class="label-icon">📅</span>
@@ -436,8 +419,6 @@
           <span class="badge">shiftSheet</span>
         </button>
       </nav>
-
-
 
       <div class="sidebar-footer">
         この画面で設定した内容が、スタッフ用チェック画面に反映されます。
@@ -534,14 +515,7 @@
         </section>
       </section>
 
-
-
-
-
-
-
-
-            <!-- ★ シフト表設定 -->
+      <!-- ③ シフト表設定 -->
       <section id="view-shift" class="view-panel">
         <section class="card" id="shift-card">
           <h2>シフト表設定</h2>
@@ -550,7 +524,7 @@
             画像は Googleドライブ / Gyazo / 自分のサーバーなどにアップして、公開URLを貼ればOKです。
           </p>
 
-          <!-- ★ 追加：URL を直接入れる欄 -->
+          <!-- URL 直接入力欄 -->
           <div class="row">
             <label for="shiftImageUrlInput">シフト表画像URL</label>
             <input
@@ -564,7 +538,7 @@
             </div>
           </div>
 
-          <!-- 既存：ファイルアップロード欄 -->
+          <!-- ファイルアップロード欄 -->
           <div class="row">
             <label for="shiftImageFileInput">シフト表画像ファイルをアップロード</label>
             <input
@@ -573,7 +547,7 @@
               accept="image/*"
             />
             <div class="hint">
-              ファイルを選ぶと自動で Firebase Storage にアップロードされ、
+              ファイルを選ぶと自動で Firebase Storage にアップロードされ、<br>
               URL欄とプレビューが更新されます。
             </div>
           </div>
@@ -592,17 +566,7 @@
         </section>
       </section>
 
-
-
-
-
-
-
-
-
-      
-
-      <!-- ③ 引き継ぎメモ用ボタン編集 -->
+      <!-- ④ 引き継ぎメモ用ボタン編集 -->
       <section id="view-handover" class="view-panel">
         <section class="card" id="handover-card">
           <h2>引き継ぎメモ（ボタン文言の編集）</h2>
@@ -638,7 +602,7 @@
         </section>
       </section>
 
-      <!-- ④ スタッフログ -->
+      <!-- ⑤ スタッフログ -->
       <section id="view-logs" class="view-panel">
         <section class="card" id="logs-card">
           <h2>スタッフログ（checklistLogs）</h2>
@@ -648,31 +612,12 @@
           </p>
 
           <div class="log-filters">
+            <div class="btn-row" style="margin-top:4px; margin-bottom:4px;">
+              <button type="button" class="btn-secondary" id="logTodayBtn">今日</button>
+              <button type="button" class="btn-secondary" id="logYesterdayBtn">昨日</button>
+              <button type="button" class="btn-secondary" id="logLast3Btn">直近3日（※実装予定）</button>
+            </div>
 
-
-
-
-
-
-
-          <div class="btn-row" style="margin-top:4px; margin-bottom:4px;">
-            <button type="button" class="btn-secondary" id="logTodayBtn">今日</button>
-            <button type="button" class="btn-secondary" id="logYesterdayBtn">昨日</button>
-            <button type="button" class="btn-secondary" id="logLast3Btn">直近3日（※実装予定）</button>
-          </div>
-
-
-
-
-
-
-
-
-
-
-
-
-            
             <div class="field">
               <label for="logDate">営業日</label>
               <input type="date" id="logDate">
@@ -708,15 +653,11 @@
     </main>
   </div>
 
-   <!-- Firebase SDK -->
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-storage-compat.js"></script>
 
-
-
-
-  
   <script>
     // =============================
     // Firebase 設定
@@ -753,7 +694,7 @@
     // date input の値（YYYY-MM-DD） → businessKey
     function businessKeyFromDateInput(dateStr) {
       if (!dateStr) return null;
-      return dateStr; // すでに "YYYY-MM-DD" 形式
+      return dateStr;
     }
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -771,7 +712,7 @@
           btn.classList.toggle("active", btn.dataset.view === viewId)
         );
 
-        // ★ シフト表タブが開かれたら、現在の設定を読み込む
+        // シフト表タブが開かれたら現在設定を読み込む
         if (viewId === "shift") {
           loadShiftImageSetting();
         }
@@ -1056,99 +997,72 @@
       loadHandoverTemplate();
 
       // =============================
-      // 5) shiftSheet（シフト表設定）
+      // 4) shiftSheet（シフト表設定）
       // =============================
       const shiftImageUrlInput = document.getElementById("shiftImageUrlInput");
-      const shiftImageUrlSaveBtn = document.getElementById(
-        "shiftImageUrlSaveBtn"
-      );
+      const shiftImageUrlSaveBtn = document.getElementById("shiftImageUrlSaveBtn");
       const shiftImagePreview = document.getElementById("shiftImagePreview");
       const shiftStatus = document.getElementById("shiftStatus");
       const shiftDocRef = db.collection("settings").doc("shiftSheet");
 
+      const storage = firebase.storage();
+      const shiftImageFileInput = document.getElementById("shiftImageFileInput");
 
-
-
-
-
-
-
-
-
-// Storage の参照を用意
-const storage = firebase.storage();
-const shiftImageFileInput = document.getElementById("shiftImageFileInput");
-
-// ファイル選択 → 自動アップロード＆URL保存
-shiftImageFileInput?.addEventListener("change", async (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-
-  try {
-    setShiftStatus("画像をアップロード中…", true);
-
-    // 保存先パス（好きな名前でOK）
-    const storageRef = storage.ref().child(`shiftSheets/${file.name}`);
-
-    // Storage にアップロード
-    const snapshot = await storageRef.put(file);
-
-    // 公開URLを取得
-    const url = await snapshot.ref.getDownloadURL();
-
-    // Firestore に保存（settings/shiftSheet.imageUrl）
-    await shiftDocRef.set({ imageUrl: url }, { merge: true });
-
-    // 画面も更新
-    shiftImageUrlInput.value = url;
-    shiftImagePreview.src = url;
-    shiftImagePreview.style.display = "block";
-
-    setShiftStatus("アップロード＆URL保存が完了しました。", true);
-  } catch (err) {
-    console.error("シフト表画像アップロードエラー", err);
-    setShiftStatus("画像のアップロードに失敗しました。", false);
-  } finally {
-    // 同じファイルをもう一回選べるようにする
-    shiftImageFileInput.value = "";
-  }
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      
       function setShiftStatus(msg, ok) {
         if (!shiftStatus) return;
         shiftStatus.textContent = msg || "";
         shiftStatus.className = "status " + (ok ? "ok" : "err");
       }
 
+      // ファイル選択 → 自動アップロード＆URL保存
+      shiftImageFileInput?.addEventListener("change", async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        try {
+          setShiftStatus("画像をアップロード中…", true);
+
+          // 保存先パス：重複防止でタイムスタンプ付ける
+          const storageRef = storage.ref().child(`shiftSheets/${Date.now()}_${file.name}`);
+
+          // Storage にアップロード
+          const snapshot = await storageRef.put(file);
+
+          // 公開URLを取得
+          const url = await snapshot.ref.getDownloadURL();
+
+          // Firestore に保存（settings/shiftSheet.imageUrl）
+          await shiftDocRef.set({ imageUrl: url }, { merge: true });
+
+          // 画面も更新（要素がある時だけ）
+          if (shiftImageUrlInput) {
+            shiftImageUrlInput.value = url;
+          }
+          if (shiftImagePreview) {
+            shiftImagePreview.src = url;
+            shiftImagePreview.style.display = "block";
+          }
+
+          setShiftStatus("アップロード＆URL保存が完了しました。", true);
+        } catch (err) {
+          console.error("シフト表画像アップロードエラー", err);
+          setShiftStatus("画像のアップロードに失敗しました：" + (err && err.message ? err.message : ""), false);
+        } finally {
+          if (shiftImageFileInput) {
+            shiftImageFileInput.value = "";
+          }
+        }
+      });
+
       // Firestore から現在のURLを読み込む
       async function loadShiftImageSetting() {
-        if (!shiftImageUrlInput || !shiftImagePreview) return;
+        if (!shiftImagePreview || !shiftDocRef) return;
         setShiftStatus("読み込み中…", true);
 
         try {
           const snap = await shiftDocRef.get();
           if (!snap.exists) {
-            shiftImageUrlInput.value = "";
+            if (shiftImageUrlInput) shiftImageUrlInput.value = "";
             shiftImagePreview.style.display = "none";
             setShiftStatus("まだシフト表は設定されていません。", true);
             return;
@@ -1157,7 +1071,7 @@ shiftImageFileInput?.addEventListener("change", async (e) => {
           const data = snap.data() || {};
           const url = data.imageUrl || "";
 
-          shiftImageUrlInput.value = url;
+          if (shiftImageUrlInput) shiftImageUrlInput.value = url;
           if (url) {
             shiftImagePreview.src = url;
             shiftImagePreview.style.display = "block";
@@ -1172,7 +1086,7 @@ shiftImageFileInput?.addEventListener("change", async (e) => {
         }
       }
 
-      // 保存ボタン
+      // URL 保存ボタン
       shiftImageUrlSaveBtn?.addEventListener("click", async () => {
         if (!shiftImageUrlInput) return;
         const url = shiftImageUrlInput.value.trim();
@@ -1182,8 +1096,10 @@ shiftImageFileInput?.addEventListener("change", async (e) => {
           await shiftDocRef.set({ imageUrl: url || null }, { merge: true });
 
           if (url) {
-            shiftImagePreview.src = url;
-            shiftImagePreview.style.display = "block";
+            if (shiftImagePreview) {
+              shiftImagePreview.src = url;
+              shiftImagePreview.style.display = "block";
+            }
           } else if (shiftImagePreview) {
             shiftImagePreview.style.display = "none";
           }
@@ -1195,11 +1111,11 @@ shiftImageFileInput?.addEventListener("change", async (e) => {
         }
       });
 
-      // （おまけ）オーナー画面を開いた直後にも一回だけ読み込んでおく
+      // オーナー画面を開いた直後にも一回読み込む
       loadShiftImageSetting();
 
       // =============================
-      // 4) checklistLogs（スタッフログ）
+      // 5) checklistLogs（スタッフログ）
       // =============================
       const logDateInput = document.getElementById("logDate");
       const logDeviceInput = document.getElementById("logDevice");
@@ -1384,6 +1300,5 @@ shiftImageFileInput?.addEventListener("change", async (e) => {
       startLogsListener();
     });
   </script>
-
 </body>
 </html>
