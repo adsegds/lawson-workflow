@@ -1124,32 +1124,49 @@
         </div>
       </section>
 
-      <!-- ===== グローバル設定メニュー ===== -->
-      <div class="app-menu-overlay" id="appMenuOverlay">
-        <div class="app-menu-sheet">
-          <div class="app-menu-header">
-            <div class="app-menu-title">表示・シフト設定</div>
-            <button type="button" class="app-menu-close" id="appMenuClose">✕</button>
-          </div>
+      <!-- ================== グローバル設定メニュー ================== -->
+<div class="app-menu-overlay" id="appMenuOverlay">
+  <div class="app-menu-sheet">
+    <div class="app-menu-header">
+      <div class="app-menu-title">表示・シフト設定</div>
+      <button type="button" class="app-menu-close" id="appMenuClose">✕</button>
+    </div>
 
-          <div class="app-menu-section">
-            <h3>シフト表</h3>
-            <button type="button" id="openShiftFromMenu" class="btn-secondary">
-              シフト表を開く
+    <div class="app-menu-body">
+      <ul class="app-menu-list">
+        <!-- シフト表 行 -->
+        <li class="app-menu-item">
+          <div class="app-menu-icon">📅</div>
+          <div class="app-menu-main">
+            <div class="app-menu-title">シフト表</div>
+            <div class="app-menu-sub">今週のシフト画像を開く</div>
+          </div>
+          <div class="app-menu-right">
+            <button type="button" id="openShiftFromMenu" class="menu-link-btn">
+              開く
             </button>
+            <span class="menu-arrow">›</span>
           </div>
+        </li>
 
-
-          <div class="app-menu-section">
-            <h3>文字の大きさ</h3>
-            <div class="btn-row">
-              <button type="button" data-size="small" class="btn-secondary">小</button>
-              <button type="button" data-size="medium" class="btn-secondary">中</button>
-              <button type="button" data-size="large" class="btn-secondary">大</button>
-            </div>
+        <!-- 文字の大きさ 行 -->
+        <li class="app-menu-item">
+          <div class="app-menu-icon">🔤</div>
+          <div class="app-menu-main">
+            <div class="app-menu-title">文字の大きさ</div>
+            <div class="app-menu-sub">見やすいサイズを選んでください</div>
           </div>
-        </div>
-      </div>
+          <div class="app-menu-right app-menu-font-buttons">
+            <button type="button" data-size="small" class="btn-secondary">小</button>
+            <button type="button" data-size="medium" class="btn-secondary">中</button>
+            <button type="button" data-size="large" class="btn-secondary">大</button>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
 
     </main>
 
