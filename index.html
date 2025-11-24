@@ -1285,22 +1285,22 @@ body.font-large .app-menu-sheet {
     // =============================
     // 7:00 自動リセット（ページ再読み込み）
     // =============================
-    function setupDailyResetAt6AM() {
-      function scheduleNextReset() {
-        const now = new Date();
-        const next = new Date();
-        next.setHours(7, 0, 0, 0);
-        if (now >= next) {
-          next.setDate(next.getDate() + 1);
-        }
-        const ms = next - now;
-        setTimeout(() => {
-          location.reload();
-          scheduleNextReset();
-        }, ms);
-      }
-      scheduleNextReset();
+    function setupDailyResetAt7AM() {
+  function scheduleNextReset() {
+    const now = new Date();
+    const next = new Date();
+    next.setHours(7, 0, 0, 0);
+    if (now >= next) {
+      next.setDate(next.getDate() + 1);
     }
+    const ms = next - now;
+    setTimeout(() => {
+      location.reload();
+      scheduleNextReset();
+    }, ms);
+  }
+  scheduleNextReset();
+}
 
     // =============================
     // 時間帯ID 判定
