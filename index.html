@@ -21,30 +21,25 @@
     font-size: var(--font-small);  /* デフォルト：小 */
   }
 
-
-    /* ★ 本文だけサイズ可変にする */ 
-main {
+  /* ★ 本文だけサイズ可変にする */
+  main {
     font-size: var(--font-small);  /* デフォルト：小 */
   }
   body.font-medium main {
-  font-size: var(--font-medium);
-}
+    font-size: var(--font-medium);
+  }
+  body.font-large main {
+    font-size: var(--font-large);
+  }
 
-body.font-large main {
-  font-size: var(--font-large);
-}
+  /* メニュー画面（フルスクリーン）の文字サイズも連動させる */
+  body.font-medium .app-menu-sheet {
+    font-size: var(--font-medium);
+  }
+  body.font-large .app-menu-sheet {
+    font-size: var(--font-large);
+  }
 
-
-
-/* メニュー画面（フルスクリーン）の文字サイズも連動させる */
-body.font-medium .app-menu-sheet {
-  font-size: var(--font-medium);
-}
-body.font-large .app-menu-sheet {
-  font-size: var(--font-large);
-}
-
-/* ここから元の .app のスタイルが続く */
   .app {
     max-width: 1400px;
     margin: 0 auto;
@@ -281,6 +276,7 @@ body.font-large .app-menu-sheet {
     font-size: 0.9em;
     color: #666;
     margin-right: 4px;
+    white-space: nowrap;
   }
   .handover-remove {
     border: none;
@@ -494,7 +490,6 @@ body.font-large .app-menu-sheet {
   }
 
   /* メニューオーバーレイ */
-  
   .app-menu-header {
     display: flex;
     align-items: center;
@@ -526,160 +521,116 @@ body.font-large .app-menu-sheet {
     border: 1px solid #ccc;
     font-size: 0.9em;
   }
-/* ==== DMM風：行メニュー ==== */
-.app-menu-body {
-  margin-top: 4px;
-}
 
-.app-menu-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  border-radius: 10px;
-  overflow: hidden;
-  border: 1px solid #eee;
-  background: #fff;
-}
+  /* ==== DMM風：行メニュー ==== */
+  .app-menu-body {
+    margin-top: 4px;
+  }
 
-.app-menu-item {
-  display: flex;
-  align-items: center;
-  padding: 10px 12px;
-  border-bottom: 1px solid #f1f1f1;
-}
+  .app-menu-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #eee;
+    background: #fff;
+  }
 
-.app-menu-item:last-child {
-  border-bottom: none;
-}
+  .app-menu-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    border-bottom: 1px solid #f1f1f1;
+  }
 
-.app-menu-icon {
-  width: 28px;
-  font-size: 1.1em;
-  text-align: center;
-  margin-right: 10px;
-}
+  .app-menu-item:last-child {
+    border-bottom: none;
+  }
 
-.app-menu-main {
-  flex: 1;
-}
+  .app-menu-icon {
+    width: 28px;
+    font-size: 1.1em;
+    text-align: center;
+    margin-right: 10px;
+  }
 
-.app-menu-sub {
-  font-size: 0.85em;
-  color: #777;
-}
+  .app-menu-main {
+    flex: 1;
+  }
 
-.app-menu-right {
-  margin-left: 8px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
+  .app-menu-sub {
+    font-size: 0.85em;
+    color: #777;
+  }
 
-/* メニュー用のボタンと矢印 */
-.menu-link-btn {
-  border: none;
-  border-radius: 999px;
-  padding: 4px 10px;
-  font-size: 0.9em;
-  background: #f5f5f5;
-  cursor: pointer;
-}
+  .app-menu-right {
+    margin-left: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
 
-.menu-link-btn:hover {
-  background: #eee;
-}
+  .menu-link-btn {
+    border: none;
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 0.9em;
+    background: #f5f5f5;
+    cursor: pointer;
+  }
+  .menu-link-btn:hover {
+    background: #eee;
+  }
 
-.menu-arrow {
-  font-size: 1.1em;
-  color: #bbb;
-}
+  .menu-arrow {
+    font-size: 1.1em;
+    color: #bbb;
+  }
 
-/* メニュー内の文字サイズボタンを少し小さめに */
-.app-menu-font-buttons .btn-secondary {
-  padding: 4px 8px;
-  font-size: 0.9em;
-}
+  .app-menu-font-buttons .btn-secondary {
+    padding: 4px 8px;
+    font-size: 0.9em;
+  }
 
+  /* === フルスクリーン化 === */
+  .app-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.4);
+    display: none;
+    justify-content: flex-end;
+    z-index: 7000;
+  }
 
+  .app-menu-overlay.open {
+    display: flex;
+  }
 
+  .app-menu-sheet {
+    width: 100%;
+    height: 100vh;
+    background: #fff;
+    border-radius: 0;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    animation: slideUp 0.25s ease-out;
+  }
 
+  .app-menu-body {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 40px;
+  }
 
-
-
-
-
-
-
-
-
-
-
-/* === フルスクリーン化 === */
-.app-menu-overlay {
-  position: fixed;
-  top: 0;          /* ← ヘッダーの高さ。必要なら 56px とかに微調整 */
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0,0,0,0.4);
-  display: none;
-  justify-content: flex-end; /* 下から出す */
-  z-index: 7000;
-}
-
-.app-menu-overlay.open {
-  display: flex;
-}
-
-.app-menu-sheet {
-  width: 100%;
-  height: 100vh;               /* ← フルスクリーンにする */
-  background: #fff;
-  border-radius: 0;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  animation: slideUp 0.25s ease-out;
-}
-
-/* 中身はスクロール可能にする */
-.app-menu-body {
-  flex: 1;
-  overflow-y: auto;
-  padding-bottom: 40px;
-}
-
-/* スライドアニメーション */
-@keyframes slideUp {
-  from { transform: translateY(20%); opacity: 0; }
-  to   { transform: translateY(0); opacity: 1; }
-}
-
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
+  @keyframes slideUp {
+    from { transform: translateY(20%); opacity: 0; }
+    to   { transform: translateY(0); opacity: 1; }
+  }
   </style>
 </head>
 <body>
@@ -778,7 +729,27 @@ body.font-large .app-menu-sheet {
         </div>
       </section>
 
-      <!-- ===== 以下、時間帯ごとのタスク（元のまま） ===== -->
+      <!-- ★ 共通 引き継ぎメモ（全時間帯共通） -->
+      <section class="slot handover-slot" data-slot="global">
+        <div class="slot-header">
+          <div class="slot-title">引き継ぎメモ（全員で共有・全時間帯共通）</div>
+          <div class="slot-note">時間帯をまたぐ時の共有メモ</div>
+        </div>
+        <div class="handover">
+          <p class="handover-note">
+            文章を書くのがだるい人向け。下のボタンをタップするとメモに追加されます。<br>
+            ※右側に「時間 / 名前」が表示されます。
+          </p>
+          <div class="handover-chips"></div>
+          <ul class="handover-log"></ul>
+          <div class="handover-clear">
+            <button type="button" class="handover-clear-btn">メモを全部消す</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 以下、時間帯ごとのタスク ===== -->
+
       <!-- 6〜8時 -->
       <section id="t6-8" class="slot">
         <div class="slot-header">
@@ -803,24 +774,6 @@ body.font-large .app-menu-sheet {
             <li><label class="task-item"><input type="checkbox"><span class="task-text">店内・店頭ゴミ箱の清掃</span></label></li>
             <li><label class="task-item"><input type="checkbox"><span class="task-text">サービスコーナー（Loppi・ATM・コピー機）・イートイン清掃</span></label></li>
           </ul>
-        </div>
-      </section>
-
-      <!-- 6〜8時 引き継ぎ -->
-      <section class="slot handover-slot" data-slot="t6-8">
-        <div class="slot-header">
-          <div class="slot-title">引き継ぎメモ（全員で共有）</div>
-          <div class="slot-note">時間帯をまたぐ時の共有メモ</div>
-        </div>
-        <div class="handover">
-          <p class="handover-note">
-            文章を書くのがだるい人向け。下のボタンをタップするとメモに追加されます。
-          </p>
-          <div class="handover-chips"></div>
-          <ul class="handover-log"></ul>
-          <div class="handover-clear">
-            <button type="button" class="handover-clear-btn">メモを全部消す</button>
-          </div>
         </div>
       </section>
 
@@ -864,23 +817,6 @@ body.font-large .app-menu-sheet {
         </div>
       </section>
 
-      <section class="slot handover-slot" data-slot="t9-11">
-        <div class="slot-header">
-          <div class="slot-title">引き継ぎメモ（全員で共有）</div>
-          <div class="slot-note">時間帯をまたぐ時の共有メモ</div>
-        </div>
-        <div class="handover">
-          <p class="handover-note">
-            文章を書くのがだるい人向け。下のボタンをタップするとメモに追加されます。
-          </p>
-          <div class="handover-chips"></div>
-          <ul class="handover-log"></ul>
-          <div class="handover-clear">
-            <button type="button" class="handover-clear-btn">メモを全部消す</button>
-          </div>
-        </div>
-      </section>
-
       <!-- 12〜14時 -->
       <section id="t12-14" class="slot">
         <div class="slot-header">
@@ -915,23 +851,6 @@ body.font-large .app-menu-sheet {
         </div>
       </section>
 
-      <section class="slot handover-slot" data-slot="t12-14">
-        <div class="slot-header">
-          <div class="slot-title">引き継ぎメモ（全員で共有）</div>
-          <div class="slot-note">時間帯をまたぐ時の共有メモ</div>
-        </div>
-        <div class="handover">
-          <p class="handover-note">
-            文章を書くのがだるい人向け。下のボタンをタップするとメモに追加されます。
-          </p>
-          <div class="handover-chips"></div>
-          <ul class="handover-log"></ul>
-          <div class="handover-clear">
-            <button type="button" class="handover-clear-btn">メモを全部消す</button>
-          </div>
-        </div>
-      </section>
-
       <!-- 15〜17時 -->
       <section id="t15-17" class="slot">
         <div class="slot-header">
@@ -961,23 +880,6 @@ body.font-large .app-menu-sheet {
             <li><label class="task-item"><input type="checkbox"><span class="task-text">入口ドア拭き上げ</span></label></li>
             <li><label class="task-item"><input type="checkbox"><span class="task-text">月曜のみ：販促物設置</span></label></li>
           </ul>
-        </div>
-      </section>
-
-      <section class="slot handover-slot" data-slot="t15-17">
-        <div class="slot-header">
-          <div class="slot-title">引き継ぎメモ（全員で共有）</div>
-          <div class="slot-note">時間帯をまたぐ時の共有メモ</div>
-        </div>
-        <div class="handover">
-          <p class="handover-note">
-            文章を書くのがだるい人向け。下のボタンをタップするとメモに追加されます。
-          </p>
-          <div class="handover-chips"></div>
-          <ul class="handover-log"></ul>
-          <div class="handover-clear">
-            <button type="button" class="handover-clear-btn">メモを全部消す</button>
-          </div>
         </div>
       </section>
 
@@ -1019,23 +921,6 @@ body.font-large .app-menu-sheet {
         </div>
       </section>
 
-      <section class="slot handover-slot" data-slot="t18-20">
-        <div class="slot-header">
-          <div class="slot-title">引き継ぎメモ（全員で共有）</div>
-          <div class="slot-note">時間帯をまたぐ時の共有メモ</div>
-        </div>
-        <div class="handover">
-          <p class="handover-note">
-            文章を書くのがだるい人向け。下のボタンをタップするとメモに追加されます。
-          </p>
-          <div class="handover-chips"></div>
-          <ul class="handover-log"></ul>
-          <div class="handover-clear">
-            <button type="button" class="handover-clear-btn">メモを全部消す</button>
-          </div>
-        </div>
-      </section>
-
       <!-- 21〜23時 -->
       <section id="t21-23" class="slot">
         <div class="slot-header">
@@ -1071,23 +956,6 @@ body.font-large .app-menu-sheet {
         </div>
       </section>
 
-      <section class="slot handover-slot" data-slot="t21-23">
-        <div class="slot-header">
-          <div class="slot-title">引き継ぎメモ（全員で共有）</div>
-          <div class="slot-note">時間帯をまたぐ時の共有メモ</div>
-        </div>
-        <div class="handover">
-          <p class="handover-note">
-            文章を書くのがだるい人向け。下のボタンをタップするとメモに追加されます。
-          </p>
-          <div class="handover-chips"></div>
-          <ul class="handover-log"></ul>
-          <div class="handover-clear">
-            <button type="button" class="handover-clear-btn">メモを全部消す</button>
-          </div>
-        </div>
-      </section>
-
       <!-- 0〜2時 -->
       <section id="t0-2" class="slot">
         <div class="slot-header">
@@ -1120,23 +988,6 @@ body.font-large .app-menu-sheet {
         </div>
       </section>
 
-      <section class="slot handover-slot" data-slot="t0-2">
-        <div class="slot-header">
-          <div class="slot-title">引き継ぎメモ（全員で共有）</div>
-          <div class="slot-note">時間帯をまたぐ時の共有メモ</div>
-        </div>
-        <div class="handover">
-          <p class="handover-note">
-            文章を書くのがだるい人向け。下のボタンをタップするとメモに追加されます。
-          </p>
-          <div class="handover-chips"></div>
-          <ul class="handover-log"></ul>
-          <div class="handover-clear">
-            <button type="button" class="handover-clear-btn">メモを全部消す</button>
-          </div>
-        </div>
-      </section>
-
       <!-- 3〜5時 -->
       <section id="t3-5" class="slot">
         <div class="slot-header">
@@ -1164,66 +1015,48 @@ body.font-large .app-menu-sheet {
         </div>
       </section>
 
-      <section class="slot handover-slot" data-slot="t3-5">
-        <div class="slot-header">
-          <div class="slot-title">引き継ぎメモ（全員で共有）</div>
-          <div class="slot-note">時間帯をまたぐ時の共有メモ</div>
-        </div>
-        <div class="handover">
-          <p class="handover-note">
-            文章を書くのがだるい人向け。下のボタンをタップするとメモに追加されます。
-          </p>
-          <div class="handover-chips"></div>
-          <ul class="handover-log"></ul>
-          <div class="handover-clear">
-            <button type="button" class="handover-clear-btn">メモを全部消す</button>
-          </div>
-        </div>
-      </section>
-
       <!-- ================== グローバル設定メニュー ================== -->
-<div class="app-menu-overlay" id="appMenuOverlay">
-  <div class="app-menu-sheet">
-    <div class="app-menu-header">
-      <div class="app-menu-title">表示・シフト設定</div>
-      <button type="button" class="app-menu-close" id="appMenuClose">✕</button>
-    </div>
+      <div class="app-menu-overlay" id="appMenuOverlay">
+        <div class="app-menu-sheet">
+          <div class="app-menu-header">
+            <div class="app-menu-title">表示・シフト設定</div>
+            <button type="button" class="app-menu-close" id="appMenuClose">✕</button>
+          </div>
 
-    <div class="app-menu-body">
-      <ul class="app-menu-list">
-        <!-- シフト表 行 -->
-        <li class="app-menu-item">
-          <div class="app-menu-icon">📅</div>
-          <div class="app-menu-main">
-            <div class="app-menu-title">シフト表</div>
-            <div class="app-menu-sub">今週のシフト画像を開く</div>
-          </div>
-          <div class="app-menu-right">
-            <button type="button" id="openShiftFromMenu" class="menu-link-btn">
-              開く
-            </button>
-            <span class="menu-arrow">›</span>
-          </div>
-        </li>
+          <div class="app-menu-body">
+            <ul class="app-menu-list">
+              <!-- シフト表 行 -->
+              <li class="app-menu-item">
+                <div class="app-menu-icon">📅</div>
+                <div class="app-menu-main">
+                  <div class="app-menu-title">シフト表</div>
+                  <div class="app-menu-sub">今週のシフト画像を開く</div>
+                </div>
+                <div class="app-menu-right">
+                  <button type="button" id="openShiftFromMenu" class="menu-link-btn">
+                    開く
+                  </button>
+                  <span class="menu-arrow">›</span>
+                </div>
+              </li>
 
-        <!-- 文字の大きさ 行 -->
-        <li class="app-menu-item">
-          <div class="app-menu-icon">🔤</div>
-          <div class="app-menu-main">
-            <div class="app-menu-title">文字の大きさ</div>
-            <div class="app-menu-sub">見やすいサイズを選んでください</div>
+              <!-- 文字の大きさ 行 -->
+              <li class="app-menu-item">
+                <div class="app-menu-icon">🔤</div>
+                <div class="app-menu-main">
+                  <div class="app-menu-title">文字の大きさ</div>
+                  <div class="app-menu-sub">見やすいサイズを選んでください</div>
+                </div>
+                <div class="app-menu-right app-menu-font-buttons">
+                  <button type="button" data-size="small" class="btn-secondary">小</button>
+                  <button type="button" data-size="medium" class="btn-secondary">中</button>
+                  <button type="button" data-size="large" class="btn-secondary">大</button>
+                </div>
+              </li>
+            </ul>
           </div>
-          <div class="app-menu-right app-menu-font-buttons">
-            <button type="button" data-size="small" class="btn-secondary">小</button>
-            <button type="button" data-size="medium" class="btn-secondary">中</button>
-            <button type="button" data-size="large" class="btn-secondary">大</button>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </div>
-</div>
-
+        </div>
+      </div>
 
     </main>
 
@@ -1277,36 +1110,35 @@ body.font-large .app-menu-sheet {
     // 7:00 自動リセット（ページ再読み込み）
     // =============================
     function setupDailyResetAt7AM() {
-  function scheduleNextReset() {
-    const now = new Date();
-    const next = new Date();
-    next.setHours(7, 0, 0, 0);
-    if (now >= next) {
-      next.setDate(next.getDate() + 1);
-    }
-    const ms = next - now;
-    setTimeout(() => {
-      location.reload();
+      function scheduleNextReset() {
+        const now = new Date();
+        const next = new Date();
+        next.setHours(7, 0, 0, 0);
+        if (now >= next) {
+          next.setDate(next.getDate() + 1);
+        }
+        const ms = next - now;
+        setTimeout(() => {
+          location.reload();
+          scheduleNextReset();
+        }, ms);
+      }
       scheduleNextReset();
-    }, ms);
-  }
-  scheduleNextReset();
-}
+    }
 
     // =============================
     // 時間帯ID 判定
     // =============================
     function getCurrentSlotIdByHour(hour) {
-  if (hour >= 6 && hour < 9)  return "t6-8";
-  if (hour >= 9 && hour < 12) return "t9-11";
-  if (hour >= 12 && hour < 15) return "t12-14";
-  if (hour >= 15 && hour < 18) return "t15-17";
-  if (hour >= 18 && hour < 21) return "t18-20";
-  if (hour >= 21 && hour < 24) return "t21-23";
-  if (hour >= 0 && hour < 3)   return "t0-2";  // ★ ここだけ変更
-  return "t3-5"; // 3〜5時台
-}
-
+      if (hour >= 6 && hour < 9)  return "t6-8";
+      if (hour >= 9 && hour < 12) return "t9-11";
+      if (hour >= 12 && hour < 15) return "t12-14";
+      if (hour >= 15 && hour < 18) return "t15-17";
+      if (hour >= 18 && hour < 21) return "t18-20";
+      if (hour >= 21 && hour < 24) return "t21-23";
+      if (hour >= 0 && hour < 3)   return "t0-2";
+      return "t3-5";
+    }
 
     function scrollToCurrentTimeSlot() {
       const now = new Date();
@@ -1594,7 +1426,6 @@ body.font-large .app-menu-sheet {
                 buildTasksFromDefinition(slotId, ulA, tasksA, "A");
                 buildTasksFromDefinition(slotId, ulB, tasksB, "B");
               } else {
-                // Firestoreに定義が無いとき：既存HTMLからtaskId採番
                 const setupFromExisting = (ul, groupLabel) => {
                   ul.querySelectorAll("li").forEach((li, index) => {
                     const cb = li.querySelector('input[type="checkbox"]');
@@ -1690,7 +1521,7 @@ body.font-large .app-menu-sheet {
       loadTaskDefinitions();
 
       // =============================
-      // 引き継ぎメモ（時間帯ごと）
+      // 引き継ぎメモ（共通・全時間帯）
       // =============================
       const handoverSlots  = document.querySelectorAll(".handover-slot");
       const handoverColRef = db.collection("handover");
@@ -1737,7 +1568,9 @@ body.font-large .app-menu-sheet {
 
               const timeSpan = document.createElement("span");
               timeSpan.className = "handover-time";
-              timeSpan.textContent = data.timeLabel || "";
+              const t = data.timeLabel || "";
+              const name = data.deviceLabel || "";
+              timeSpan.textContent = name ? `${t} / ${name}` : t;
 
               const delBtn = document.createElement("button");
               delBtn.className = "handover-remove";
@@ -1765,6 +1598,7 @@ body.font-large .app-menu-sheet {
             slotId,
             businessKey,
             timeLabel,
+            deviceLabel: currentDeviceLabel || "未設定",
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
           });
         }
@@ -1834,7 +1668,7 @@ body.font-large .app-menu-sheet {
         // 全消し
         if (clearBtn) {
           clearBtn.addEventListener("click", async () => {
-            if (!confirm("この時間帯の引き継ぎメモを全部消しますか？")) return;
+            if (!confirm("今日の引き継ぎメモを全部消しますか？")) return;
             const businessKey = getCurrentBusinessKey();
             const snap = await handoverColRef
               .where("slotId", "==", slotId)
@@ -1892,7 +1726,7 @@ body.font-large .app-menu-sheet {
       }
 
       // 7:00自動リセット開始
-     setupDailyResetAt7AM();
+      setupDailyResetAt7AM();
     });
   </script>
 </body>
