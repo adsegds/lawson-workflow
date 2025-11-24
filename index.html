@@ -493,7 +493,7 @@
   .app-menu-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space_between;
     margin-bottom: 6px;
   }
   .app-menu-title {
@@ -631,6 +631,62 @@
     from { transform: translateY(20%); opacity: 0; }
     to   { transform: translateY(0); opacity: 1; }
   }
+
+  /* ===== ① お知らせ既読バッジ ＋ ボタン ===== */
+  .notice-status-badge {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 1px 8px;
+    border-radius: 999px;
+    font-size: 10px;
+    vertical-align: middle;
+  }
+  .notice-status-badge.unread {
+    background: #f44336;
+    color: #fff;
+  }
+  .notice-status-badge.read {
+    background: #4caf50;
+    color: #fff;
+  }
+
+  .notice-read-btn {
+    margin-top: 6px;
+    padding: 4px 10px;
+    font-size: 11px;
+    border-radius: 999px;
+    border: 1px solid #ccc;
+    background: #fafafa;
+    cursor: pointer;
+  }
+  .notice-read-btn:hover {
+    background: #f0f0f0;
+  }
+
+  /* ===== ② 各時間帯の完了率バー ===== */
+  .slot-progress {
+    margin-top: 4px;
+    width: 100%;
+  }
+  .slot-progress-label {
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 2px;
+  }
+  .slot-progress-bar {
+    width: 100%;
+    height: 6px;
+    border-radius: 999px;
+    background: #eee;
+    overflow: hidden;
+  }
+  .slot-progress-bar-inner {
+    height: 100%;
+    width: 0%;
+    border-radius: 999px;
+    background: #1f7aec;
+    transition: width 0.15s ease-out;
+  }
   </style>
 </head>
 <body>
@@ -715,17 +771,24 @@
         </button>
       </div>
 
-      <!-- お知らせ -->
-      <section class="slot">
+      <!-- お知らせ（① 既読バッジ＋ボタン対応版） -->
+      <section class="slot" id="notice-section">
         <div class="slot-header">
           <div class="slot-title">お知らせ</div>
-          <div class="slot-note">経営者からの共有事項</div>
+          <div class="slot-note">
+            経営者からの共有事項
+            <span id="notice-status-badge" class="notice-status-badge"></span>
+          </div>
         </div>
         <div class="tasks-group">
           <h3><span class="badge badge-a">お知らせ</span></h3>
           <ul class="info-list" id="notice-list">
             <li>お知らせを読み込み中...</li>
           </ul>
+
+          <button id="notice-read-btn" class="notice-read-btn">
+            すべて読んだことにする
+          </button>
         </div>
       </section>
 
@@ -1385,6 +1448,62 @@
       const taskDocRef = db.collection("tasks").doc("lawson-main");
       let applyingRemote = false;
 
+      // ② 各時間帯のヘッダーに完了率バーを差し込む
+      function initializeProgressBars() {
+        timeSlotIds.forEach((slotId) => {
+          const section = document.getElementById(slotId);
+          if (!section) return;
+          const header = section.querySelector(".slot-header");
+          if (!header) return;
+
+          // 二重生成防止
+          if (header.querySelector(".slot-progress")) return;
+
+          const wrap = document.createElement("div");
+          wrap.className = "slot-progress";
+          wrap.innerHTML = `
+            <div class="slot-progress-label" data-slot-progress-label="${slotId}">
+              完了：0/0（0%）
+            </div>
+            <div class="slot-progress-bar">
+              <div class="slot-progress-bar-inner" data-slot-progress-bar="${slotId}"></div>
+            </div>
+          `;
+          header.appendChild(wrap);
+        });
+      }
+
+      // ② チェック状態から完了率を計算して反映
+      function updateCompletionUI() {
+        timeSlotIds.forEach((slotId) => {
+          let total = 0;
+          let done = 0;
+
+          checkboxMap.forEach((cb, id) => {
+            if (id.startsWith(slotId + "-")) {
+              total++;
+              if (cb.checked) done++;
+            }
+          });
+
+          const rate = total > 0 ? Math.round((done / total) * 100) : 0;
+
+          const labelEl = document.querySelector(
+            `[data-slot-progress-label="${slotId}"]`
+          );
+          const barEl = document.querySelector(
+            `[data-slot-progress-bar="${slotId}"]`
+          );
+
+          if (labelEl) {
+            labelEl.textContent = `完了：${done}/${total}（${rate}%）`;
+          }
+          if (barEl) {
+            barEl.style.width = `${rate}%`;
+          }
+        });
+      }
+
       function buildTasksFromDefinition(slotId, ul, tasks, groupLabel) {
         ul.innerHTML = "";
         tasks.forEach((text, index) => {
@@ -1478,6 +1597,9 @@
           cb.checked = latestCheckedIds.has(id);
         });
         applyingRemote = false;
+
+        // ② Firestoreから状態が反映されたら完了率も更新
+        updateCompletionUI();
       });
 
       // ログ共通関数
@@ -1505,6 +1627,7 @@
         if (applyingRemote) return;
 
         saveTasksToFirestore();
+        updateCompletionUI(); // ② チェックのたびに完了率を更新
 
         const taskId = target.dataset.taskId || null;
         const taskLabel =
@@ -1517,8 +1640,9 @@
         });
       });
 
-      // 先にタスク定義をロード
-      loadTaskDefinitions();
+      // ② 先にバーを作ってからタスク定義をロード
+      initializeProgressBars();
+      loadTaskDefinitions().then(updateCompletionUI);
 
       // =============================
       // 引き継ぎメモ（共通・全時間帯）
@@ -1683,9 +1807,32 @@
       });
 
       // =============================
-      // 経営者お知らせ（ownerNews）
+      // ① 経営者お知らせ（ownerNews）＋既読管理
       // =============================
       const infoListEl = document.querySelector(".info-list");
+      const noticeStatusBadge = document.getElementById("notice-status-badge");
+      const noticeReadBtn = document.getElementById("notice-read-btn");
+      const NOTICE_LAST_READ_KEY = "noticeLastReadAt";
+      let latestNoticeMs = 0;
+
+      function updateNoticeBadge() {
+        if (!noticeStatusBadge || latestNoticeMs === 0) return;
+
+        const lastReadStr = localStorage.getItem(NOTICE_LAST_READ_KEY);
+        const lastReadMs = lastReadStr ? Number(lastReadStr) : 0;
+        const hasUnread = lastReadMs < latestNoticeMs;
+
+        if (hasUnread) {
+          noticeStatusBadge.textContent = "未読あり";
+          noticeStatusBadge.classList.add("unread");
+          noticeStatusBadge.classList.remove("read");
+        } else {
+          noticeStatusBadge.textContent = "すべて確認済み";
+          noticeStatusBadge.classList.add("read");
+          noticeStatusBadge.classList.remove("unread");
+        }
+      }
+
       if (infoListEl) {
         const ownerNewsColRef = db.collection("ownerNews");
         ownerNewsColRef
@@ -1694,12 +1841,16 @@
           .onSnapshot(
             (snapshot) => {
               infoListEl.innerHTML = "";
+              latestNoticeMs = 0;
+
               if (snapshot.empty) {
                 const li = document.createElement("li");
                 li.textContent = "現在、お知らせはありません。";
                 infoListEl.appendChild(li);
+                updateNoticeBadge();
                 return;
               }
+
               snapshot.forEach((doc) => {
                 const data = doc.data();
                 const title = data.title || "";
@@ -1713,7 +1864,14 @@
                   li.textContent = body || "";
                 }
                 infoListEl.appendChild(li);
+
+                if (data.createdAt) {
+                  const ms = data.createdAt.toMillis();
+                  if (ms > latestNoticeMs) latestNoticeMs = ms;
+                }
               });
+
+              updateNoticeBadge();
             },
             (error) => {
               console.error("ownerNews 読み込みエラー", error);
@@ -1723,6 +1881,18 @@
               infoListEl.appendChild(li);
             }
           );
+      }
+
+      // 「全部読んだことにする」ボタン
+      if (noticeReadBtn) {
+        noticeReadBtn.addEventListener("click", () => {
+          if (!latestNoticeMs) {
+            alert("お知らせがありません。");
+            return;
+          }
+          localStorage.setItem(NOTICE_LAST_READ_KEY, String(latestNoticeMs));
+          updateNoticeBadge();
+        });
       }
 
       // 7:00自動リセット開始
