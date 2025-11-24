@@ -2024,7 +2024,7 @@
           );
       }
 
-      // 「全部読んだことにする」ボタン
+     // 「全部読んだことにする」ボタン
 if (noticeReadBtn) {
   noticeReadBtn.addEventListener("click", () => {
     if (!latestNoticeMs) {
@@ -2032,18 +2032,18 @@ if (noticeReadBtn) {
       return;
     }
 
-    // 変更前の既読タイムスタンプを取得
+    // 前回既読の時間を取得
     const prevStr = localStorage.getItem(NOTICE_LAST_READ_KEY);
-    const prevMs  = prevStr ? Number(prevStr) : 0;
+    const prevMs = prevStr ? Number(prevStr) : 0;
 
-    // 未読が本当にあったかどうか（ログのため）
+    // 未読があったかどうか判定（ログ追加用）
     const hadUnread = prevMs < latestNoticeMs;
 
-    // ローカルに「ここまで読んだ」を保存
+    // 既読状態に更新
     localStorage.setItem(NOTICE_LAST_READ_KEY, String(latestNoticeMs));
     updateNoticeBadge();
 
-    // ★ 未読 → 既読になったときだけログを残す
+    // ★ 未読 → 既読になったときだけログ追加！
     if (hadUnread) {
       logChecklistAction({
         taskId: "ownerNews",
@@ -2054,6 +2054,7 @@ if (noticeReadBtn) {
     }
   });
 }
+
 
       // 7:00自動リセット開始
       setupDailyResetAt7AM();
