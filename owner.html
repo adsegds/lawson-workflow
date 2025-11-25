@@ -18,6 +18,70 @@
       min-height: 100vh;
     }
 
+    /* ===== ログイン画面 ===== */
+    .login-wrap {
+      max-width: 360px;
+      margin: 80px auto;
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px 18px 18px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+    .login-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .login-sub {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 14px;
+    }
+    .login-wrap label {
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      display: block;
+    }
+    .login-wrap input[type="password"] {
+      width: 100%;
+      font-family: inherit;
+      font-size: 14px;
+      padding: 7px 9px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      outline: none;
+    }
+    .login-wrap input[type="password"]:focus {
+      border-color: #111;
+    }
+    .login-btn-row {
+      margin-top: 12px;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .login-btn {
+      background: #111;
+      color: #fff;
+      border-radius: 999px;
+      border: none;
+      padding: 7px 16px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .login-error {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #c00;
+      min-height: 16px;
+    }
+    .login-note {
+      margin-top: 10px;
+      font-size: 11px;
+      color: #777;
+      line-height: 1.5;
+    }
+
     /* ===== 左サイドバー（タイミー風） ===== */
     .sidebar {
       width: 230px;
@@ -45,10 +109,40 @@
       margin-top: 2px;
     }
 
+    /* ★ オーナーID / 端末名入力欄 */
+    .sidebar-owner-id {
+      margin-top: 8px;
+      padding: 4px 2px 2px;
+    }
+    .sidebar-owner-id label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+    .sidebar-owner-id input {
+      width: 100%;
+      font-family: inherit;
+      font-size: 12px;
+      padding: 4px 6px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      outline: none;
+    }
+    .sidebar-owner-id input:focus {
+      border-color: #111;
+    }
+    .sidebar-owner-id .hint {
+      font-size: 10px;
+      color: #777;
+      margin-top: 2px;
+    }
+
     .sidebar-nav {
       display: flex;
       flex-direction: column;
       gap: 4px;
+      margin-top: 8px;
     }
 
     .sidebar-nav button {
@@ -487,458 +581,413 @@
         display: block;
       }
     }
-
-    /* ===== オーナーログイン用 ===== */
-    .login-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.35);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 5000;
-    }
-    .login-wrap {
-      width: 90%;
-      max-width: 360px;
-      background: #fff;
-      border-radius: 12px;
-      padding: 20px 18px 18px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.18);
-    }
-    .login-wrap h1 {
-      font-size: 18px;
-      margin-bottom: 6px;
-    }
-    .login-wrap p {
-      font-size: 12px;
-      color: #555;
-      margin-bottom: 10px;
-    }
-    .login-wrap input[type="password"] {
-      width: 100%;
-      font-family: inherit;
-      font-size: 13px;
-      padding: 6px 8px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      outline: none;
-      margin-bottom: 10px;
-    }
-    .login-wrap input[type="password"]:focus {
-      border-color: #111;
-    }
-    .login-wrap button {
-      width: 100%;
-      border-radius: 999px;
-      padding: 8px 0;
-      background: #111;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-      font-size: 13px;
-      margin-bottom: 6px;
-    }
-    .login-error {
-      font-size: 12px;
-      color: #c00;
-      min-height: 16px;
-    }
   </style>
 </head>
 <body>
-  <!-- ★オーナーログイン（パスワード） -->
-  <div id="ownerLoginBackdrop" class="login-backdrop">
-    <div class="login-wrap">
-      <h1>オーナーログイン</h1>
-      <p>パスワードを入力してください。</p>
-      <input
-        id="ownerPasswordInput"
-        type="password"
-        placeholder="パスワード"
-        autocomplete="current-password"
-      />
-      <button id="ownerLoginBtn">ログイン</button>
-      <p id="ownerLoginError" class="login-error"></p>
+  <!-- ① ログイン画面 -->
+  <div id="ownerLogin" class="login-wrap">
+    <div class="login-title">オーナーログイン</div>
+    <div class="login-sub">
+      管理画面に入るためのパスワードを入力してください。
     </div>
+
+    <label for="ownerPasswordInput">パスワード</label>
+    <input
+      id="ownerPasswordInput"
+      type="password"
+      placeholder="パスワード"
+      autocomplete="current-password"
+    />
+
+    <div class="login-btn-row">
+      <button id="ownerLoginBtn" class="login-btn" type="button">ログイン</button>
+    </div>
+
+    <p id="ownerLoginError" class="login-error"></p>
+
+    <p class="login-note">
+      ※ログイン状態は同じ端末・同じブラウザで約15時間維持されます。<br>
+      ※時間が経つと自動的にログアウトされます。
+    </p>
   </div>
 
-  <!-- ★モバイル用トップバー -->
-  <div class="mobile-topbar">
-    <button type="button" class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
-    <div class="mobile-topbar-title">管理画面</div>
-  </div>
+  <!-- ② 本体アプリ（ログイン後に表示） -->
+  <div id="ownerApp" style="display:none;">
+    <!-- ★モバイル用トップバー -->
+    <div class="mobile-topbar">
+      <button type="button" class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+      <div class="mobile-topbar-title">管理画面</div>
+    </div>
 
-  <!-- ★サイドバーの後ろの黒背景 -->
-  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <!-- ★サイドバーの後ろの黒背景 -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-  <div class="layout">
-    <!-- ================= 左メニュー ================= -->
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <div class="sidebar-store">〇〇←会社名</div>
-        <div class="sidebar-role">オーナー管理画面</div>
+    <div class="layout">
+      <!-- ================= 左メニュー ================= -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-store">〇〇←会社名</div>
+          <div class="sidebar-role">オーナー管理画面</div>
 
-        <!-- ★ オーナーID / 端末名 保存用 -->
-        <div style="margin-top:8px;">
-          <label for="ownerIdInput" style="font-size:11px; margin-bottom:2px; display:block;">
-            オーナーID / 端末名
-          </label>
-          <input
-            id="ownerIdInput"
-            type="text"
-            placeholder="例: オーナーiPhone / 事務所PC"
-            style="font-size:11px; padding:4px 6px; border-radius:6px; border:1px solid #ccc; width:100%;"
-          />
-        </div>
-      </div>
-
-      <nav class="sidebar-nav">
-        <button type="button" data-view="news" class="active">
-          <span class="label">
-            <span class="label-icon">🛎</span>
-            <span class="label-text">お知らせ管理</span>
-          </span>
-          <span class="badge">ownerNews</span>
-        </button>
-
-        <button type="button" data-view="tasks">
-          <span class="label">
-            <span class="label-icon">📝</span>
-            <span class="label-text">時間帯ごとのタスク編集</span>
-          </span>
-          <span class="badge">taskSlots</span>
-        </button>
-
-        <button type="button" data-view="handover">
-          <span class="label">
-            <span class="label-icon">📒</span>
-            <span class="label-text">引き継ぎメモ（ボタン編集）</span>
-          </span>
-          <span class="badge">handoverTemplates</span>
-        </button>
-
-        <button type="button" data-view="logs">
-          <span class="label">
-            <span class="label-icon">⏱</span>
-            <span class="label-text">スタッフログ</span>
-          </span>
-          <span class="badge">checklistLogs</span>
-        </button>
-
-        <!-- ★ 追加：グラフ分析タブ -->
-        <button type="button" data-view="analytics">
-          <span class="label">
-            <span class="label-icon">📊</span>
-            <span class="label-text">グラフ分析（β）</span>
-          </span>
-          <span class="badge">analytics</span>
-        </button>
-
-        <!-- シフト表設定 -->
-        <button type="button" data-view="shift">
-          <span class="label">
-            <span class="label-icon">📅</span>
-            <span class="label-text">シフト表設定</span>
-          </span>
-          <span class="badge">shiftSheet</span>
-        </button>
-      </nav>
-
-      <div class="sidebar-footer">
-        この画面で設定した内容が、スタッフ用チェック画面に反映されます。
-      </div>
-    </aside>
-
-    <!-- ================= 右メイン ================= -->
-    <main class="main">
-      <header class="main-header">
-        <div class="main-header-title">管理メニュー</div>
-        <div class="main-header-sub">
-          左のメニューから編集したい項目を選んでください。
-        </div>
-      </header>
-
-      <!-- ① お知らせ管理 -->
-      <section id="view-news" class="view-panel active">
-        <section class="card" id="news-card">
-          <h2>お知らせ管理（ownerNews）</h2>
-          <p class="card-sub">
-            スタッフ画面の「お知らせ」欄に表示される内容を登録・削除できます。
-          </p>
-
-          <div class="row">
-            <label for="newsTitle">タイトル</label>
-            <input type="text" id="newsTitle" placeholder="例）FF油交換について" />
-          </div>
-          <div class="row">
-            <label for="newsBody">本文</label>
-            <textarea id="newsBody" placeholder="例）今週は油交換の頻度を1日2回に増やしてください。夜勤帯で対応お願いします。"></textarea>
-          </div>
-
-          <div class="btn-row">
-            <button type="button" class="btn-primary" id="newsAddBtn">お知らせを追加</button>
-            <button type="button" class="btn-secondary" id="newsClearFormBtn">入力をクリア</button>
-          </div>
-          <div class="status" id="newsStatus"></div>
-
-          <hr>
-
-          <p class="hint">※最新20件まで表示。古いものから順に削除してOKです。</p>
-          <ul class="news-list" id="newsList"></ul>
-        </section>
-      </section>
-
-      <!-- ② タスク定義編集 -->
-      <section id="view-tasks" class="view-panel">
-        <section class="card" id="tasks-card">
-          <h2>時間帯ごとのタスク編集（taskSlots）</h2>
-          <p class="card-sub">
-            各時間帯の Aタスク（必須）・Bタスク（余裕）を編集できます。<br>
-            スタッフ画面のチェックリストはここで定義された内容から自動生成されます。
-          </p>
-
-          <div class="row">
-            <label for="slotSelect">編集する時間帯</label>
-            <select id="slotSelect">
-              <option value="t6-8">6:00〜8:00（朝の立ち上げ）</option>
-              <option value="t9-11">9:00〜11:00（午前帯）</option>
-              <option value="t12-14">12:00〜14:00（昼帯）</option>
-              <option value="t15-17">15:00〜17:00（夕方前）</option>
-              <option value="t18-20">18:00〜20:00（夕方〜夜）</option>
-              <option value="t21-23">21:00〜23:00（夜帯）</option>
-              <option value="t0-2">0:00〜2:00（深夜前半）</option>
-              <option value="t3-5">3:00〜5:00（早朝）</option>
-            </select>
-            <p class="slot-note">時間帯を変更すると、その時間帯のタスク定義を Firestore から読み込みます。</p>
-          </div>
-
-          <div class="row">
-            <label for="tasksAInput">Aタスク（必須）</label>
-            <textarea id="tasksAInput" placeholder="例）&#10;CDC納品・片づけ（2便）&#10;ベーカリー納品・片づけ（2便）"></textarea>
-            <div class="hint">1行につき1タスク。空行は無視されます。</div>
-          </div>
-
-          <div class="row">
-            <label for="tasksBInput">Bタスク（余裕あれば）</label>
-            <textarea id="tasksBInput" placeholder="例）&#10;店内・店頭ゴミ箱の清掃&#10;サービスコーナー清掃"></textarea>
-            <div class="hint">1行につき1タスク。空行は無視されます。</div>
-          </div>
-
-          <div class="btn-row">
-            <button type="button" class="btn-secondary" id="reloadSlotBtn">選択中の時間帯を再読み込み</button>
-            <button type="button" class="btn-primary" id="saveSlotBtn">この内容で保存</button>
-          </div>
-          <div class="status" id="taskStatus"></div>
-
-          <hr>
-
-          <p class="hint">
-            ※保存すると、その時間帯のチェック状態（完了チェック）だけリセットされます（他の時間帯はそのまま）。<br>
-            ※チェックリスト本体の HTML（スタッフ用画面）は書き換え不要です。この画面は定義だけをいじる役割。
-          </p>
-        </section>
-      </section>
-
-      <!-- ③ シフト表設定 -->
-      <section id="view-shift" class="view-panel">
-        <section class="card" id="shift-card">
-          <h2>シフト表設定</h2>
-          <p class="card-sub">
-            スタッフ画面からワンタップで開ける「シフト表画像」のURLを設定します。<br>
-            画像は Googleドライブ / Gyazo / 自分のサーバーなどにアップして、公開URLを貼ればOKです。
-          </p>
-
-          <!-- URL 直接入力欄 -->
-          <div class="row">
-            <label for="shiftImageUrlInput">シフト表画像URL</label>
+          <!-- ★ オーナーID / 端末名 -->
+          <div class="sidebar-owner-id">
+            <label for="ownerIdInput">オーナーID / 端末名</label>
             <input
+              id="ownerIdInput"
               type="text"
-              id="shiftImageUrlInput"
-              placeholder="https:// から始まる画像URLを貼ってください"
+              placeholder="例: オーナーiPhone / 事務所PC"
             />
-            <div class="hint">
-              URLを直接貼ってもOKです。<br>
-              下の「画像ファイルをアップロード」で選ぶと、自動でここにURLが入ります。
+            <div class="hint">※この端末の名前。ログの管理メモ用。</div>
+          </div>
+        </div>
+
+        <nav class="sidebar-nav">
+          <button type="button" data-view="news" class="active">
+            <span class="label">
+              <span class="label-icon">🛎</span>
+              <span class="label-text">お知らせ管理</span>
+            </span>
+            <span class="badge">ownerNews</span>
+          </button>
+
+          <button type="button" data-view="tasks">
+            <span class="label">
+              <span class="label-icon">📝</span>
+              <span class="label-text">時間帯ごとのタスク編集</span>
+            </span>
+            <span class="badge">taskSlots</span>
+          </button>
+
+          <button type="button" data-view="handover">
+            <span class="label">
+              <span class="label-icon">📒</span>
+              <span class="label-text">引き継ぎメモ（ボタン編集）</span>
+            </span>
+            <span class="badge">handoverTemplates</span>
+          </button>
+
+          <button type="button" data-view="logs">
+            <span class="label">
+              <span class="label-icon">⏱</span>
+              <span class="label-text">スタッフログ</span>
+            </span>
+            <span class="badge">checklistLogs</span>
+          </button>
+
+          <!-- ★ 追加：グラフ分析タブ -->
+          <button type="button" data-view="analytics">
+            <span class="label">
+              <span class="label-icon">📊</span>
+              <span class="label-text">グラフ分析（β）</span>
+            </span>
+            <span class="badge">analytics</span>
+          </button>
+
+          <!-- シフト表設定 -->
+          <button type="button" data-view="shift">
+            <span class="label">
+              <span class="label-icon">📅</span>
+              <span class="label-text">シフト表設定</span>
+            </span>
+            <span class="badge">shiftSheet</span>
+          </button>
+        </nav>
+
+        <div class="sidebar-footer">
+          この画面で設定した内容が、スタッフ用チェック画面に反映されます。
+        </div>
+      </aside>
+
+      <!-- ================= 右メイン ================= -->
+      <main class="main">
+        <header class="main-header">
+          <div class="main-header-title">管理メニュー</div>
+          <div class="main-header-sub">
+            左のメニューから編集したい項目を選んでください。
+          </div>
+        </header>
+
+        <!-- ① お知らせ管理 -->
+        <section id="view-news" class="view-panel active">
+          <section class="card" id="news-card">
+            <h2>お知らせ管理（ownerNews）</h2>
+            <p class="card-sub">
+              スタッフ画面の「お知らせ」欄に表示される内容を登録・削除できます。
+            </p>
+
+            <div class="row">
+              <label for="newsTitle">タイトル</label>
+              <input type="text" id="newsTitle" placeholder="例）FF油交換について" />
             </div>
-          </div>
-
-          <!-- ファイルアップロード欄 -->
-          <div class="row">
-            <label for="shiftImageFileInput">シフト表画像ファイルをアップロード</label>
-            <input
-              type="file"
-              id="shiftImageFileInput"
-              accept="image/*"
-            />
-            <div class="hint">
-              ファイルを選ぶと自動で Firebase Storage にアップロードされ、<br>
-              URL欄とプレビューが更新されます。
+            <div class="row">
+              <label for="newsBody">本文</label>
+              <textarea id="newsBody" placeholder="例）今週は油交換の頻度を1日2回に増やしてください。夜勤帯で対応お願いします。"></textarea>
             </div>
-          </div>
 
-          <div class="btn-row">
-            <button type="button" class="btn-primary" id="shiftImageUrlSaveBtn">
-              この内容で保存
-            </button>
-          </div>
-          <div class="status" id="shiftStatus"></div>
+            <div class="btn-row">
+              <button type="button" class="btn-primary" id="newsAddBtn">お知らせを追加</button>
+              <button type="button" class="btn-secondary" id="newsClearFormBtn">入力をクリア</button>
+            </div>
+            <div class="status" id="newsStatus"></div>
 
-          <hr>
+            <hr>
 
-          <label>プレビュー</label>
-          <img id="shiftImagePreview" src="" alt="シフト表プレビュー">
+            <p class="hint">※最新20件まで表示。古いものから順に削除してOKです。</p>
+            <ul class="news-list" id="newsList"></ul>
+          </section>
         </section>
-      </section>
 
-      <!-- ④ 引き継ぎメモ用ボタン編集 -->
-      <section id="view-handover" class="view-panel">
-        <section class="card" id="handover-card">
-          <h2>引き継ぎメモ（ボタン文言の編集）</h2>
-          <p class="card-sub">
-            スタッフ画面の「引き継ぎメモ（全員で共有）」に並んでいるボタンの文言を編集できます。<br>
-            今は全時間帯で共通のボタンセット（global）を使います。
-          </p>
+        <!-- ② タスク定義編集 -->
+        <section id="view-tasks" class="view-panel">
+          <section class="card" id="tasks-card">
+            <h2>時間帯ごとのタスク編集（taskSlots）</h2>
+            <p class="card-sub">
+              各時間帯の Aタスク（必須）・Bタスク（余裕）を編集できます。<br>
+              スタッフ画面のチェックリストはここで定義された内容から自動生成されます。
+            </p>
 
-          <div class="row">
-            <label for="handoverChipsInput">ボタン文言リスト</label>
-            <textarea id="handoverChipsInput"
-              placeholder="例）&#10;FFケース清掃済み&#10;ホット・常温FF 補充済み&#10;米飯・おにぎり 前陳＆整理済み"></textarea>
-            <div class="hint">
-              1行につき1ボタンになります。空行は無視されます。<br>
-              保存すると、全ての時間帯の「引き継ぎメモボタン」がこの内容で上書きされます。
+            <div class="row">
+              <label for="slotSelect">編集する時間帯</label>
+              <select id="slotSelect">
+                <option value="t6-8">6:00〜8:00（朝の立ち上げ）</option>
+                <option value="t9-11">9:00〜11:00（午前帯）</option>
+                <option value="t12-14">12:00〜14:00（昼帯）</option>
+                <option value="t15-17">15:00〜17:00（夕方前）</option>
+                <option value="t18-20">18:00〜20:00（夕方〜夜）</option>
+                <option value="t21-23">21:00〜23:00（夜帯）</option>
+                <option value="t0-2">0:00〜2:00（深夜前半）</option>
+                <option value="t3-5">3:00〜5:00（早朝）</option>
+              </select>
+              <p class="slot-note">時間帯を変更すると、その時間帯のタスク定義を Firestore から読み込みます。</p>
             </div>
-          </div>
 
-          <div class="btn-row">
-            <button type="button" class="btn-secondary" id="handoverReloadBtn">現在の設定を読み込み</button>
-            <button type="button" class="btn-primary" id="handoverSaveBtn">この内容で保存</button>
-          </div>
-          <div class="status" id="handoverStatus"></div>
+            <div class="row">
+              <label for="tasksAInput">Aタスク（必須）</label>
+              <textarea id="tasksAInput" placeholder="例）&#10;CDC納品・片づけ（2便）&#10;ベーカリー納品・片づけ（2便）"></textarea>
+              <div class="hint">1行につき1タスク。空行は無視されます。</div>
+            </div>
 
-          <hr>
+            <div class="row">
+              <label for="tasksBInput">Bタスク（余裕あれば）</label>
+              <textarea id="tasksBInput" placeholder="例）&#10;店内・店頭ゴミ箱の清掃&#10;サービスコーナー清掃"></textarea>
+              <div class="hint">1行につき1タスク。空行は無視されます。</div>
+            </div>
 
-          <label>プレビュー</label>
-          <div class="handover-preview" id="handoverPreview"></div>
+            <div class="btn-row">
+              <button type="button" class="btn-secondary" id="reloadSlotBtn">選択中の時間帯を再読み込み</button>
+              <button type="button" class="btn-primary" id="saveSlotBtn">この内容で保存</button>
+            </div>
+            <div class="status" id="taskStatus"></div>
 
-          <p class="hint" style="margin-top:6px;">
-            ※スタッフ画面側では <code>handoverTemplates/global</code> の内容を読みにいきます。
-          </p>
+            <hr>
+
+            <p class="hint">
+              ※保存すると、その時間帯のチェック状態（完了チェック）だけリセットされます（他の時間帯はそのまま）。<br>
+              ※チェックリスト本体の HTML（スタッフ用画面）は書き換え不要です。この画面は定義だけをいじる役割。
+            </p>
+          </section>
         </section>
-      </section>
 
-      <!-- ⑤ スタッフログ -->
-      <section id="view-logs" class="view-panel">
-        <section class="card" id="logs-card">
-          <h2>スタッフログ（checklistLogs）</h2>
-          <p class="card-sub">
-            チェックリスト操作の履歴を確認できます。<br>
-            営業日と端末ラベルで絞り込みできます。
-          </p>
+        <!-- ③ シフト表設定 -->
+        <section id="view-shift" class="view-panel">
+          <section class="card" id="shift-card">
+            <h2>シフト表設定</h2>
+            <p class="card-sub">
+              スタッフ画面からワンタップで開ける「シフト表画像」のURLを設定します。<br>
+              画像は Googleドライブ / Gyazo / 自分のサーバーなどにアップして、公開URLを貼ればOKです。
+            </p>
 
-          <div class="log-filters">
-            <div class="btn-row" style="margin-top:4px; margin-bottom:4px;">
-              <button type="button" class="btn-secondary" id="logTodayBtn">今日</button>
-              <button type="button" class="btn-secondary" id="logYesterdayBtn">昨日</button>
-              <button type="button" class="btn-secondary" id="logLast3Btn">直近3日（※実装予定）</button>
-            </div>
-
-            <div class="field">
-              <label for="logDate">営業日</label>
-              <input type="date" id="logDate">
-            </div>
-
-            <div class="field">
-              <label for="logDevice">端末ラベル（空欄なら全端末）</label>
-              <input type="text" id="logDevice" placeholder="例：レジ横iPad">
-            </div>
-
-            <!-- ★キーワード検索欄 -->
-            <div class="field">
-              <label for="logKeyword">キーワード</label>
+            <!-- URL 直接入力欄 -->
+            <div class="row">
+              <label for="shiftImageUrlInput">シフト表画像URL</label>
               <input
                 type="text"
-                id="logKeyword"
-                placeholder="時刻 / 営業日 / 端末 / 操作 / タスク"
-              >
+                id="shiftImageUrlInput"
+                placeholder="https:// から始まる画像URLを貼ってください"
+              />
+              <div class="hint">
+                URLを直接貼ってもOKです。<br>
+                下の「画像ファイルをアップロード」で選ぶと、自動でここにURLが入ります。
+              </div>
             </div>
 
-            <div class="field" style="flex:0 0 auto;">
-              <button type="button" class="btn-primary" id="logFilterBtn">絞り込み</button>
+            <!-- ファイルアップロード欄 -->
+            <div class="row">
+              <label for="shiftImageFileInput">シフト表画像ファイルをアップロード</label>
+              <input
+                type="file"
+                id="shiftImageFileInput"
+                accept="image/*"
+              />
+              <div class="hint">
+                ファイルを選ぶと自動で Firebase Storage にアップロードされ、<br>
+                URL欄とプレビューが更新されます。
+              </div>
             </div>
-          </div>
 
-          <table class="log-table">
-            <thead>
-              <tr>
-                <th style="width:90px;">時刻</th>
-                <th style="width:120px;">営業日</th>
-                <th style="width:140px;">端末</th>
-                <th style="width:70px;">操作</th>
-                <th>タスク / メモ</th>
-              </tr>
-            </thead>
-            <tbody id="logTableBody">
-              <tr><td colspan="5">ログを読み込み中...</td></tr>
-            </tbody>
-          </table>
-          <div class="log-empty" id="logEmptyMsg" style="display:none;"></div>
-
-          <div class="status" id="logStatus"></div>
-        </section>
-      </section>
-
-      <!-- ⑥ グラフ分析（β） -->
-      <section id="view-analytics" class="view-panel">
-        <section class="card" id="analytics-card">
-          <h2>グラフ分析（β）</h2>
-          <p class="card-sub">
-            checklistLogs から、営業日ごとの「端末ごとのチェック回数」をざっくり可視化します。<br>
-            どの端末がどれくらいタスクを進めているかの雰囲気を見る用の簡易版です。
-          </p>
-
-          <div class="row analytics-controls">
-            <div class="field">
-              <label for="analyticsDate">営業日</label>
-              <input type="date" id="analyticsDate">
-            </div>
-            <div class="field" style="flex:0 0 auto;">
-              <button type="button" class="btn-primary" id="analyticsRunBtn">
-                この日で集計
+            <div class="btn-row">
+              <button type="button" class="btn-primary" id="shiftImageUrlSaveBtn">
+                この内容で保存
               </button>
             </div>
-          </div>
+            <div class="status" id="shiftStatus"></div>
 
-          <div class="summary-grid">
-            <div class="summary-card">
-              <div class="summary-title">合計チェック回数</div>
-              <div class="summary-value" id="analyticsTotalCount">-</div>
-              <div class="summary-note" id="analyticsSummaryNote"></div>
-            </div>
-          </div>
+            <hr>
 
-          <div class="analytics-chart-wrap">
-            <canvas id="deviceChartCanvas" height="220"></canvas>
-          </div>
-
-          <h3 class="subsection-title">端末ごとの完了回数</h3>
-          <table class="log-table analytics-table">
-            <thead>
-              <tr>
-                <th>端末ラベル</th>
-                <th>回数</th>
-              </tr>
-            </thead>
-            <tbody id="analyticsTableBody">
-              <tr><td colspan="2">集計結果がここに表示されます。</td></tr>
-            </tbody>
-          </table>
-
-          <div class="log-empty" id="analyticsEmptyMsg" style="display:none;"></div>
-          <div class="status" id="analyticsStatus"></div>
+            <label>プレビュー</label>
+            <img id="shiftImagePreview" src="" alt="シフト表プレビュー">
+          </section>
         </section>
-      </section>
-    </main>
+
+        <!-- ④ 引き継ぎメモ用ボタン編集 -->
+        <section id="view-handover" class="view-panel">
+          <section class="card" id="handover-card">
+            <h2>引き継ぎメモ（ボタン文言の編集）</h2>
+            <p class="card-sub">
+              スタッフ画面の「引き継ぎメモ（全員で共有）」に並んでいるボタンの文言を編集できます。<br>
+              今は全時間帯で共通のボタンセット（global）を使います。
+            </p>
+
+            <div class="row">
+              <label for="handoverChipsInput">ボタン文言リスト</label>
+              <textarea id="handoverChipsInput"
+                placeholder="例）&#10;FFケース清掃済み&#10;ホット・常温FF 補充済み&#10;米飯・おにぎり 前陳＆整理済み"></textarea>
+              <div class="hint">
+                1行につき1ボタンになります。空行は無視されます。<br>
+                保存すると、全ての時間帯の「引き継ぎメモボタン」がこの内容で上書きされます。
+              </div>
+            </div>
+
+            <div class="btn-row">
+              <button type="button" class="btn-secondary" id="handoverReloadBtn">現在の設定を読み込み</button>
+              <button type="button" class="btn-primary" id="handoverSaveBtn">この内容で保存</button>
+            </div>
+            <div class="status" id="handoverStatus"></div>
+
+            <hr>
+
+            <label>プレビュー</label>
+            <div class="handover-preview" id="handoverPreview"></div>
+
+            <p class="hint" style="margin-top:6px;">
+              ※スタッフ画面側では <code>handoverTemplates/global</code> の内容を読みにいきます。
+            </p>
+          </section>
+        </section>
+
+        <!-- ⑤ スタッフログ -->
+        <section id="view-logs" class="view-panel">
+          <section class="card" id="logs-card">
+            <h2>スタッフログ（checklistLogs）</h2>
+            <p class="card-sub">
+              チェックリスト操作の履歴を確認できます。<br>
+              営業日と端末ラベルで絞り込みできます。
+            </p>
+
+            <div class="log-filters">
+              <div class="btn-row" style="margin-top:4px; margin-bottom:4px;">
+                <button type="button" class="btn-secondary" id="logTodayBtn">今日</button>
+                <button type="button" class="btn-secondary" id="logYesterdayBtn">昨日</button>
+                <button type="button" class="btn-secondary" id="logLast3Btn">直近3日（※実装予定）</button>
+              </div>
+
+              <div class="field">
+                <label for="logDate">営業日</label>
+                <input type="date" id="logDate">
+              </div>
+
+              <div class="field">
+                <label for="logDevice">端末ラベル（空欄なら全端末）</label>
+                <input type="text" id="logDevice" placeholder="例：レジ横iPad">
+              </div>
+
+              <!-- ★キーワード検索欄 -->
+              <div class="field">
+                <label for="logKeyword">キーワード</label>
+                <input
+                  type="text"
+                  id="logKeyword"
+                  placeholder="時刻 / 営業日 / 端末 / 操作 / タスク"
+                >
+              </div>
+
+              <div class="field" style="flex:0 0 auto;">
+                <button type="button" class="btn-primary" id="logFilterBtn">絞り込み</button>
+              </div>
+            </div>
+
+            <table class="log-table">
+              <thead>
+                <tr>
+                  <th style="width:90px;">時刻</th>
+                  <th style="width:120px;">営業日</th>
+                  <th style="width:140px;">端末</th>
+                  <th style="width:70px;">操作</th>
+                  <th>タスク / メモ</th>
+                </tr>
+              </thead>
+              <tbody id="logTableBody">
+                <tr><td colspan="5">ログを読み込み中...</td></tr>
+              </tbody>
+            </table>
+            <div class="log-empty" id="logEmptyMsg" style="display:none;"></div>
+
+            <div class="status" id="logStatus"></div>
+          </section>
+        </section>
+
+        <!-- ⑥ グラフ分析（β） -->
+        <section id="view-analytics" class="view-panel">
+          <section class="card" id="analytics-card">
+            <h2>グラフ分析（β）</h2>
+            <p class="card-sub">
+              checklistLogs から、営業日ごとの「端末ごとのチェック回数」をざっくり可視化します。<br>
+              どの端末がどれくらいタスクを進めているかの雰囲気を見る用の簡易版です。
+            </p>
+
+            <div class="row analytics-controls">
+              <div class="field">
+                <label for="analyticsDate">営業日</label>
+                <input type="date" id="analyticsDate">
+              </div>
+              <div class="field" style="flex:0 0 auto;">
+                <button type="button" class="btn-primary" id="analyticsRunBtn">
+                  この日で集計
+                </button>
+              </div>
+            </div>
+
+            <div class="summary-grid">
+              <div class="summary-card">
+                <div class="summary-title">合計チェック回数</div>
+                <div class="summary-value" id="analyticsTotalCount">-</div>
+                <div class="summary-note" id="analyticsSummaryNote"></div>
+              </div>
+            </div>
+
+            <div class="analytics-chart-wrap">
+              <canvas id="deviceChartCanvas" height="220"></canvas>
+            </div>
+
+            <h3 class="subsection-title">端末ごとの完了回数</h3>
+            <table class="log-table analytics-table">
+              <thead>
+                <tr>
+                  <th>端末ラベル</th>
+                  <th>回数</th>
+                </tr>
+              </thead>
+              <tbody id="analyticsTableBody">
+                <tr><td colspan="2">集計結果がここに表示されます。</td></tr>
+              </tbody>
+            </table>
+
+            <div class="log-empty" id="analyticsEmptyMsg" style="display:none;"></div>
+            <div class="status" id="analyticsStatus"></div>
+          </section>
+        </section>
+      </main>
+    </div>
   </div>
 
   <!-- Chart.js（グラフ用） -->
@@ -950,7 +999,88 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-storage-compat.js"></script>
 
   <script>
-    // =============================  
+    // =============================
+    // 0) オーナーログイン（パスワード＋15時間制限）
+    // =============================
+    (function () {
+      // ★ここにパスワードを書く（好きな文字列に変えてOK）
+      const OWNER_PASSWORD = "nanbu-lawson-2024";
+
+      const SESSION_LIMIT_MS = 15 * 60 * 60 * 1000; // 15時間
+      const SESSION_KEY = "lw_ownerSession";
+
+      function isSessionValid() {
+        const raw = localStorage.getItem(SESSION_KEY);
+        if (!raw) return false;
+        try {
+          const data = JSON.parse(raw);
+          if (!data || !data.loggedAt) return false;
+          const loggedAt = data.loggedAt;
+          const now = Date.now();
+          return now - loggedAt < SESSION_LIMIT_MS;
+        } catch (e) {
+          return false;
+        }
+      }
+
+      function saveSession() {
+        const payload = {
+          loggedAt: Date.now()
+        };
+        localStorage.setItem(SESSION_KEY, JSON.stringify(payload));
+      }
+
+      window.addEventListener("DOMContentLoaded", () => {
+        const loginWrap = document.getElementById("ownerLogin");
+        const appWrap = document.getElementById("ownerApp");
+        const pwdInput = document.getElementById("ownerPasswordInput");
+        const loginBtn = document.getElementById("ownerLoginBtn");
+        const errorLabel = document.getElementById("ownerLoginError");
+
+        if (!loginWrap || !appWrap || !pwdInput || !loginBtn) return;
+
+        function showApp() {
+          loginWrap.style.display = "none";
+          appWrap.style.display = "block";
+        }
+
+        function showLogin() {
+          loginWrap.style.display = "block";
+          appWrap.style.display = "none";
+        }
+
+        // すでにセッションが有効なら、ログイン画面スキップ
+        if (isSessionValid()) {
+          showApp();
+        } else {
+          showLogin();
+        }
+
+        function tryLogin() {
+          const input = pwdInput.value.trim();
+          if (!input) {
+            errorLabel.textContent = "パスワードを入力してください。";
+            return;
+          }
+          if (input === OWNER_PASSWORD) {
+            saveSession();
+            errorLabel.textContent = "";
+            showApp();
+          } else {
+            errorLabel.textContent = "パスワードが違います。";
+          }
+        }
+
+        loginBtn.addEventListener("click", tryLogin);
+        pwdInput.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            tryLogin();
+          }
+        });
+      });
+    })();
+
+    // =============================
     // Firebase 設定
     // =============================
     const firebaseConfig = {
@@ -966,22 +1096,30 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // ★ 許可された店舗IDリスト
+    // ★ 店舗ID（storeId）を最初に聞く（最初の1回だけ入力、それ以降は自動）
     const ALLOWED_STORES = ["nambucho"];
+    const STORE_KEY = "lw_ownerStoreId";
+    let STORE_ID = localStorage.getItem(STORE_KEY);
 
-    // ★ 店舗IDを入力させる
-    let STORE_ID = prompt("店舗IDを入力してください（例：nambucho）");
+    if (!STORE_ID) {
+      STORE_ID = prompt("店舗IDを入力してください（例：nambucho）");
+      if (STORE_ID) {
+        STORE_ID = STORE_ID.trim();
+      }
+    }
 
-    // ★ 入力チェック：許可されていないIDは弾く
-    if (!ALLOWED_STORES.includes(STORE_ID)) {
+    if (!STORE_ID || !ALLOWED_STORES.includes(STORE_ID)) {
       alert("この店舗IDは存在しません。オーナーに確認してください。");
       location.href = "https://google.com";
+    } else {
+      // OKなら保存して次回から自動
+      localStorage.setItem(STORE_KEY, STORE_ID);
     }
 
     // すべてのデータは stores/{STORE_ID}/ 以下に保存する
     const storeRef = db.collection("stores").doc(STORE_ID);
 
-    // 7:00切り替えの「今日の営業日」
+    // 6:00切り替えの「今日の営業日」
     function getCurrentBusinessKey() {
       const now = new Date();
       const y = now.getFullYear();
@@ -1004,90 +1142,23 @@
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      // ===== オーナーログイン（パスワード＋15時間制限） =====
-      (function () {
-        // ★★★ ここがパスワード本体 ★★★
-        const OWNER_PASSWORD = "nanbu"; // ← 好きな文字列に書き換えOK！
-
-        const SESSION_LIMIT_MS = 15 * 60 * 60 * 1000; // 15時間
-        const SESSION_KEY = "lw_ownerSession";
-
-        const backdrop = document.getElementById("ownerLoginBackdrop");
-        const pwdInput = document.getElementById("ownerPasswordInput");
-        const loginBtn = document.getElementById("ownerLoginBtn");
-        const errorLabel = document.getElementById("ownerLoginError");
-
-        if (!backdrop || !pwdInput || !loginBtn) return;
-
-        function hideLogin() {
-          backdrop.style.display = "none";
-        }
-
-        // ★ セッション確認：まだ15時間以内ならログイン画面をスキップ
-        try {
-          const raw = localStorage.getItem(SESSION_KEY);
-          if (raw) {
-            const data = JSON.parse(raw);
-            if (data && data.loggedAt) {
-              const loggedAt = new Date(data.loggedAt).getTime();
-              if (!Number.isNaN(loggedAt)) {
-                const diff = Date.now() - loggedAt;
-                if (diff < SESSION_LIMIT_MS) {
-                  hideLogin();
-                  return; // そのまま管理画面を見せる
-                }
-              }
-            }
-          }
-        } catch (e) {
-          console.warn("セッション読み込みエラー", e);
-        }
-
-        function tryLogin() {
-          const input = pwdInput.value.trim();
-          if (input === OWNER_PASSWORD) {
-            // ログイン時刻を保存
-            try {
-              localStorage.setItem(
-                SESSION_KEY,
-                JSON.stringify({ loggedAt: new Date().toISOString() })
-              );
-            } catch (e) {
-              console.warn("セッション保存エラー", e);
-            }
-            hideLogin();
-          } else {
-            errorLabel.textContent = "パスワードが違います。";
-          }
-        }
-
-        loginBtn.addEventListener("click", tryLogin);
-        pwdInput.addEventListener("keydown", (e) => {
-          if (e.key === "Enter") {
-            tryLogin();
-          }
-        });
-      })();
-
-      // ===== オーナーID / 端末名の保存＆自動セット =====
+      // =============================
+      // オーナーID / 端末名の保存＆自動セット
+      // =============================
       (function () {
         const OWNER_ID_KEY = "lw_ownerOwnerId";
         const ownerIdInput = document.getElementById("ownerIdInput");
         if (!ownerIdInput) return;
 
-        // 保存済みがあれば復元
         const savedOwnerId = localStorage.getItem(OWNER_ID_KEY);
         if (savedOwnerId) {
           ownerIdInput.value = savedOwnerId;
         }
 
-        // 変更のたびに保存
         ownerIdInput.addEventListener("change", () => {
-          const v = ownerIdInput.value.trim();
-          if (v) {
-            localStorage.setItem(OWNER_ID_KEY, v);
-          } else {
-            localStorage.removeItem(OWNER_ID_KEY);
+          const value = ownerIdInput.value.trim();
+          if (value) {
+            localStorage.setItem(OWNER_ID_KEY, value);
           }
         });
       })();
@@ -1177,7 +1248,7 @@
 
       function setNewsStatus(msg, ok) {
         newsStatus.textContent = msg || "";
-        newsStatus.className = "status " + (ok ? "ok" : "err");
+        newsStatus.className = "status " + (ok ? "ok" : "err";
       }
 
       newsAddBtn.addEventListener("click", async () => {
