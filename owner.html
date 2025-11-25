@@ -13,6 +13,17 @@
       line-height: 1.6;
     }
 
+    /* ===== モバイル用ヘッダー＆オーバーレイ（PCでは非表示） ===== */
+    .mobile-header {
+      display: none;
+    }
+    .menu-overlay {
+      display: none;
+    }
+    body.no-scroll {
+      overflow: hidden;
+    }
+
     .layout {
       display: flex;
       min-height: 100vh;
@@ -406,28 +417,130 @@
     .analytics-table th:nth-child(1) { width: 160px; }
     .analytics-table th:nth-child(2) { width: 80px; }
 
+    /* ===== スマホレイアウト（ハンバーガーメニュー） ===== */
     @media (max-width: 900px) {
       .layout {
         flex-direction: column;
       }
-      .sidebar {
-        width: 100%;
-        flex-direction: row;
+
+      /* スマホヘッダー */
+      .mobile-header {
+        position: sticky;
+        top: 0;
+        z-index: 3000;
+        display: flex;
         align-items: center;
-        position: static;
+        gap: 10px;
+        padding: 10px 12px;
+        background: #111;
+        color: #fff;
       }
-      .sidebar-header { flex: 1; }
-      .sidebar-nav {
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 4px;
-        justify-content: flex-end;
+      .mobile-menu-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 999px;
+        border: none;
+        background: rgba(255, 255, 255, 0.08);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
       }
-      .sidebar-footer { display: none; }
+      .mobile-menu-icon {
+        position: relative;
+        display: block;
+        width: 18px;
+        height: 2px;
+        background: #fff;
+      }
+      .mobile-menu-icon::before,
+      .mobile-menu-icon::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        width: 18px;
+        height: 2px;
+        background: #fff;
+      }
+      .mobile-menu-icon::before {
+        top: -5px;
+      }
+      .mobile-menu-icon::after {
+        top: 5px;
+      }
+
+      .mobile-header-text {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .mobile-header-store {
+        font-size: 14px;
+        font-weight: 600;
+      }
+      .mobile-header-role {
+        font-size: 11px;
+        opacity: 0.75;
+      }
+
+      /* サイドバーをスライドインに変更 */
+      .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 240px;
+        max-width: 80%;
+        background: #f7f7f8;
+        border-right: 1px solid #ddd;
+        padding: 12px 10px 16px;
+        z-index: 3500;
+        transform: translateX(-100%);
+        transition: transform 0.25s ease-out;
+        display: flex;
+        flex-direction: column;
+      }
+      .sidebar.sidebar-open {
+        transform: translateX(0);
+      }
+
+      .sidebar-footer {
+        margin-top: auto;
+      }
+
+      .main {
+        padding: 12px 12px 20px;
+      }
+
+      /* メニューオーバーレイ */
+      .menu-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.28);
+        z-index: 3400;
+        display: none;
+      }
+      .menu-overlay.show {
+        display: block;
+      }
     }
   </style>
 </head>
 <body>
+  <!-- ★スマホ用ヘッダー -->
+  <header class="mobile-header">
+    <button type="button" class="mobile-menu-btn" id="mobileMenuBtn">
+      <span class="mobile-menu-icon"></span>
+    </button>
+    <div class="mobile-header-text">
+      <div class="mobile-header-store">南部町ローソン</div>
+      <div class="mobile-header-role">オーナー管理画面</div>
+    </div>
+  </header>
+
+  <!-- ★メニュー展開時のオーバーレイ -->
+  <div class="menu-overlay" id="menuOverlay"></div>
+
   <div class="layout">
     <!-- ================= 左メニュー ================= -->
     <aside class="sidebar">
@@ -793,7 +906,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-storage-compat.js"></script>
 
   <script>
-    // =============================
+    // =============================  
     // Firebase 設定
     // =============================
     const firebaseConfig = {
@@ -833,6 +946,39 @@
 
     document.addEventListener("DOMContentLoaded", () => {
       // =============================
+      // モバイル用メニュー開閉
+      // =============================
+      const sidebar = document.querySelector(".sidebar");
+      const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+      const menuOverlay = document.getElementById("menuOverlay");
+
+      function openSidebar() {
+        if (!sidebar) return;
+        sidebar.classList.add("sidebar-open");
+        if (menuOverlay) menuOverlay.classList.add("show");
+        document.body.classList.add("no-scroll");
+      }
+
+      function closeSidebar() {
+        if (!sidebar) return;
+        sidebar.classList.remove("sidebar-open");
+        if (menuOverlay) menuOverlay.classList.remove("show");
+        document.body.classList.remove("no-scroll");
+      }
+
+      mobileMenuBtn?.addEventListener("click", () => {
+        if (sidebar.classList.contains("sidebar-open")) {
+          closeSidebar();
+        } else {
+          openSidebar();
+        }
+      });
+
+      menuOverlay?.addEventListener("click", () => {
+        closeSidebar();
+      });
+
+      // =============================
       // 左メニュー切り替え
       // =============================
       const navButtons = document.querySelectorAll(".sidebar-nav button");
@@ -867,6 +1013,8 @@
       navButtons.forEach((btn) => {
         btn.addEventListener("click", () => {
           activateView(btn.dataset.view);
+          // スマホではメニューを閉じる
+          closeSidebar();
         });
       });
 
