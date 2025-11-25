@@ -1257,17 +1257,27 @@
     const db = firebase.firestore();
 
     // ★ URL から店舗IDを取得（例：owner.html?store=nambucho）
-    //   store パラメータがない場合は "nambucho" をデフォルトにする
-   const urlParams = new URLSearchParams(window.location.search);
+   // ★ 許可された店舗IDリスト（ここに追加していく）
+const ALLOWED_STORES = ["nambucho"];  // 2店舗目以降はここに増やす
+
+// ★ URLパラメータから店舗IDを取得
+const urlParams = new URLSearchParams(window.location.search);
 let STORE_ID = urlParams.get("store");
 
-// store パラメータが無いときは「南部町ローソン」をデフォルトにする
+// パラメータが無いときはデフォルトを入れる
 if (!STORE_ID) {
-  STORE_ID = "nambucho";   // ← 好きなID名でOK（Firestoreのdoc IDと合わせる）
+  STORE_ID = "nambucho";
+}
+
+// ★ 入力チェック：許可されていないIDは弾く
+if (!ALLOWED_STORES.includes(STORE_ID)) {
+  alert("この店舗IDではチェックリストを利用できません。店頭のQRコードから開き直してください。");
+  location.href = "https://google.com";
 }
 
 // ここから先はすべて stores/{STORE_ID}/ 以下を使う
 const storeRef = db.collection("stores").doc(STORE_ID);
+
 
     // =============================
     // 営業日キー計算（7:00切り替え）
