@@ -1104,8 +1104,8 @@ const storeRef = db.collection("stores").doc(STORE_ID);
       const reloadSlotBtn = document.getElementById("reloadSlotBtn");
       const saveSlotBtn = document.getElementById("saveSlotBtn");
       const taskStatus = document.getElementById("taskStatus");
-      const taskSlotsRef = db.collection("taskSlots");
-      const tasksDocRef = db.collection("tasks").doc("lawson-main"); // チェック状態リセット用
+      const taskSlotsRef = storeRef.collection("taskSlots");
+　　　const tasksDocRef  = storeRef.collection("tasks").doc("main"); // チェック状態リセット用
 
       function setTaskStatus(msg, ok) {
         taskStatus.textContent = msg || "";
