@@ -2005,10 +2005,10 @@ async function logChecklistAction({ taskId, taskLabel, action, extra }) {
       }
 
       if (infoListEl) {
-        const ownerNewsColRef = db.collection("ownerNews");
-        ownerNewsColRef
-          .orderBy("createdAt", "desc")
-          .limit(5)
+  const ownerNewsColRef = storeRef.collection("ownerNews");
+  ownerNewsColRef
+    .orderBy("createdAt", "desc")
+    .limit(5)
           .onSnapshot(
             (snapshot) => {
               infoListEl.innerHTML = "";
