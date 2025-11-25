@@ -1351,6 +1351,38 @@ function checkStorePassword(storeId) {
   location.href = "https://google.com";
 }
 
+
+// =============================
+// 店舗ID入力（15時間キャッシュ）
+// =============================
+function getStoreIdWithCache() {
+  const cacheKey = "cachedStoreId";
+  const cacheTimeKey = "cachedStoreId_time";
+
+  const lastStoreId = localStorage.getItem(cacheKey);
+  const lastTime = Number(localStorage.getItem(cacheTimeKey));
+  const now = Date.now();
+  const LIMIT = 15 * 60 * 60 * 1000;
+
+  if (lastStoreId && lastTime && (now - lastTime < LIMIT)) {
+    return lastStoreId;
+  }
+
+  const input = prompt("店舗IDを入力してください（例：nambucho）");
+  if (!input) {
+    alert("店舗IDが入力されなかったため利用できません。");
+    location.href = "https://google.com";
+    return null;
+  }
+
+  const storeId = input.trim();
+  localStorage.setItem(cacheKey, storeId);
+  localStorage.setItem(cacheTimeKey, String(now));
+  return storeId;
+}
+
+    
+    
     
     // =============================
     // 7:00 自動リセット
