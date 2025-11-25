@@ -1819,7 +1819,7 @@ async function logChecklistAction({ taskId, taskLabel, action, extra }) {
       // 引き継ぎメモ（共通・全時間帯）
       // =============================
       const handoverSlots  = document.querySelectorAll(".handover-slot");
-      const handoverColRef = db.collection("handover");
+　　　const handoverColRef = storeRef.collection("handover");
 
       handoverSlots.forEach((slotEl) => {
         const slotId    = slotEl.dataset.slot || "global";
