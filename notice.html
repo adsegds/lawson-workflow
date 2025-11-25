@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>南部町ローソン お知らせセンター</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5f5f5;
+      color: #111;
+      line-height: 1.6;
+      font-size: 13px;
+    }
+
+    .app {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding-bottom: 40px;
+    }
+
+    .top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: #111;
+      color: #fff;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .top-bar h1 {
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .role-select {
+      font-size: 13px;
+    }
+    .role-select select {
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: none;
+      font-size: 13px;
+    }
+
+    .tab-nav {
+      display: flex;
+      gap: 8px;
+      padding: 10px 14px 0;
+      background: #f5f5f5;
+      position: sticky;
+      top: 46px;
+      z-index: 9;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 8px;
+      border-radius: 999px;
+      border: 1px solid #ddd;
+      background: #fff;
+      font-size: 12px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .tab-btn.active {
+      background: #111;
+      color: #fff;
+      border-color: #111;
+      font-weight: 600;
+    }
+
+    .tab-panel {
+      display: none;
+      padding: 12px 14px 0;
+    }
+    .tab-panel.active {
+      display: block;
+    }
+
+    .section-head {
+      margin-bottom: 8px;
+    }
+    .section-head h2 {
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .section-head p {
+      font-size: 12px;
+      color: #555;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 10px 12px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+      margin-bottom: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 8px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      margin-bottom: 2px;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 13px;
+      resize: vertical;
+    }
+    textarea {
+      min-height: 60px;
+    }
+
+    .btn-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .btn {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .btn-primary {
+      background: #111;
+      color: #fff;
+    }
+    .btn-ghost {
+      background: #eee;
+      color: #333;
+    }
+
+    .item-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .item-body {
+      font-size: 13px;
+      white-space: pre-wrap;
+      margin-bottom: 4px;
+    }
+    .item-meta {
+      font-size: 11px;
+      color: #777;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 999px;
+      font-size: 10px;
+      background: #eee;
+      color: #555;
+    }
+    .badge-status {
+      background: #fbe5e5;
+      color: #b00;
+    }
+
+    /* 役割で表示切り替え */
+    .owner-only { display: none; }
+    .staff-only { display: none; }
+
+    body.role-owner .owner-only { display: block; }
+    body.role-staff .staff-only { display: block; }
+
+    .empty-text {
+      font-size: 12px;
+      color: #777;
+      padding: 4px 2px 2px;
+    }
+  </style>
+</head>
+<body class="role-staff">
+  <div class="app">
+    <div class="top-bar">
+      <h1>南部町ローソン お知らせセンター</h1>
+      <div class="role-select">
+        あなたの立場：
+        <select id="roleSelect">
+          <option value="staff">スタッフ</option>
+          <option value="owner">オーナー</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- タブ -->
+    <div class="tab-nav">
+      <button class="tab-btn active" data-tab="ownerNews">① 経営者 → 全員</button>
+      <button class="tab-btn" data-tab="reports">② スタッフ → 経営者</button>
+      <button class="tab-btn" data-tab="board">③ 全員掲示板</button>
+    </div>
+
+    <!-- ① 経営者 → 全員 -->
+    <section class="tab-panel active" id="tab-ownerNews">
+      <div class="section-head">
+        <h2>① 経営者 → 全員へのお知らせ</h2>
+        <p>オーナーから全スタッフに伝えたいことをまとめて表示。</p>
+      </div>
+
+      <!-- オーナーだけ投稿フォーム -->
+      <div class="card owner-only">
+        <form id="ownerNewsForm">
+          <div class="form-group">
+            <label for="ownerNewsTitle">タイトル</label>
+            <input id="ownerNewsTitle" type="text" placeholder="例：今週の重点商品について" />
+          </div>
+          <div class="form-group">
+            <label for="ownerNewsBody">本文</label>
+            <textarea id="ownerNewsBody" placeholder="伝えたい内容を入力してください"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="ownerNewsAuthor">名前（表示用）</label>
+            <input id="ownerNewsAuthor" type="text" placeholder="例：オーナー / 店長" />
+          </div>
+          <div class="btn-row">
+            <button type="submit" class="btn btn-primary">お知らせを投稿する</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- 一覧（全員見れる） -->
+      <div id="ownerNewsList"></div>
+      <div id="ownerNewsEmpty" class="empty-text">まだお知らせはありません。</div>
+    </section>
+
+    <!-- ② スタッフ → 経営者 -->
+    <section class="tab-panel" id="tab-reports">
+      <div class="section-head">
+        <h2>② スタッフ → 経営者（非公開の報告箱）</h2>
+        <p>ここから送った内容はオーナーだけが見れます。他のスタッフには表示されません。</p>
+      </div>
+
+      <!-- スタッフ用：報告フォーム -->
+      <div class="card staff-only">
+        <form id="reportForm">
+          <div class="form-group">
+            <label for="reportCategory">カテゴリ</label>
+            <select id="reportCategory">
+              <option value="設備">設備</option>
+              <option value="お客様">お客様</option>
+              <option value="シフト">シフト</option>
+              <option value="業務">業務</option>
+              <option value="その他">その他</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="reportMessage">内容</label>
+            <textarea id="reportMessage" placeholder="例：冷凍庫の温度が高めです / 発注ミスしてしまいました など"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="reportName">名前または端末名</label>
+            <input id="reportName" type="text" placeholder="例：高橋 / レジ横タブレット など" />
+          </div>
+          <div class="btn-row">
+            <button type="submit" class="btn btn-primary">報告を送信する</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- オーナー用：報告一覧 -->
+      <div class="owner-only">
+        <div id="reportsList"></div>
+        <div id="reportsEmpty" class="empty-text">まだ報告はありません。</div>
+      </div>
+    </section>
+
+    <!-- ③ 全員掲示板 -->
+    <section class="tab-panel" id="tab-board">
+      <div class="section-head">
+        <h2>③ 全員掲示板</h2>
+        <p>みんなで共有したいことを気軽に書ける掲示板です。（業務に関係ある内容で）</p>
+      </div>
+
+      <!-- 投稿フォーム（全員OK） -->
+      <div class="card">
+        <form id="boardForm">
+          <div class="form-group">
+            <label for="boardMessage">メッセージ</label>
+            <textarea id="boardMessage" placeholder="例：冷凍庫の霜が多いので、次の人少し時間あればお願いします など"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="boardAuthor">名前または端末名</label>
+            <input id="boardAuthor" type="text" placeholder="例：森脇 / 深夜タブレット など" />
+          </div>
+          <div class="btn-row">
+            <button type="submit" class="btn btn-primary">掲示板に投稿する</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- 掲示板一覧 -->
+      <div id="boardList"></div>
+      <div id="boardEmpty" class="empty-text">まだ掲示板の投稿はありません。</div>
+    </section>
+  </div>
+
+  <!-- Firebase v8（今のサイトと同じ系列） -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+  <script>
+    // ★ ここを自分の firebaseConfig に差し替え
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // ===== 役割切り替え =====
+    const roleSelect = document.getElementById("roleSelect");
+    function updateRole(role) {
+      document.body.classList.remove("role-owner", "role-staff");
+      document.body.classList.add(role === "owner" ? "role-owner" : "role-staff");
+    }
+    roleSelect.addEventListener("change", (e) => {
+      updateRole(e.target.value);
+    });
+    updateRole(roleSelect.value);
+
+    // ===== タブ切り替え =====
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const tab = btn.dataset.tab;
+
+        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        document.querySelectorAll(".tab-panel").forEach(panel => {
+          panel.classList.toggle("active", panel.id === `tab-${tab}`);
+        });
+      });
+    });
+
+    // ===== 日付フォーマット =====
+    function formatDate(ts) {
+      if (!ts) return "";
+      const d = ts.toDate();
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, "0");
+      const dd = String(d.getDate()).padStart(2, "0");
+      const hh = String(d.getHours()).padStart(2, "0");
+      const mi = String(d.getMinutes()).padStart(2, "0");
+      return `${yyyy}/${mm}/${dd} ${hh}:${mi}`;
+    }
+
+    // ============================
+    // ① ownerNews（経営者 → 全員）
+    // ============================
+    const ownerNewsForm = document.getElementById("ownerNewsForm");
+    const ownerNewsList = document.getElementById("ownerNewsList");
+    const ownerNewsEmpty = document.getElementById("ownerNewsEmpty");
+
+    ownerNewsForm?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const title = document.getElementById("ownerNewsTitle").value.trim();
+      const body = document.getElementById("ownerNewsBody").value.trim();
+      const author = document.getElementById("ownerNewsAuthor").value.trim() || "オーナー";
+
+      if (!title || !body) {
+        alert("タイトルと本文は必須です。");
+        return;
+      }
+
+      try {
+        await db.collection("ownerNews").add({
+          title,
+          body,
+          author,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        ownerNewsForm.reset();
+      } catch (err) {
+        console.error(err);
+        alert("お知らせの登録に失敗しました。");
+      }
+    });
+
+    db.collection("ownerNews")
+      .orderBy("createdAt", "desc")
+      .onSnapshot((snap) => {
+        ownerNewsList.innerHTML = "";
+        if (snap.empty) {
+          ownerNewsEmpty.style.display = "block";
+          return;
+        }
+        ownerNewsEmpty.style.display = "none";
+
+        snap.forEach(doc => {
+          const data = doc.data();
+          const div = document.createElement("div");
+          div.className = "card";
+
+          div.innerHTML = `
+            <div class="item-title">${data.title || "(タイトルなし)"}</div>
+            <div class="item-body">${(data.body || "").replace(/\n/g, "<br>")}</div>
+            <div class="item-meta">
+              <span>${data.author || "オーナー"}</span>
+              <span>${formatDate(data.createdAt)}</span>
+            </div>
+          `;
+          ownerNewsList.appendChild(div);
+        });
+      });
+
+    // ============================
+    // ② reports（スタッフ → 経営者）
+    // ============================
+    const reportForm = document.getElementById("reportForm");
+    const reportsList = document.getElementById("reportsList");
+    const reportsEmpty = document.getElementById("reportsEmpty");
+
+    reportForm?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const category = document.getElementById("reportCategory").value;
+      const message = document.getElementById("reportMessage").value.trim();
+      const name = document.getElementById("reportName").value.trim() || "（匿名）";
+
+      if (!message) {
+        alert("内容は必須です。");
+        return;
+      }
+
+      try {
+        await db.collection("reports").add({
+          category,
+          message,
+          staffName: name,
+          status: "未対応",
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        reportForm.reset();
+        alert("報告を送信しました。（オーナーだけが確認できます）");
+      } catch (err) {
+        console.error(err);
+        alert("報告の送信に失敗しました。");
+      }
+    });
+
+    // オーナー用：一覧表示
+    db.collection("reports")
+      .orderBy("createdAt", "desc")
+      .onSnapshot((snap) => {
+        reportsList.innerHTML = "";
+        if (snap.empty) {
+          reportsEmpty.style.display = "block";
+          return;
+        }
+        reportsEmpty.style.display = "none";
+
+        snap.forEach(doc => {
+          const data = doc.data();
+          const div = document.createElement("div");
+          div.className = "card";
+          const cat = data.category || "その他";
+
+          div.innerHTML = `
+            <div class="item-title">
+              <span class="badge">カテゴリ: ${cat}</span>
+              <span class="badge badge-status">${data.status || "未対応"}</span>
+            </div>
+            <div class="item-body">${(data.message || "").replace(/\n/g, "<br>")}</div>
+            <div class="item-meta">
+              <span>送信者：${data.staffName || "（不明）"}</span>
+              <span>${formatDate(data.createdAt)}</span>
+            </div>
+          `;
+          reportsList.appendChild(div);
+        });
+      });
+
+    // ============================
+    // ③ board（全員掲示板）
+    // ============================
+    const boardForm = document.getElementById("boardForm");
+    const boardList = document.getElementById("boardList");
+    const boardEmpty = document.getElementById("boardEmpty");
+
+    boardForm?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const message = document.getElementById("boardMessage").value.trim();
+      const author = document.getElementById("boardAuthor").value.trim() || "名無し";
+
+      if (!message) {
+        alert("メッセージは必須です。");
+        return;
+      }
+
+      try {
+        await db.collection("board").add({
+          message,
+          author,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        boardForm.reset();
+      } catch (err) {
+        console.error(err);
+        alert("投稿に失敗しました。");
+      }
+    });
+
+    db.collection("board")
+      .orderBy("createdAt", "desc")
+      .onSnapshot((snap) => {
+        boardList.innerHTML = "";
+        if (snap.empty) {
+          boardEmpty.style.display = "block";
+          return;
+        }
+        boardEmpty.style.display = "none";
+
+        snap.forEach(doc => {
+          const data = doc.data();
+          const div = document.createElement("div");
+          div.className = "card";
+
+          div.innerHTML = `
+            <div class="item-body">${(data.message || "").replace(/\n/g, "<br>")}</div>
+            <div class="item-meta">
+              <span>${data.author || "名無し"}</span>
+              <span>${formatDate(data.createdAt)}</span>
+            </div>
+          `;
+          boardList.appendChild(div);
+        });
+      });
+  </script>
+</body>
+</html>
