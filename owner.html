@@ -347,6 +347,24 @@
       margin-top: 8px;
     }
 
+    /* タスク分析テーブル */
+    table.analytics-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin-top: 6px;
+    }
+    .analytics-table th,
+    .analytics-table td {
+      border-bottom: 1px solid #eee;
+      padding: 4px 6px;
+      text-align: left;
+    }
+    .analytics-table th {
+      background: #fafafa;
+      font-weight: 600;
+    }
+
     @media (max-width: 900px) {
       .layout {
         flex-direction: column;
@@ -408,6 +426,15 @@
             <span class="label-text">スタッフログ</span>
           </span>
           <span class="badge">checklistLogs</span>
+        </button>
+
+        <!-- ★ 新規：タスク分析タブ -->
+        <button type="button" data-view="analytics">
+          <span class="label">
+            <span class="label-icon">📊</span>
+            <span class="label-text">タスク分析（グラフ）</span>
+          </span>
+          <span class="badge">analytics</span>
         </button>
 
         <!-- シフト表設定 -->
@@ -612,37 +639,36 @@
           </p>
 
           <div class="log-filters">
-  <div class="btn-row" style="margin-top:4px; margin-bottom:4px;">
-    <button type="button" class="btn-secondary" id="logTodayBtn">今日</button>
-    <button type="button" class="btn-secondary" id="logYesterdayBtn">昨日</button>
-    <button type="button" class="btn-secondary" id="logLast3Btn">直近3日（※実装予定）</button>
-  </div>
+            <div class="btn-row" style="margin-top:4px; margin-bottom:4px;">
+              <button type="button" class="btn-secondary" id="logTodayBtn">今日</button>
+              <button type="button" class="btn-secondary" id="logYesterdayBtn">昨日</button>
+              <button type="button" class="btn-secondary" id="logLast3Btn">直近3日（※実装予定）</button>
+            </div>
 
-  <div class="field">
-    <label for="logDate">営業日</label>
-    <input type="date" id="logDate">
-  </div>
+            <div class="field">
+              <label for="logDate">営業日</label>
+              <input type="date" id="logDate">
+            </div>
 
-  <div class="field">
-    <label for="logDevice">端末ラベル（空欄なら全端末）</label>
-    <input type="text" id="logDevice" placeholder="例：レジ横iPad">
-  </div>
+            <div class="field">
+              <label for="logDevice">端末ラベル（空欄なら全端末）</label>
+              <input type="text" id="logDevice" placeholder="例：レジ横iPad">
+            </div>
 
-  <!-- ★キーワード検索欄を追加 -->
-  <div class="field">
-    <label for="logKeyword">キーワード</label>
-    <input
-      type="text"
-      id="logKeyword"
-      placeholder="時刻 / 営業日 / 端末 / 操作 / タスク"
-    >
-  </div>
+            <!-- キーワード検索欄 -->
+            <div class="field">
+              <label for="logKeyword">キーワード</label>
+              <input
+                type="text"
+                id="logKeyword"
+                placeholder="時刻 / 営業日 / 端末 / 操作 / タスク"
+              >
+            </div>
 
-  <div class="field" style="flex:0 0 auto;">
-    <button type="button" class="btn-primary" id="logFilterBtn">絞り込み</button>
-  </div>
-</div>
-
+            <div class="field" style="flex:0 0 auto;">
+              <button type="button" class="btn-primary" id="logFilterBtn">絞り込み</button>
+            </div>
+          </div>
 
           <table class="log-table">
             <thead>
@@ -663,8 +689,61 @@
           <div class="status" id="logStatus"></div>
         </section>
       </section>
+
+      <!-- ⑥ タスク分析（グラフ） -->
+      <section id="view-analytics" class="view-panel">
+        <section class="card" id="analytics-card">
+          <h2>タスク分析（グラフ）</h2>
+          <p class="card-sub">
+            営業日ごとに、時間帯別のタスク完了率と「まだ1回も完了していないタスク」を確認できます。<br>
+            ※ ログに一度でも「そのタスクの操作」が記録されていれば「完了」とカウントします。
+          </p>
+
+          <!-- 日付選択 -->
+          <div class="row" style="display:flex; flex-wrap:wrap; gap:8px; align-items:flex-end;">
+            <div>
+              <label for="analyticsDate">営業日</label>
+              <input type="date" id="analyticsDate">
+            </div>
+            <div class="btn-row" style="margin-top:0;">
+              <button type="button" class="btn-secondary" id="analyticsTodayBtn">今日</button>
+              <button type="button" class="btn-secondary" id="analyticsYesterdayBtn">昨日</button>
+              <button type="button" class="btn-primary" id="analyticsReloadBtn">再読み込み</button>
+            </div>
+          </div>
+
+          <!-- グラフエリア -->
+          <div class="row">
+            <label>時間帯ごとの完了率</label>
+            <canvas id="slotCompletionChart" height="140"></canvas>
+            <p id="analyticsSummary" class="hint" style="margin-top:8px;"></p>
+          </div>
+
+          <!-- 未完了タスク一覧 -->
+          <div class="row">
+            <label>まだ1回も完了していないタスク</label>
+            <p class="hint">
+              選択した営業日で、ログに1度も登場していないタスクを「未完了」として表示します。
+            </p>
+            <table class="analytics-table">
+              <thead>
+                <tr>
+                  <th style="width:160px;">時間帯</th>
+                  <th>タスク名</th>
+                </tr>
+              </thead>
+              <tbody id="analyticsTodoTableBody">
+                <tr><td colspan="2">集計中...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </section>
     </main>
   </div>
+
+  <!-- Chart.js（グラフ用） -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
@@ -679,7 +758,7 @@
       apiKey: "AIzaSyAPBMvTpzKCcPxLETncBqVR8fzf0cqKirc",
       authDomain: "lawson-workflow.firebaseapp.com",
       projectId: "lawson-workflow",
-      storageBucket: "lawson-workflow.firebasestorage.app", // ★ここを修正
+      storageBucket: "lawson-workflow.firebasestorage.app",
       messagingSenderId: "335371795694",
       appId: "1:335371795694:web:3b0950a616d368b284c7ff",
       measurementId: "G-BGENZNZMRC"
@@ -712,10 +791,26 @@
 
     document.addEventListener("DOMContentLoaded", () => {
       // =============================
+      // 時間帯メタ（ラベル＋並び順）
+      // =============================
+      const SLOT_META = {
+        "t6-8":  { label: "6:00〜8:00（朝の立ち上げ）", order: 1 },
+        "t9-11": { label: "9:00〜11:00（午前帯）",       order: 2 },
+        "t12-14":{ label: "12:00〜14:00（昼帯）",         order: 3 },
+        "t15-17":{ label: "15:00〜17:00（夕方前）",       order: 4 },
+        "t18-20":{ label: "18:00〜20:00（夕方〜夜）",     order: 5 },
+        "t21-23":{ label: "21:00〜23:00（夜帯）",         order: 6 },
+        "t0-2":  { label: "0:00〜2:00（深夜前半）",       order: 7 },
+        "t3-5":  { label: "3:00〜5:00（早朝）",           order: 8 }
+      };
+
+      // =============================
       // 左メニュー切り替え
       // =============================
       const navButtons = document.querySelectorAll(".sidebar-nav button");
       const views = document.querySelectorAll(".view-panel");
+
+      let analyticsInitialized = false;
 
       function activateView(viewId) {
         views.forEach((v) =>
@@ -728,6 +823,12 @@
         // シフト表タブが開かれたら現在設定を読み込む
         if (viewId === "shift") {
           loadShiftImageSetting();
+        }
+
+        // タスク分析タブが開かれたら1回だけ初期化
+        if (viewId === "analytics" && !analyticsInitialized) {
+          initAnalyticsPage();
+          analyticsInitialized = true;
         }
       }
 
@@ -1109,32 +1210,6 @@
         }
       }
 
-      // 保存ボタン（URL欄の内容をそのまま保存）
-      shiftImageUrlSaveBtn?.addEventListener("click", async () => {
-        if (!shiftImageUrlInput) return;
-        const url = shiftImageUrlInput.value.trim();
-
-        setShiftStatus("保存中…", true);
-        try {
-          await shiftDocRef.set({ imageUrl: url || null }, { merge: true });
-
-          if (url) {
-            shiftImagePreview.src = url;
-            shiftImagePreview.style.display = "block";
-          } else if (shiftImagePreview) {
-            shiftImagePreview.style.display = "none";
-          }
-
-          setShiftStatus("シフト表URLを保存しました。", true);
-        } catch (e) {
-          console.error("shiftSheet 保存エラー", e);
-          setShiftStatus(
-            "保存に失敗しました：" + (e.message || ""),
-            false
-          );
-        }
-      });
-
       // （おまけ）オーナー画面を開いた直後にも一回だけ読み込んでおく
       loadShiftImageSetting();
 
@@ -1223,106 +1298,105 @@
         });
       }
 
-     function startLogsListener() {
-  const dateStr = logDateInput.value;
-  const businessKey = businessKeyFromDateInput(dateStr);
-  const deviceFilter = logDeviceInput.value.trim();
-  const keywordRaw = logKeywordInput ? logKeywordInput.value.trim() : "";
-  const keyword = keywordRaw.toLowerCase();
+      function startLogsListener() {
+        const dateStr = logDateInput.value;
+        const businessKey = businessKeyFromDateInput(dateStr);
+        const deviceFilter = logDeviceInput.value.trim();
+        const keywordRaw = logKeywordInput ? logKeywordInput.value.trim() : "";
+        const keyword = keywordRaw.toLowerCase();
 
-  if (!businessKey) {
-    const todayKey = getCurrentBusinessKey();
-    logDateInput.value = todayKey;
-    return startLogsListener();
-  }
-
-  if (logsUnsub) {
-    logsUnsub();
-    logsUnsub = null;
-  }
-
-  setLogStatus("読み込み中…", true);
-  logTableBody.innerHTML =
-    "<tr><td colspan='5'>ログを読み込み中...</td></tr>";
-  logEmptyMsg.style.display = "none";
-
-  logsUnsub = logsColRef
-    .where("businessKey", "==", businessKey)
-    .onSnapshot(
-      (snapshot) => {
-        let docs = [];
-        snapshot.forEach((doc) => docs.push(doc));
-
-        // createdAt 降順ソート
-        docs.sort((a, b) => {
-          const da = a.data().createdAt
-            ? a.data().createdAt.toMillis()
-            : 0;
-          const db = b.data().createdAt
-            ? b.data().createdAt.toMillis()
-            : 0;
-          return db - da;
-        });
-
-        // ① 端末ラベルでフィルタ
-        if (deviceFilter) {
-          docs = docs.filter(
-            (doc) => (doc.data().deviceLabel || "") === deviceFilter
-          );
+        if (!businessKey) {
+          const todayKey = getCurrentBusinessKey();
+          logDateInput.value = todayKey;
+          return startLogsListener();
         }
 
-        // ② キーワードで全文検索フィルタ
-        if (keyword) {
-          docs = docs.filter((doc) => {
-            const data = doc.data() || {};
-
-            const createdAt = data.createdAt
-              ? data.createdAt.toDate()
-              : data.clientTimeISO
-              ? new Date(data.clientTimeISO)
-              : null;
-
-            const timeStr = createdAt
-              ? createdAt.toLocaleTimeString("ja-JP", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  second: "2-digit",
-                })
-              : "";
-
-            const taskText = data.taskLabel
-              ? data.taskLabel
-              : data.extra && data.extra.noteText
-              ? data.extra.noteText
-              : "";
-
-            // 検索対象を全部くっつけて1本の文字列にする
-            const haystack = [
-              timeStr,                      // 時刻
-              data.businessKey || "",       // 営業日
-              data.deviceLabel || "未設定", // 端末
-              data.action || "",            // 操作
-              taskText || "",               // タスク / メモ
-            ]
-              .join(" ")
-              .toLowerCase();
-
-            return haystack.includes(keyword);
-          });
+        if (logsUnsub) {
+          logsUnsub();
+          logsUnsub = null;
         }
 
-        renderLogs(docs, businessKey, deviceFilter);
-        setLogStatus(`読み込み完了（${docs.length}件）`, true);
-      },
-      (error) => {
-        console.error("checklistLogs 読み込みエラー", error);
-        setLogStatus("ログの読み込みに失敗しました。", false);
+        setLogStatus("読み込み中…", true);
         logTableBody.innerHTML =
-          "<tr><td colspan='5'>ログの読み込みに失敗しました。</td></tr>";
-      }
-    );
-}
+          "<tr><td colspan='5'>ログを読み込み中...</td></tr>";
+        logEmptyMsg.style.display = "none";
 
+        logsUnsub = logsColRef
+          .where("businessKey", "==", businessKey)
+          .onSnapshot(
+            (snapshot) => {
+              let docs = [];
+              snapshot.forEach((doc) => docs.push(doc));
+
+              // createdAt 降順ソート
+              docs.sort((a, b) => {
+                const da = a.data().createdAt
+                  ? a.data().createdAt.toMillis()
+                  : 0;
+                const db = b.data().createdAt
+                  ? b.data().createdAt.toMillis()
+                  : 0;
+                return db - da;
+              });
+
+              // ① 端末ラベルでフィルタ
+              if (deviceFilter) {
+                docs = docs.filter(
+                  (doc) => (doc.data().deviceLabel || "") === deviceFilter
+                );
+              }
+
+              // ② キーワードで全文検索フィルタ
+              if (keyword) {
+                docs = docs.filter((doc) => {
+                  const data = doc.data() || {};
+
+                  const createdAt = data.createdAt
+                    ? data.createdAt.toDate()
+                    : data.clientTimeISO
+                    ? new Date(data.clientTimeISO)
+                    : null;
+
+                  const timeStr = createdAt
+                    ? createdAt.toLocaleTimeString("ja-JP", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        second: "2-digit",
+                      })
+                    : "";
+
+                  const taskText = data.taskLabel
+                    ? data.taskLabel
+                    : data.extra && data.extra.noteText
+                    ? data.extra.noteText
+                    : "";
+
+                  // 検索対象を全部くっつけて1本の文字列にする
+                  const haystack = [
+                    timeStr,                      // 時刻
+                    data.businessKey || "",       // 営業日
+                    data.deviceLabel || "未設定", // 端末
+                    data.action || "",            // 操作
+                    taskText || "",               // タスク / メモ
+                  ]
+                    .join(" ")
+                    .toLowerCase();
+
+                  return haystack.includes(keyword);
+                });
+              }
+
+              renderLogs(docs, businessKey, deviceFilter);
+              setLogStatus(`読み込み完了（${docs.length}件）`, true);
+            },
+            (error) => {
+              console.error("checklistLogs 読み込みエラー", error);
+              setLogStatus("ログの読み込みに失敗しました。", false);
+              logTableBody.innerHTML =
+                "<tr><td colspan='5'>ログの読み込みに失敗しました。</td></tr>";
+            }
+          );
+      }
 
       // 日付ショートカットボタン
       const logTodayBtn = document.getElementById("logTodayBtn");
@@ -1364,16 +1438,262 @@
       });
 
       // 端末ラベル・キーワード入力で Enter 押したら検索
-logDeviceInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") startLogsListener();
-});
-logKeywordInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") startLogsListener();
-});
+      logDeviceInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") startLogsListener();
+      });
+      logKeywordInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") startLogsListener();
+      });
 
       // 初期値：今日の営業日
       logDateInput.value = getCurrentBusinessKey();
       startLogsListener();
+
+      // =============================
+      // 6) タスク分析（analytics）
+      // =============================
+      const analyticsDateInput = document.getElementById("analyticsDate");
+      const analyticsTodayBtn = document.getElementById("analyticsTodayBtn");
+      const analyticsYesterdayBtn = document.getElementById("analyticsYesterdayBtn");
+      const analyticsReloadBtn = document.getElementById("analyticsReloadBtn");
+      const analyticsSummary = document.getElementById("analyticsSummary");
+      const analyticsTodoTableBody = document.getElementById("analyticsTodoTableBody");
+
+      let slotCompletionChart = null;
+
+      function setAnalyticsDateToToday() {
+        analyticsDateInput.value = getCurrentBusinessKey();
+      }
+
+      function setAnalyticsDateToYesterday() {
+        const today = getCurrentBusinessKey(); // YYYY-MM-DD
+        const [y, m, d] = today.split("-").map(Number);
+        const dt = new Date(y, m - 1, d);
+        dt.setDate(dt.getDate() - 1);
+        const yy = dt.getFullYear();
+        const mm = String(dt.getMonth() + 1).padStart(2, "0");
+        const dd = String(dt.getDate()).padStart(2, "0");
+        analyticsDateInput.value = `${yy}-${mm}-${dd}`;
+      }
+
+      analyticsTodayBtn?.addEventListener("click", () => {
+        setAnalyticsDateToToday();
+        reloadAnalytics();
+      });
+      analyticsYesterdayBtn?.addEventListener("click", () => {
+        setAnalyticsDateToYesterday();
+        reloadAnalytics();
+      });
+      analyticsReloadBtn?.addEventListener("click", () => {
+        reloadAnalytics();
+      });
+
+      function initAnalyticsPage() {
+        setAnalyticsDateToToday();
+        reloadAnalytics();
+      }
+
+      function reloadAnalytics() {
+        const dateStr = analyticsDateInput.value;
+        const businessKey = businessKeyFromDateInput(dateStr);
+        if (!businessKey) {
+          analyticsSummary.textContent = "営業日が指定されていません。";
+          return;
+        }
+        loadTaskAnalytics(businessKey);
+      }
+
+      async function loadTaskAnalytics(businessKey) {
+        analyticsSummary.textContent = "集計中…";
+        analyticsTodoTableBody.innerHTML =
+          "<tr><td colspan='2'>集計中...</td></tr>";
+
+        try {
+          // 1) 全時間帯のタスク定義を取得（taskSlots）
+          const slotIds = Object.keys(SLOT_META);
+          const slotTasksMap = {}; // slotId -> { tasks: [taskName], total: number }
+
+          await Promise.all(
+            slotIds.map(async (slotId) => {
+              const snap = await taskSlotsRef.doc(slotId).get();
+              const data = snap.exists ? snap.data() || {} : {};
+              const tasksA = Array.isArray(data.tasksA) ? data.tasksA : [];
+              const tasksB = Array.isArray(data.tasksB) ? data.tasksB : [];
+              const allTasks = [...tasksA, ...tasksB]
+                .map((t) => (t || "").trim())
+                .filter((t) => t);
+
+              const uniqueTasks = Array.from(new Set(allTasks));
+              slotTasksMap[slotId] = {
+                tasks: uniqueTasks,
+                total: uniqueTasks.length
+              };
+            })
+          );
+
+          // 2) 該当営業日のログを取得（checklistLogs）
+          const logSnap = await logsColRef
+            .where("businessKey", "==", businessKey)
+            .get();
+
+          // 「slotId + taskLabel」で1回でもログに出たら「完了」とカウント
+          const doneSet = new Set();
+
+          logSnap.forEach((doc) => {
+            const data = doc.data() || {};
+            const taskLabel = (data.taskLabel || "").trim();
+            if (!taskLabel) return;
+
+            let slotId = data.slotId || "";
+
+            // slotId が無い場合、taskId から推測（"t6-8-xxxxx" → "t6-8"）
+            if (!slotId && data.taskId) {
+              const tid = String(data.taskId);
+              const firstDash = tid.indexOf("-");
+              if (firstDash > 0) {
+                slotId = tid.slice(0, firstDash);
+              }
+            }
+
+            if (!slotId || !SLOT_META[slotId]) {
+              // どの時間帯かわからないログは、今回の完了率には使わない
+              return;
+            }
+
+            const key = `${slotId}::${taskLabel}`;
+            doneSet.add(key);
+          });
+
+          // 3) 時間帯ごとの完了率＆未完了タスクを算出
+          const slotEntries = Object.keys(SLOT_META)
+            .map((slotId) => ({
+              slotId,
+              order: SLOT_META[slotId].order,
+              label: SLOT_META[slotId].label
+            }))
+            .sort((a, b) => a.order - b.order);
+
+          const labels = [];
+          const completionRates = [];
+          const undoneRows = [];
+
+          let totalRateSum = 0;
+          let rateCount = 0;
+
+          slotEntries.forEach((slot) => {
+            const { slotId, label } = slot;
+            const def = slotTasksMap[slotId] || { tasks: [], total: 0 };
+            const total = def.total;
+            const tasks = def.tasks;
+
+            if (total === 0) {
+              labels.push(label);
+              completionRates.push(0);
+              return;
+            }
+
+            let doneCount = 0;
+            tasks.forEach((taskName) => {
+              const key = `${slotId}::${taskName}`;
+              if (doneSet.has(key)) {
+                doneCount += 1;
+              } else {
+                // 未完了タスク一覧に追加
+                undoneRows.push({
+                  slotLabel: label,
+                  taskName
+                });
+              }
+            });
+
+            const rate = Math.round((doneCount / total) * 100);
+            labels.push(label);
+            completionRates.push(rate);
+
+            totalRateSum += rate;
+            rateCount += 1;
+          });
+
+          // 4) グラフ描画（Chart.js）
+          const ctx = document.getElementById("slotCompletionChart").getContext("2d");
+          if (slotCompletionChart) {
+            slotCompletionChart.destroy();
+          }
+
+          slotCompletionChart = new Chart(ctx, {
+            type: "bar",
+            data: {
+              labels,
+              datasets: [{
+                label: "完了率（%）",
+                data: completionRates
+              }]
+            },
+            options: {
+              responsive: true,
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  max: 100,
+                  ticks: { stepSize: 20 }
+                }
+              },
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  callbacks: {
+                    label: (ctx) => `${ctx.parsed.y}%`
+                  }
+                }
+              }
+            }
+          });
+
+          // 5) サマリ文
+          if (rateCount === 0) {
+            analyticsSummary.textContent =
+              `営業日 ${businessKey} のタスク定義がありません。`;
+          } else {
+            const avg = Math.round(totalRateSum / rateCount);
+            analyticsSummary.textContent =
+              `営業日 ${businessKey} ｜ 平均完了率：${avg}%`;
+          }
+
+          // 6) 未完了タスク一覧テーブル
+          analyticsTodoTableBody.innerHTML = "";
+          undoneRows.sort((a, b) => {
+            if (a.slotLabel === b.slotLabel) {
+              return a.taskName.localeCompare(b.taskName, "ja");
+            }
+            return a.slotLabel.localeCompare(b.slotLabel, "ja");
+          });
+
+          if (undoneRows.length === 0) {
+            const tr = document.createElement("tr");
+            const td = document.createElement("td");
+            td.colSpan = 2;
+            td.textContent = "未完了タスクなし（全て一度以上操作されています）";
+            tr.appendChild(td);
+            analyticsTodoTableBody.appendChild(tr);
+          } else {
+            undoneRows.forEach((row) => {
+              const tr = document.createElement("tr");
+              const tdSlot = document.createElement("td");
+              const tdTask = document.createElement("td");
+              tdSlot.textContent = row.slotLabel;
+              tdTask.textContent = row.taskName;
+              tr.appendChild(tdSlot);
+              tr.appendChild(tdTask);
+              analyticsTodoTableBody.appendChild(tr);
+            });
+          }
+        } catch (e) {
+          console.error("タスク分析エラー", e);
+          analyticsSummary.textContent = "集計中にエラーが発生しました。";
+          analyticsTodoTableBody.innerHTML =
+            "<tr><td colspan='2'>エラーが発生しました。</td></tr>";
+        }
+      }
     });
   </script>
 </body>
