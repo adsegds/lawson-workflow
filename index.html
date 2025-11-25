@@ -918,6 +918,38 @@
         時刻を読み込み中…
       </div>
 
+
+           <!-- 店舗ログイン情報（店舗ID / パスワード） -->
+      <div class="store-login-card">
+        <div class="store-login-title">店舗ログイン</div>
+        <p class="store-login-desc">
+          この端末で使用中の店舗IDとパスワードです。
+        </p>
+
+        <div class="store-login-row">
+          <span class="store-login-label">店舗ID</span>
+          <span id="storeIdDisplay" class="store-login-value">読み込み中…</span>
+        </div>
+
+        <div class="store-login-row">
+          <span class="store-login-label">パスワード</span>
+          <input
+            id="storePassDisplay"
+            class="store-login-input"
+            type="password"
+            value=""
+            readonly
+          />
+        </div>
+
+        <p class="store-login-note">
+          ※同じ端末・同じブラウザではログイン状態が約15時間続きます。<br>
+          ※時間が経つと自動的にログアウトされます。
+        </p>
+      </div>
+
+
+      
       <!-- 今の時間帯へジャンプ -->
       <div class="jump-banner">
         <div class="jump-banner-note">
