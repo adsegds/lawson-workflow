@@ -1193,7 +1193,7 @@ const storeRef = db.collection("stores").doc(STORE_ID);
       const handoverSaveBtn = document.getElementById("handoverSaveBtn");
       const handoverStatus = document.getElementById("handoverStatus");
       const handoverPreview = document.getElementById("handoverPreview");
-      const handoverTplRef = db.collection("handoverTemplates").doc("global");
+      const handoverTplRef = storeRef.collection("handoverTemplates").doc("global");
 
       function setHandoverStatus(msg, ok) {
         handoverStatus.textContent = msg || "";
