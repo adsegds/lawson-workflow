@@ -1900,8 +1900,8 @@ async function logChecklistAction({ taskId, taskLabel, action, extra }) {
 
         // チップ（globalテンプレ）
         if (chipsArea) {
-          db.collection("handoverTemplates").doc("global").get()
-            .then((doc) => {
+  storeRef.collection("handoverTemplates").doc("global").get()
+    .then((doc) => {
               chipsArea.innerHTML = "";
               if (!doc.exists) return;
 
