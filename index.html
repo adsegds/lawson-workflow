@@ -1592,10 +1592,14 @@ const storeRef = db.collection("stores").doc(STORE_ID);
       // タスク定義 & チェック状態同期
       // =============================
       const timeSlotIds = ["t6-8","t9-11","t12-14","t15-17","t18-20","t21-23","t0-2","t3-5"];
-      const checkboxMap = new Map();        // taskId -> checkbox
-      let latestCheckedIds = new Set();     // Firestore からのチェック済みID
-      const taskDocRef = db.collection("tasks").doc("lawson-main");
-      let applyingRemote = false;
+const checkboxMap = new Map();
+let latestCheckedIds = new Set();
+
+// ★ 多店舗対応版：stores/{STORE_ID}/tasks/main
+const taskDocRef = storeRef.collection("tasks").doc("main");
+
+let applyingRemote = false;
+
 
       // ② 各時間帯のヘッダー直下に完了率バーを差し込む
       function initializeProgressBars() {
