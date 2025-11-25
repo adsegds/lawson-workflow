@@ -1257,23 +1257,27 @@
     const db = firebase.firestore();
 
     // ★ URL から店舗IDを取得（例：owner.html?store=nambucho）
-   // ★ 許可された店舗IDリスト（ここに追加していく）
-const ALLOWED_STORES = ["nambucho"];  // 2店舗目以降はここに増やす
+  // ★ 許可された店舗IDリスト
+const ALLOWED_STORES = ["nambucho"];  // 2店舗目以降はここに追加
 
 // ★ URLパラメータから店舗IDを取得
 const urlParams = new URLSearchParams(window.location.search);
 let STORE_ID = urlParams.get("store");
 
-// パラメータが無いときはデフォルトを入れる
+// URLに store が無いときだけ、入力ダイアログを出す
 if (!STORE_ID) {
-  STORE_ID = "nambucho";
+  const input = prompt("店舗IDを入力してください（例：nambucho）");
+  if (input) {
+    STORE_ID = input.trim();
+  }
 }
 
-// ★ 入力チェック：許可されていないIDは弾く
-if (!ALLOWED_STORES.includes(STORE_ID)) {
+// ここまで来ても STORE_ID が無い or 許可外なら即ブロック
+if (!STORE_ID || !ALLOWED_STORES.includes(STORE_ID)) {
   alert("この店舗IDではチェックリストを利用できません。店頭のQRコードから開き直してください。");
   location.href = "https://google.com";
 }
+
 
 // ここから先はすべて stores/{STORE_ID}/ 以下を使う
 const storeRef = db.collection("stores").doc(STORE_ID);
