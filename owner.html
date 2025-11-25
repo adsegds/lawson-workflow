@@ -43,15 +43,21 @@
       margin-bottom: 4px;
       display: block;
     }
-    .login-wrap input[type="password"] {
-      width: 100%;
-      font-family: inherit;
-      font-size: 14px;
-      padding: 7px 9px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      outline: none;
-    }
+    .login-wrap input[type="text"],
+.login-wrap input[type="password"] {
+  width: 100%;
+  font-family: inherit;
+  font-size: 14px;
+  padding: 7px 9px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  outline: none;
+}
+.login-wrap input[type="text"]:focus,
+.login-wrap input[type="password"]:focus {
+  border-color: #111;
+}
+
     .login-wrap input[type="password"]:focus {
       border-color: #111;
     }
