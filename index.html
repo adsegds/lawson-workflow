@@ -1314,6 +1314,44 @@ const storeRef = db.collection("stores").doc(STORE_ID);
       return `${yy}-${mm}-${dd}`;
     }
 
+
+// =============================
+// 店舗パスワード認証（15時間ごと） ← ← ← ココに貼る！
+// =============================
+function checkStorePassword(storeId) {
+  const expected = STORE_PASSWORDS[storeId];
+  if (!expected) return;
+
+  const cacheKey = `storePass_${storeId}`;
+  const lastLogin = localStorage.getItem(cacheKey);
+
+  const now = Date.now();
+  const LIMIT = 15 * 60 * 60 * 1000; // 15時間
+
+  if (lastLogin && (now - Number(lastLogin) < LIMIT)) {
+    return;
+  }
+
+  for (let i = 0; i < 3; i++) {
+    const input = prompt("店舗パスワードを入力してください：");
+    if (input === null) {
+      alert("キャンセルされたため利用できません。");
+      location.href = "https://google.com";
+      return;
+    }
+    if (input.trim() === expected) {
+      localStorage.setItem(cacheKey, String(now));
+      alert("ログインしました。");
+      return;
+    }
+    alert("パスワードが違います。もう一度入力してください。");
+  }
+
+  alert("認証に失敗しました。");
+  location.href = "https://google.com";
+}
+
+    
     // =============================
     // 7:00 自動リセット
     // =============================
