@@ -1137,15 +1137,11 @@ const STORE_KEY = "lw_ownerStoreId";
 // ローカルストレージから店舗IDを取得
 const STORE_ID = localStorage.getItem(STORE_KEY);
 
-// 店舗IDがまだ無い or 不正な場合は、いったんログイン画面に戻す
-if (!STORE_ID || !ALLOWED_STORES.includes(STORE_ID)) {
-  alert("店舗IDが未設定か、間違っています。もう一度ログインしてください。");
-  localStorage.removeItem(STORE_KEY);
-  location.reload();
+// 有効な店舗IDのときだけ storeRef を作る
+let storeRef = null;
+if (STORE_ID && ALLOWED_STORES.includes(STORE_ID)) {
+  storeRef = db.collection("stores").doc(STORE_ID);
 }
-
-// すべてのデータは stores/{STORE_ID}/ 以下に保存する
-const storeRef = db.collection("stores").doc(STORE_ID);
 
 
     // 6:00切り替えの「今日の営業日」
