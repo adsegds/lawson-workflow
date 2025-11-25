@@ -13,17 +13,6 @@
       line-height: 1.6;
     }
 
-    /* ===== モバイル用ヘッダー＆オーバーレイ（PCでは非表示） ===== */
-    .mobile-header {
-      display: none;
-    }
-    .menu-overlay {
-      display: none;
-    }
-    body.no-scroll {
-      overflow: hidden;
-    }
-
     .layout {
       display: flex;
       min-height: 100vh;
@@ -417,90 +406,65 @@
     .analytics-table th:nth-child(1) { width: 160px; }
     .analytics-table th:nth-child(2) { width: 80px; }
 
-    /* ===== スマホレイアウト（ハンバーガーメニュー） ===== */
-    @media (max-width: 900px) {
-      .layout {
-        flex-direction: column;
-      }
+    /* === モバイル用トップバー & ハンバーガー === */
+    .mobile-topbar {
+      display: none;
+    }
 
-      /* スマホヘッダー */
-      .mobile-header {
-        position: sticky;
+    @media (max-width: 900px) {
+      .mobile-topbar {
+        position: fixed;
         top: 0;
-        z-index: 3000;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px 12px;
+        left: 0;
+        right: 0;
+        height: 48px;
         background: #111;
         color: #fff;
+        display: flex;
+        align-items: center;
+        padding: 0 10px;
+        z-index: 2000;
       }
+
+      .mobile-topbar-title {
+        font-size: 14px;
+        font-weight: 600;
+        margin-left: 8px;
+      }
+
       .mobile-menu-btn {
-        width: 34px;
-        height: 34px;
+        width: 36px;
+        height: 36px;
         border-radius: 999px;
         border: none;
-        background: rgba(255, 255, 255, 0.08);
+        background: #333;
+        color: #fff;
         display: flex;
         align-items: center;
         justify-content: center;
+        font-size: 22px;
+        padding: 0;
+        margin-right: 6px;
         cursor: pointer;
       }
-      .mobile-menu-icon {
-        position: relative;
-        display: block;
-        width: 18px;
-        height: 2px;
-        background: #fff;
-      }
-      .mobile-menu-icon::before,
-      .mobile-menu-icon::after {
-        content: "";
-        position: absolute;
-        left: 0;
-        width: 18px;
-        height: 2px;
-        background: #fff;
-      }
-      .mobile-menu-icon::before {
-        top: -5px;
-      }
-      .mobile-menu-icon::after {
-        top: 5px;
-      }
 
-      .mobile-header-text {
-        display: flex;
+      .layout {
         flex-direction: column;
-        gap: 2px;
-      }
-      .mobile-header-store {
-        font-size: 14px;
-        font-weight: 600;
-      }
-      .mobile-header-role {
-        font-size: 11px;
-        opacity: 0.75;
+        padding-top: 52px;
       }
 
-      /* サイドバーをスライドインに変更 */
       .sidebar {
         position: fixed;
-        left: 0;
         top: 0;
         bottom: 0;
-        width: 240px;
-        max-width: 80%;
-        background: #f7f7f8;
-        border-right: 1px solid #ddd;
-        padding: 12px 10px 16px;
-        z-index: 3500;
+        left: 0;
+        width: 70%;
+        max-width: 260px;
         transform: translateX(-100%);
-        transition: transform 0.25s ease-out;
-        display: flex;
-        flex-direction: column;
+        transition: transform 0.2s ease-out;
+        z-index: 2100;
       }
-      .sidebar.sidebar-open {
+      .sidebar.mobile-open {
         transform: translateX(0);
       }
 
@@ -512,34 +476,28 @@
         padding: 12px 12px 20px;
       }
 
-      /* メニューオーバーレイ */
-      .menu-overlay {
+      .sidebar-overlay {
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.28);
-        z-index: 3400;
+        background: rgba(0, 0, 0, 0.35);
+        z-index: 2050;
         display: none;
       }
-      .menu-overlay.show {
+      .sidebar-overlay.active {
         display: block;
       }
     }
   </style>
 </head>
 <body>
-  <!-- ★スマホ用ヘッダー -->
-  <header class="mobile-header">
-    <button type="button" class="mobile-menu-btn" id="mobileMenuBtn">
-      <span class="mobile-menu-icon"></span>
-    </button>
-    <div class="mobile-header-text">
-      <div class="mobile-header-store">南部町ローソン</div>
-      <div class="mobile-header-role">オーナー管理画面</div>
-    </div>
-  </header>
+  <!-- ★モバイル用トップバー -->
+  <div class="mobile-topbar">
+    <button type="button" class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+    <div class="mobile-topbar-title">南部町ローソン 管理画面</div>
+  </div>
 
-  <!-- ★メニュー展開時のオーバーレイ -->
-  <div class="menu-overlay" id="menuOverlay"></div>
+  <!-- ★サイドバーの後ろの黒背景 -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
   <div class="layout">
     <!-- ================= 左メニュー ================= -->
@@ -949,34 +907,30 @@
       // モバイル用メニュー開閉
       // =============================
       const sidebar = document.querySelector(".sidebar");
+      const sidebarOverlay = document.getElementById("sidebarOverlay");
       const mobileMenuBtn = document.getElementById("mobileMenuBtn");
-      const menuOverlay = document.getElementById("menuOverlay");
-
-      function openSidebar() {
-        if (!sidebar) return;
-        sidebar.classList.add("sidebar-open");
-        if (menuOverlay) menuOverlay.classList.add("show");
-        document.body.classList.add("no-scroll");
-      }
 
       function closeSidebar() {
         if (!sidebar) return;
-        sidebar.classList.remove("sidebar-open");
-        if (menuOverlay) menuOverlay.classList.remove("show");
-        document.body.classList.remove("no-scroll");
+        sidebar.classList.remove("mobile-open");
+        if (sidebarOverlay) sidebarOverlay.classList.remove("active");
+      }
+
+      function openSidebar() {
+        if (!sidebar) return;
+        sidebar.classList.add("mobile-open");
+        if (sidebarOverlay) sidebarOverlay.classList.add("active");
       }
 
       mobileMenuBtn?.addEventListener("click", () => {
-        if (sidebar.classList.contains("sidebar-open")) {
+        if (sidebar.classList.contains("mobile-open")) {
           closeSidebar();
         } else {
           openSidebar();
         }
       });
 
-      menuOverlay?.addEventListener("click", () => {
-        closeSidebar();
-      });
+      sidebarOverlay?.addEventListener("click", closeSidebar);
 
       // =============================
       // 左メニュー切り替え
