@@ -1068,11 +1068,15 @@
         }
 
         // すでにセッションが有効なら、ログイン画面スキップ
-        if (isSessionValid()) {
-          showApp();
-        } else {
-          showLogin();
-        }
+        const currentStoreId = localStorage.getItem("lw_ownerStoreId");
+if (currentStoreId && ALLOWED_STORES.includes(currentStoreId) && isSessionValid()) {
+  // ついでに入力欄も埋めておく
+  if (storeIdInput) storeIdInput.value = currentStoreId;
+  showApp();
+} else {
+  showLogin();
+}
+
 
         function tryLogin() {
   const pwd = pwdInput.value.trim();
