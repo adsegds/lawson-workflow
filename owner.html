@@ -1107,17 +1107,6 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // ★ 店舗ID（storeId）を最初に聞く（最初の1回だけ入力、それ以降は自動）
-    const ALLOWED_STORES = ["nambucho"];
-    const STORE_KEY = "lw_ownerStoreId";
-    let STORE_ID = localStorage.getItem(STORE_KEY);
-
-    if (!STORE_ID) {
-      STORE_ID = prompt("店舗IDを入力してください（例：nambucho）");
-      if (STORE_ID) {
-        STORE_ID = STORE_ID.trim();
-      }
-    }
 
     if (!STORE_ID || !ALLOWED_STORES.includes(STORE_ID)) {
       alert("この店舗IDは存在しません。オーナーに確認してください。");
