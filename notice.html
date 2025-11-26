@@ -355,37 +355,12 @@
     }
 
     // ============================
-    // ① ownerNews（経営者 → 全員）
+    // ① ownerNews（経営者 → 全員）※ここは読み取り専用
     // ============================
-    const ownerNewsForm = document.getElementById("ownerNewsForm");
     const ownerNewsList = document.getElementById("ownerNewsList");
     const ownerNewsEmpty = document.getElementById("ownerNewsEmpty");
 
-    ownerNewsForm?.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const title = document.getElementById("ownerNewsTitle").value.trim();
-      const body = document.getElementById("ownerNewsBody").value.trim();
-      const author = document.getElementById("ownerNewsAuthor").value.trim() || "オーナー";
-
-      if (!title || !body) {
-        alert("タイトルと本文は必須です。");
-        return;
-      }
-
-      try {
-        await db.collection("ownerNews").add({
-          title,
-          body,
-          author,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        ownerNewsForm.reset();
-      } catch (err) {
-        console.error(err);
-        alert("お知らせの登録に失敗しました。");
-      }
-    });
-
+    // owner.html から投稿された ownerNews コレクションを読むだけ
     db.collection("ownerNews")
       .orderBy("createdAt", "desc")
       .onSnapshot((snap) => {
@@ -401,17 +376,23 @@
           const div = document.createElement("div");
           div.className = "card";
 
+          const title = data.title || "(タイトルなし)";
+          const body = (data.body || "").replace(/\n/g, "<br>");
+          const author = data.author || "オーナー";
+          const dateText = formatDate(data.createdAt);
+
           div.innerHTML = `
-            <div class="item-title">${data.title || "(タイトルなし)"}</div>
-            <div class="item-body">${(data.body || "").replace(/\n/g, "<br>")}</div>
+            <div class="item-title">${title}</div>
+            <div class="item-body">${body}</div>
             <div class="item-meta">
-              <span>${data.author || "オーナー"}</span>
-              <span>${formatDate(data.createdAt)}</span>
+              <span>${author}</span>
+              <span>${dateText}</span>
             </div>
           `;
           ownerNewsList.appendChild(div);
         });
       });
+
 
     // ============================
     // ② reports（スタッフ → 経営者）
