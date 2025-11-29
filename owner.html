@@ -799,6 +799,43 @@
               ※保存すると、その時間帯のチェック状態（完了チェック）だけリセットされます（他の時間帯はそのまま）。<br>
               ※チェックリスト本体の HTML（スタッフ用画面）は書き換え不要です。この画面は定義だけをいじる役割。
             </p>
+<hr>
+
+<!-- ★ ここから追加：時間帯の自動生成UI -->
+<div class="row">
+  <label>時間帯の自動生成（営業開始〜終了と区切り時間）</label>
+  <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;">
+    <div style="min-width:120px;">
+      <div style="font-size:11px;color:#555;">開始</div>
+      <input type="time" id="slotConfigStart" value="06:00" />
+    </div>
+    <div style="min-width:120px;">
+      <div style="font-size:11px;color:#555;">終了</div>
+      <input type="time" id="slotConfigEnd" value="23:00" />
+    </div>
+    <div style="min-width:150px;">
+      <div style="font-size:11px;color:#555;">区切り</div>
+      <select id="slotConfigInterval">
+        <option value="60">1時間ごと</option>
+        <option value="120">2時間ごと</option>
+        <option value="180" selected>3時間ごと</option>
+        <option value="240">4時間ごと</option>
+        <option value="300">5時間ごと</option>
+      </select>
+    </div>
+    <div>
+      <button type="button" class="btn-secondary" id="slotConfigGenerateBtn">
+        この設定で時間帯を自動生成
+      </button>
+    </div>
+  </div>
+  <p class="hint">
+    ※「開始」「終了」と「区切り時間」を変えて「自動生成」すると、時間帯のリストが作り直されます。<br>
+    ※時間帯を作り直すと、新しい時間帯IDごとにタスクを管理できます（タスク内容は上の入力欄で編集）。
+  </p>
+</div>
+<!-- ★ ここまで追加 -->
+            
           </section>
         </section>
 
