@@ -1463,7 +1463,7 @@ activateView("news");
           }
         );
 
-      // =============================
+            // =============================
       // 2) taskSlots（時間帯ごとのタスク定義）
       // =============================
       const slotSelect = document.getElementById("slotSelect");
@@ -1475,7 +1475,7 @@ activateView("news");
       const taskSlotsRef = storeRef.collection("taskSlots");
       const tasksDocRef  = storeRef.collection("tasks").doc("main"); // チェック状態リセット用
 
-            // ★ 時間帯設定 UI 要素
+      // ★ 時間帯設定 UI 要素
       const slotConfigStartInput = document.getElementById("slotConfigStart");
       const slotConfigEndInput = document.getElementById("slotConfigEnd");
       const slotConfigIntervalSelect = document.getElementById("slotConfigInterval");
@@ -1484,26 +1484,32 @@ activateView("news");
       // Firestore 上の時間帯設定ドキュメント
       const timeSlotsConfigRef = storeRef.collection("settings").doc("timeSlotsConfig");
 
-
       // ★ カスタム時間帯テキスト用の要素
-const slotCustomInput     = document.getElementById("slotCustomInput");
-const slotCustomLoadBtn   = document.getElementById("slotCustomLoadBtn");
-const slotCustomSaveBtn   = document.getElementById("slotCustomSaveBtn");
-
-      
+      const slotCustomInput     = document.getElementById("slotCustomInput");
+      const slotCustomLoadBtn   = document.getElementById("slotCustomLoadBtn");
+      const slotCustomSaveBtn   = document.getElementById("slotCustomSaveBtn");
 
       // デフォルトの時間帯リスト（いままでと同じ）
       function getDefaultSlots() {
         return [
-          { id: "t6-8",  label: "6:00〜8:00（朝の立ち上げ）" },
-          { id: "t9-11", label: "9:00〜11:00（午前帯）" },
+          { id: "t6-8",   label: "6:00〜8:00（朝の立ち上げ）" },
+          { id: "t9-11",  label: "9:00〜11:00（午前帯）" },
           { id: "t12-14", label: "12:00〜14:00（昼帯）" },
           { id: "t15-17", label: "15:00〜17:00（夕方前）" },
           { id: "t18-20", label: "18:00〜20:00（夕方〜夜）" },
           { id: "t21-23", label: "21:00〜23:00（夜帯）" },
-          { id: "t0-2",  label: "0:00〜2:00（深夜前半）" },
-          { id: "t3-5",  label: "3:00〜5:00（早朝）" }
+          { id: "t0-2",   label: "0:00〜2:00（深夜前半）" },
+          { id: "t3-5",   label: "3:00〜5:00（早朝）" }
         ];
+      }
+
+      // ★ 現在の slots をカスタムテキストに反映
+      function updateSlotCustomTextarea(slots) {
+        if (!slotCustomInput) return;
+        const text = (slots && slots.length > 0)
+          ? slots.map((s) => s._raw || s.label || s.id).join("\n")
+          : "";
+        slotCustomInput.value = text;
       }
 
       // slotSelect の option を作り直す
@@ -1513,20 +1519,6 @@ const slotCustomSaveBtn   = document.getElementById("slotCustomSaveBtn");
           slots = getDefaultSlots();
         }
 
-
-        // slots配列を textarea 用テキストに変換
-function slotsToCustomText(slots) {
-  if (!slots || slots.length === 0) return "";
-  return slots
-    .map((s) => {
-      // ラベルの中に時間がもう入ってる場合もあるけど、とりあえずそのまま
-      return s._raw || s.label || s.id;
-    })
-    .join("\n");
-}
-
-
-        
         slots.forEach((s) => {
           const opt = document.createElement("option");
           opt.value = s.id;
@@ -1551,7 +1543,9 @@ function slotsToCustomText(slots) {
           const snap = await timeSlotsConfigRef.get();
           if (!snap.exists) {
             // まだ設定ない → デフォルトで描画
-            renderSlotOptions(getDefaultSlots(), initialLoad);
+            const defaults = getDefaultSlots();
+            updateSlotCustomTextarea(defaults);
+            renderSlotOptions(defaults, initialLoad);
             return;
           }
           const data = snap.data() || {};
@@ -1572,65 +1566,146 @@ function slotsToCustomText(slots) {
             if (has) slotConfigIntervalSelect.value = val;
           }
 
+          // ★ textarea にも反映
+          updateSlotCustomTextarea(slots);
           renderSlotOptions(slots, initialLoad);
         } catch (e) {
           console.error("timeSlotsConfig 読み込みエラー", e);
-          renderSlotOptions(getDefaultSlots(), initialLoad);
+          const defaults = getDefaultSlots();
+          updateSlotCustomTextarea(defaults);
+          renderSlotOptions(defaults, initialLoad);
         }
       }
 
-      // 入力値から時間帯スロットを自動生成
-function generateSlotsFromInputs() {
-  if (!slotConfigStartInput || !slotConfigEndInput || !slotConfigIntervalSelect) {
-    return null;
-  }
-  const start = slotConfigStartInput.value || "06:00";
-  const end   = slotConfigEndInput.value   || "23:00";
-  const intervalMin = parseInt(slotConfigIntervalSelect.value, 10) || 180;
+      // 入力値から時間帯スロットを自動生成（開始〜終了＋区切り）
+      function generateSlotsFromInputs() {
+        if (!slotConfigStartInput || !slotConfigEndInput || !slotConfigIntervalSelect) {
+          return null;
+        }
+        const start = slotConfigStartInput.value || "06:00";
+        const end   = slotConfigEndInput.value   || "23:00";
+        const intervalMin = parseInt(slotConfigIntervalSelect.value, 10) || 180;
 
-  const [sh, sm] = start.split(":").map(Number);
-  const [eh, em] = end.split(":").map(Number);
+        const [sh, sm] = start.split(":").map(Number);
+        const [eh, em] = end.split(":").map(Number);
 
-  if (sm !== 0 || em !== 0) {
-    alert("時間は 00 分ちょうどにしてください（例: 06:00）");
-    return null;
-  }
+        if (sm !== 0 || em !== 0) {
+          alert("時間は 00 分ちょうどにしてください（例: 06:00）");
+          return null;
+        }
 
-  let startTotal = sh * 60 + sm;
-  let endTotal   = eh * 60 + em;
+        let startTotal = sh * 60 + sm;
+        let endTotal   = eh * 60 + em;
 
-  // ★ここがポイント：終了時間が開始時間以下なら「翌日の同時刻」として扱う
-  // 例）開始 06:00 / 終了 00:00 → endTotal = 24:00 とみなす
-  if (endTotal <= startTotal) {
-    endTotal += 24 * 60; // 24時間足す
-  }
+        // 終了 <= 開始 の場合は翌日として扱う（例：06:00〜00:00）
+        if (endTotal <= startTotal) {
+          endTotal += 24 * 60;
+        }
 
-  if ((endTotal - startTotal) % intervalMin !== 0) {
-    alert("（終了 − 開始）の時間が区切り時間で割り切れるように設定してください。");
-    return null;
-  }
+        if ((endTotal - startTotal) % intervalMin !== 0) {
+          alert("（終了 − 開始）の時間が区切り時間で割り切れるように設定してください。");
+          return null;
+        }
 
-  const slots = [];
-  let t = startTotal;
-  while (t < endTotal) {
-    const next = t + intervalMin;
+        const slots = [];
+        let t = startTotal;
+        while (t < endTotal) {
+          const next = t + intervalMin;
 
-    const h1 = Math.floor(t / 60);
-    const h2 = Math.floor(next / 60);
+          const h1 = Math.floor(t / 60);
+          const h2 = Math.floor(next / 60);
 
-    // 表示用は 24時間でループ（24:00 → 0:00）
-    const h1Disp = h1 % 24;
-    const h2Disp = h2 % 24;
+          const h1Disp = h1 % 24;
+          const h2Disp = h2 % 24;
 
-    const id = `t${h1Disp}-${h2Disp}`;
-    const label = `${h1Disp}:00〜${h2Disp}:00`;
+          const id = `t${h1Disp}-${h2Disp}`;
+          const label = `${h1Disp}:00〜${h2Disp}:00`;
 
-    slots.push({ id, label });
-    t = next;
-  }
-  return { slots, start, end, intervalMinutes: intervalMin };
-}
+          slots.push({ id, label });
+          t = next;
+        }
+        return { slots, start, end, intervalMinutes: intervalMin };
+      }
 
+      // ★ カスタムテキストから slots 配列を作る
+      function parseCustomSlotsFromTextarea() {
+        if (!slotCustomInput) return null;
+
+        const lines = slotCustomInput.value.split("\n");
+        const slots = [];
+        let lineNo = 0;
+        let hasMinuteError = false;
+
+        for (const rawLine of lines) {
+          lineNo++;
+          const line = rawLine.trim();
+          if (!line) continue;
+
+          // 最初の空白までが時間レンジ、それ以降がラベル
+          const parts = line.split(/\s+/);
+          const rangePart = parts[0];
+          const labelRest = parts.slice(1).join(" ");
+
+          const rangeSplit = rangePart.split("-");
+          if (rangeSplit.length !== 2) {
+            alert(`行${lineNo}：「${line}」の時間の書式が不正です。例）06:00-09:00 のように入力してください。`);
+            return null;
+          }
+
+          function parseTime(str) {
+            const [hStr, mStr] = str.split(":");
+            const h = Number(hStr);
+            const m = mStr !== undefined ? Number(mStr) : 0;
+            if (
+              Number.isNaN(h) ||
+              Number.isNaN(m) ||
+              h < 0 ||
+              h > 24 ||
+              m < 0 ||
+              m >= 60
+            ) {
+              return null;
+            }
+            if (m !== 0) {
+              hasMinuteError = true;
+            }
+            return { hour: h % 24, minute: m };
+          }
+
+          const start = parseTime(rangeSplit[0]);
+          const end   = parseTime(rangeSplit[1]);
+          if (!start || !end) {
+            alert(`行${lineNo}：「${line}」の時間が読み取れませんでした。例）06:00-09:00 の形式で入力してください。`);
+            return null;
+          }
+
+          const h1 = start.hour;
+          const h2 = end.hour;
+
+          const id = `t${h1}-${h2}`;
+          const label =
+            labelRest && labelRest.trim().length > 0
+              ? labelRest.trim()
+              : `${String(h1).padStart(2, "0")}:00〜${String(h2).padStart(2, "0")}:00`;
+
+          slots.push({
+            id,
+            label,
+            _raw: `${String(h1).padStart(2, "0")}:00-${String(h2).padStart(2, "0")}:00 ${label}`
+          });
+        }
+
+        if (slots.length === 0) {
+          alert("有効な行がありませんでした。");
+          return null;
+        }
+
+        if (hasMinuteError) {
+          alert("分が00以外の行がありました。分はすべて00として扱いました。");
+        }
+
+        return slots;
+      }
 
       // 「この設定で時間帯を自動生成」ボタン
       slotConfigGenerateBtn?.addEventListener("click", async () => {
@@ -1639,13 +1714,12 @@ function generateSlotsFromInputs() {
         const { slots, start, end, intervalMinutes } = result;
 
         try {
-          // Firestore に保存
           await timeSlotsConfigRef.set(
             { start, end, intervalMinutes, slots },
             { merge: true }
           );
-          // プルダウンを更新
           renderSlotOptions(slots, false);
+          updateSlotCustomTextarea(slots);
           setTaskStatus(
             "時間帯リストを更新しました。このあと各時間帯のタスクを編集してください。",
             true
@@ -1656,8 +1730,47 @@ function generateSlotsFromInputs() {
         }
       });
 
+      // 「現在の時間帯をテキストに展開」
+      slotCustomLoadBtn?.addEventListener("click", async () => {
+        try {
+          const snap = await timeSlotsConfigRef.get();
+          let slots;
+          if (snap.exists) {
+            const data = snap.data() || {};
+            slots = Array.isArray(data.slots) ? data.slots : getDefaultSlots();
+          } else {
+            slots = getDefaultSlots();
+          }
+          updateSlotCustomTextarea(slots);
+          setTaskStatus("現在の時間帯をテキストに展開しました。", true);
+        } catch (e) {
+          console.error("slotCustomLoad エラー", e);
+          setTaskStatus("時間帯の読み込みに失敗しました。", false);
+        }
+      });
 
-      
+      // 「このテキスト内容で時間帯を更新」
+      slotCustomSaveBtn?.addEventListener("click", async () => {
+        const slots = parseCustomSlotsFromTextarea();
+        if (!slots) return;
+
+        try {
+          await timeSlotsConfigRef.set(
+            { slots },   // カスタムなので start/end/intervalMinutes は省略
+            { merge: true }
+          );
+          renderSlotOptions(slots, false);
+          updateSlotCustomTextarea(slots);
+          setTaskStatus(
+            "カスタム時間帯でリストを更新しました。このあと各時間帯のタスクを設定してください。",
+            true
+          );
+        } catch (e) {
+          console.error("slotCustomSave エラー", e);
+          setTaskStatus("カスタム時間帯の保存に失敗しました。", false);
+        }
+      });
+
       function setTaskStatus(msg, ok) {
         taskStatus.textContent = msg || "";
         taskStatus.className = "status " + (ok ? "ok" : "err");
@@ -1733,9 +1846,9 @@ function generateSlotsFromInputs() {
         }
       });
 
-      // 初回ロード
-      // ★ 初回は時間帯設定を読み込んでからプルダウン生成
+      // 初回ロード（時間帯設定 → プルダウン生成 → textarea反映）
       loadTimeSlotsConfig(true);
+
 
 
       // =============================
