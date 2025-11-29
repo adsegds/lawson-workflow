@@ -1514,28 +1514,48 @@ activateView("news");
 
       // slotSelect の option を作り直す
       function renderSlotOptions(slots, initialLoad) {
-        slotSelect.innerHTML = "";
-        if (!slots || slots.length === 0) {
-          slots = getDefaultSlots();
-        }
+  slotSelect.innerHTML = "";
+  if (!slots || slots.length === 0) {
+    slots = getDefaultSlots();
+  }
 
-        slots.forEach((s) => {
-          const opt = document.createElement("option");
-          opt.value = s.id;
-          opt.textContent = s.label;
-          slotSelect.appendChild(opt);
-        });
+  slots.forEach((s) => {
+    const opt = document.createElement("option");
+    opt.value = s.id;
 
-        // 1個目を選択
-        if (!slotSelect.value && slots[0]) {
-          slotSelect.value = slots[0].id;
-        }
+    let text = "";
 
-        // 選択された時間帯の定義を読み込む
-        if (slotSelect.value) {
-          loadSlotDefinition(slotSelect.value);
-        }
-      }
+    // ★ カスタム編集で入力した行には _raw が入っている
+    // 例: "06:00-09:00 朝の立ち上げ"
+    if (s._raw && typeof s._raw === "string") {
+      // 先頭の時間部分とラベル部分に分割
+      const parts = s._raw.split(/\s+/, 2);
+      const rangePart = parts[0];          // "06:00-09:00"
+      const labelPart = parts[1] || "";    // "朝の立ち上げ"（ない場合もあり）
+
+      // 06:00-09:00 → 06:00〜09:00 にしてから結合
+      const rangeNice = rangePart.replace("-", "〜");
+      text = labelPart ? `${rangeNice} ${labelPart}` : rangeNice;
+    } else {
+      // デフォルトのスロット（label に時間も入っているやつ）はそのまま
+      text = s.label || s.id;
+    }
+
+    opt.textContent = text;
+    slotSelect.appendChild(opt);
+  });
+
+  // 1個目を選択
+  if (!slotSelect.value && slots[0]) {
+    slotSelect.value = slots[0].id;
+  }
+
+  // 選択された時間帯の定義を読み込む
+  if (slotSelect.value) {
+    loadSlotDefinition(slotSelect.value);
+  }
+}
+
 
       // Firestore から時間帯設定を読み込み
       async function loadTimeSlotsConfig(initialLoad) {
