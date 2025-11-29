@@ -1593,19 +1593,41 @@
       scheduleNextReset();
     }
 
-    // =============================
-    // 時間帯ID 判定
+        // =============================
+    // 時間帯ID 判定（settings/timeSlots 優先）
     // =============================
     function getCurrentSlotIdByHour(hour) {
-      if (hour >= 6 && hour < 9)  return "t6-8";
-      if (hour >= 9 && hour < 12) return "t9-11";
-      if (hour >= 12 && hour < 15) return "t12-14";
-      if (hour >= 15 && hour < 18) return "t15-17";
-      if (hour >= 18 && hour < 21) return "t18-20";
-      if (hour >= 21 && hour < 24) return "t21-23";
-      if (hour >= 0 && hour < 3)   return "t0-2";
+      const h = Number(hour);
+
+      // ① Firestoreの timeSlots 設定があればそっちを優先
+      if (Array.isArray(timeSlotsConfig) && timeSlotsConfig.length > 0) {
+        for (const slot of timeSlotsConfig) {
+          if (!slot || !slot.id) continue;
+          const start = Number(slot.startHour);
+          const end   = Number(slot.endHour);
+          if (Number.isNaN(start) || Number.isNaN(end)) continue;
+
+          // 普通の時間帯（例: 6〜9）
+          if (start <= end) {
+            if (h >= start && h < end) return slot.id;
+          } else {
+            // 日付またぎ（例: 21〜3 とか）
+            if (h >= start || h < end) return slot.id;
+          }
+        }
+      }
+
+      // ② 設定が無い / おかしい時は従来の固定マップ
+      if (h >= 6 && h < 9)  return "t6-8";
+      if (h >= 9 && h < 12) return "t9-11";
+      if (h >= 12 && h < 15) return "t12-14";
+      if (h >= 15 && h < 18) return "t15-17";
+      if (h >= 18 && h < 21) return "t18-20";
+      if (h >= 21 && h < 24) return "t21-23";
+      if (h >= 0 && h < 3)   return "t0-2";
       return "t3-5";
     }
+
 
     function scrollToCurrentTimeSlot() {
       const now = new Date();
