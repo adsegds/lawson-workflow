@@ -1560,15 +1560,6 @@ body.app-ready .app {
         document.body.classList.add("app-ready");
       }
 
-
-    
-    document.addEventListener("DOMContentLoaded", () => {
-      const loginScreen = document.getElementById("loginScreen");
-      const appEl = document.querySelector(".app");
-      const loginStoreIdInput = document.getElementById("loginStoreId");
-      const loginStorePassInput = document.getElementById("loginStorePass");
-      const loginBtn = document.getElementById("loginBtn");
-
       function showLogin() {
         if (loginScreen) loginScreen.style.display = "flex";
         if (appEl) appEl.style.display = "none";
