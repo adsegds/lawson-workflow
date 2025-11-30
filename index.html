@@ -692,7 +692,7 @@
     font-size: 0.9em;
   }
 
-  /* === フルスクリーン化 === */
+    /* === 左からスライドするメニューオーバーレイ === */
   .app-menu-overlay {
     position: fixed;
     top: 0;
@@ -700,8 +700,8 @@
     right: 0;
     bottom: 0;
     background: rgba(0,0,0,0.4);
-    display: none;
-    justify-content: flex-end;
+    display: none;              /* JSで .open をつけたら表示 */
+    justify-content: flex-start;/* 左側にメニューを寄せる */
     z-index: 7000;
   }
 
@@ -709,26 +709,44 @@
     display: flex;
   }
 
+  /* 左端からニュッと出てくるシート本体 */
   .app-menu-sheet {
-    width: 100%;
+    width: 80%;
+    max-width: 320px;
     height: 100vh;
     background: #fff;
     border-radius: 0;
     padding: 16px;
     display: flex;
     flex-direction: column;
-    animation: slideUp 0.25s ease-out;
+    box-shadow: 4px 0 12px rgba(0,0,0,0.25);
+    animation: slideInFromLeft 0.2s ease-out;
   }
 
+  /* 横幅あるときは固定幅に */
+  @media (min-width: 768px) {
+    .app-menu-sheet {
+      width: 320px;
+    }
+  }
+
+  /* メニュー中身はスクロール可 */
   .app-menu-body {
     flex: 1;
     overflow-y: auto;
     padding-bottom: 40px;
   }
 
-  @keyframes slideUp {
-    from { transform: translateY(20%); opacity: 0; }
-    to   { transform: translateY(0); opacity: 1; }
+  /* 左からのスライドアニメーション */
+  @keyframes slideInFromLeft {
+    from {
+      transform: translateX(-20%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
   }
 
   /* ===== ① お知らせ既読バッジ ＋ ボタン ===== */
