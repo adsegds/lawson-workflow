@@ -2450,10 +2450,23 @@
         }
 
         // ★ ここで timeSlots を読み込み → その後にバーとタスクを構築
-        loadTimeSlotsConfig().then(() => {
+              // 7:00 の自動リセット
+      setupDailyResetAt7AM();
+
+      // ★ 時間帯マスタを読んでからバーとタスクを構築
+      loadTimeSlotsConfig()
+        .then(() => {
+          // ここで timeSlots 反映済み
           initializeProgressBars();
-          loadTaskDefinitions().then(updateCompletionUI);
+          return loadTaskDefinitions();
+        })
+        .then(() => {
+          updateCompletionUI();
+        })
+        .catch((err) => {
+          console.error("初期処理でエラー:", err);
         });
+
 
         setupDailyResetAt7AM();
       } // startApp ここまで
