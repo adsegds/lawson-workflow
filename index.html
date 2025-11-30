@@ -1485,6 +1485,58 @@
     let SLOT_RANGES   = [];                                  // getCurrentSlotId 用
 
 
+    // Firestore から読んだ時間帯情報から「getCurrentSlotIdByHour」用の範囲テーブルを作る
+    function setupSlotRanges() {
+      SLOT_RANGES = [];
+
+      // SLOT_CONFIG がまだなければデフォルトを使う
+      if (!Array.isArray(SLOT_CONFIG) || SLOT_CONFIG.length === 0) {
+        SLOT_CONFIG = getDefaultSlotConfig();
+      }
+
+      const slots = SLOT_CONFIG;
+
+      slots.forEach((slot, index) => {
+        let start = null;
+        let end   = null;
+
+        // 1) owner.html で保存しているであろう startHour / endHour を優先
+        if (typeof slot.startHour === "number") start = slot.startHour;
+        if (typeof slot.endHour === "number")   end   = slot.endHour;
+
+        // 2) id から t6-8 形式をパース
+        if ((start === null || end === null) && slot.id) {
+          const m = String(slot.id).match(/^t(\d+)-(\d+)$/);
+          if (m) {
+            if (start === null) start = parseInt(m[1], 10);
+            if (end   === null) end   = parseInt(m[2], 10);
+          }
+        }
+
+        // 3) ラベル「6:00〜8:59」などからパース（カスタムラベルでもなるべく対応）
+        if ((start === null || end === null) && slot.label) {
+          const m2 = String(slot.label).match(/(\d{1,2})[:：]\d{2}.*?(\d{1,2})[:：]\d{2}/);
+          if (m2) {
+            if (start === null) start = parseInt(m2[1], 10);
+            if (end   === null) end   = parseInt(m2[2], 10);
+          }
+        }
+
+        // 4) それでも決まらない場合は「index × 3時間」でざっくり埋める（保険）
+        if (start === null || Number.isNaN(start)) {
+          start = (index * 3) % 24;
+        }
+        if (end === null || Number.isNaN(end)) {
+          end = (start + 3) % 24;
+        }
+
+        SLOT_RANGES.push({
+          id: slot.id || `slot-${index}`,
+          start,
+          end
+        });
+      });
+    }
 
 
 
