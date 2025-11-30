@@ -802,8 +802,7 @@
     border-radius: 10px 10px 0 0;
   }
   #notice-section .slot-header {
-    align-items: 
-    center;
+    align-items: center;
     margin-bottom: 6px;
   }
   #notice-section .slot-title {
@@ -862,7 +861,6 @@
   #notice-section .notice-read-btn:hover {
     background: #ffe8c2;
   }
-
 
 .owner-news-summary {
   background: #fff;
@@ -949,7 +947,6 @@
   cursor: pointer;
 }
 
-
   </style>
 </head>
 <body>
@@ -1021,7 +1018,7 @@
 
       <!-- 時間帯ナビ -->
       <nav class="nav">
-        <!-- ★ JSで timeSlots 設定から上書き生成する -->
+        <!-- JSで timeSlots 設定から上書き生成する -->
         <a href="#t6-8">6〜8時</a>
         <a href="#t9-11">9〜11時</a>
         <a href="#t12-14">12〜14時</a>
@@ -1109,10 +1106,9 @@
         </div>
       </section>
 
-      <!-- ===== 以下、時間帯ごとのタスク ===== -->
-      <!-- ★ この8つのセクションに「上から順に」timeSlotsを当てはめる -->
+      <!-- ===== 以下、時間帯ごとのタスク（最初の8枚はテンプレ） ===== -->
 
-      <!-- 6〜8時（初期） -->
+      <!-- 6〜8時（テンプレ1枚目） -->
       <section id="t6-8" class="slot">
         <div class="slot-header">
           <div class="slot-title">6:00〜8:00</div>
@@ -1121,20 +1117,12 @@
         <div class="tasks-group">
           <h3><span class="badge badge-a">A 必須</span> この時間に必ずやること</h3>
           <ul class="tasks a">
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">CDC納品・片づけ（2便）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">ベーカリー納品・片づけ（2便）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">コーヒーマシン清掃（本体・コンディメント什器・周辺）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">トイレ点検</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">ポットのお湯確認</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">店内・店頭ゴミ袋の点検・交換</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">温度チェック</span></label></li>
+            <!-- Firestoreの定義で上書きされる -->
           </ul>
         </div>
         <div class="tasks-group">
           <h3><span class="badge badge-b">B 余裕</span> 時間が余ったときにできたら助かること</h3>
           <ul class="tasks b">
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">店内・店頭ゴミ箱の清掃</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">サービスコーナー（Loppi・ATM・コピー機）・イートイン清掃</span></label></li>
           </ul>
         </div>
       </section>
@@ -1147,35 +1135,11 @@
         </div>
         <div class="tasks-group">
           <h3><span class="badge badge-a">A 必須</span> この時間に必ずやること</h3>
-          <ul class="tasks a">
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">トイレ点検</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">12時締め発注</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">床清掃</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">プライスカード取り付け</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">ポットのお湯確認</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">レジ点検（現金・金券）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">コーヒーマシン清掃（本体・コンディメント・周辺）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">店舗周辺の清掃</span></label></li>
-          </ul>
+          <ul class="tasks a"></ul>
         </div>
         <div class="tasks-group">
           <h3><span class="badge badge-b">B 余裕</span> 時間が余ったときにできたら助かること</h3>
-          <ul class="tasks b">
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">店内・店頭ゴミ袋の点検・交換</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">消耗品発注（必要あれば）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">FF・厨房原料 使用期限チェック</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">灰皿清掃</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">前陳（ソフトドリンク・冷蔵酒・菓子・即席麺）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">床清掃（2回目）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">品出し（ソフトドリンク・冷蔵酒）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">補充（たばこ）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">FF販売許容確認・廃棄</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">ホット/常温FF作成（昼）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">マチカフェ販売準備（アイスカップ補充など）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">トイレ清掃（1日1回）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">隙あらば前陳（米飯・オープンケース・デザート・ベーカリー）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">月曜のみ：新商品販促物設置</span></label></li>
-          </ul>
+          <ul class="tasks b"></ul>
         </div>
       </section>
 
@@ -1187,29 +1151,11 @@
         </div>
         <div class="tasks-group">
           <h3><span class="badge badge-a">A 必須</span> この時間に必ずやること</h3>
-          <ul class="tasks a">
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">CDC納品・片づけ（3便）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">前陳（ソフトドリンク・冷蔵酒、菓子・即席麺）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">ポットのお湯確認</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">14時オープンケース廃棄（米飯・調理パン・ベーカリー）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">廃棄登録</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">コーヒーマシン清掃</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">トイレ清掃（1日1回）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">伝票整理</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">送金</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">灰皿清掃</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">補充（ホットドリンク）</span></label></li>
-          </ul>
+          <ul class="tasks a"></ul>
         </div>
         <div class="tasks-group">
           <h3><span class="badge badge-b">B 余裕</span> 時間が余ったときにできたら助かること</h3>
-          <ul class="tasks b">
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">隙あらば前陳（米飯・オープンケース・デザート・ベーカリー）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">品出し（菓子・即席麺・ドリンク剤・アイス・冷凍食品）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">店内・店頭ゴミ箱の清掃</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">床清掃</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">ダスタークロスがけ</span></label></li>
-          </ul>
+          <ul class="tasks b"></ul>
         </div>
       </section>
 
@@ -1221,27 +1167,11 @@
         </div>
         <div class="tasks-group">
           <h3><span class="badge badge-a">A 必須</span> この時間に必ずやること</h3>
-          <ul class="tasks a">
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">隙あらば前陳（米飯・オープンケース・デザート・ベーカリー）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">前陳（アイス・冷凍食品、ソフトドリンク・冷蔵酒、菓子・即席麺）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">補充（たばこ）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">FF販売許容確認・廃棄</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">ホット・常温FF作成（夕）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">トイレ点検</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">店舗周辺の清掃</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">温度チェック</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">たばこ納品・片づけ</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">中華まん作成（昼）</span></label></li>
-          </ul>
+          <ul class="tasks a"></ul>
         </div>
         <div class="tasks-group">
           <h3><span class="badge badge-b">B 余裕</span> 時間が余ったときにできたら助かること</h3>
-          <ul class="tasks b">
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">レジ点検</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">ダスタークロスがけ</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">入口ドア拭き上げ</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">月曜のみ：販促物設置</span></label></li>
-          </ul>
+          <ul class="tasks b"></ul>
         </div>
       </section>
 
@@ -1253,33 +1183,11 @@
         </div>
         <div class="tasks-group">
           <h3><span class="badge badge-a">A 必須</span> この時間に必ずやること</h3>
-          <ul class="tasks a">
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">店内・店頭ゴミ袋の点検・交換</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">トイレ清掃（1日1回）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">前陳（菓子・即席麺、ソフトドリンク・冷蔵酒）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">トイレ点検</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">店舗周辺の清掃</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">コーヒーマシン清掃</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">油の酸価度チェック</span></label></li>
-          </ul>
+          <ul class="tasks a"></ul>
         </div>
         <div class="tasks-group">
           <h3><span class="badge badge-b">B 余裕</span> 時間が余ったときにできたら助かること</h3>
-          <ul class="tasks b">
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">雑誌・書籍メンテ</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">夕刊返品</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">ホット・常温FF作成（夜）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">製氷機清掃（水・土）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">棚清掃（日用品1台）（水・土）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">床清掃</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">ダスタークロスがけ</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">返本</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">店頭（軒下・ガラス面）清掃（水・土）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">店内・店頭ゴミ箱清掃</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">20時オープンケース廃棄（長鮮度おにぎり・長鮮手巻）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">店外/店内マット清掃（水・土）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">冷凍機器清掃（水）</span></label></li>
-          </ul>
+          <ul class="tasks b"></ul>
         </div>
       </section>
 
@@ -1291,30 +1199,11 @@
         </div>
         <div class="tasks-group">
           <h3><span class="badge badge-a">A 必須</span> この時間に必ずやること</h3>
-          <ul class="tasks a">
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">補充（たばこ）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">DDC納品・片づけ（※水・土はDDC無し → 掃除の日）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">22時オープンケース廃棄（米飯・調理パン・チルド弁当・調理麺…）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">マチカフェ販売準備（アイスカップ）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">トイレ点検</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">灰皿清掃</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">温度チェック</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">トイレ点検（再）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">0時オープンケース廃棄（次時間帯へ）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">ホットドリンク販売許容確認・廃棄</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">廃棄登録</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">コーヒーマシン清掃（本体クリーニング）</span></label></li>
-          </ul>
+          <ul class="tasks a"></ul>
         </div>
         <div class="tasks-group">
           <h3><span class="badge badge-b">B 余裕</span> 時間が余ったときにできたら助かること</h3>
-          <ul class="tasks b">
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">店内販促物設置（新商品納品日でない日）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">トイレ清掃（1日1回）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">平場販売許容確認・廃棄</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">フィルター・吸込口・換気扇清掃（水・土）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">フライヤー清掃・油交換（水・土）</span></label></li>
-          </ul>
+          <ul class="tasks b"></ul>
         </div>
       </section>
 
@@ -1326,27 +1215,11 @@
         </div>
         <div class="tasks-group">
           <h3><span class="badge badge-a">A 必須</span> この時間に必ずやること</h3>
-          <ul class="tasks a">
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">FDC納品・片づけ</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">温度チェック</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">検収印日付変更</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">精算</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">コピー機精算・用紙補充（入金含む）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">雑誌納品・片づけ</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">FF什器清掃（中華まん）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">FF販売許容確認・廃棄</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">ホットドリンク販売許容確認・廃棄</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">1時オープンケース廃棄（米飯・調理パン）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">平場販売許容確認・廃棄</span></label></li>
-          </ul>
+          <ul class="tasks a"></ul>
         </div>
         <div class="tasks-group">
           <h3><span class="badge badge-b">B 余裕</span> 時間が余ったときにできたら助かること</h3>
-          <ul class="tasks b">
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">カウンター清掃</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">深夜時間帯の紙幣確認・調整</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">レジ・カウンター周辺清掃</span></label></li>
-          </ul>
+          <ul class="tasks b"></ul>
         </div>
       </section>
 
@@ -1358,22 +1231,11 @@
         </div>
         <div class="tasks-group">
           <h3><span class="badge badge-a">A 必須</span> この時間に必ずやること</h3>
-          <ul class="tasks a">
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">朝刊納品・片づけ</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">品出し（全商品）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">品出し（チルド飲料）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">棚滑り掃除（1台）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">ホット・常温FF作成（朝）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">中華まん作成（朝）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">CDC納品・片づけ（2便）</span></label></li>
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">4時オープンケース廃棄（米飯・長鮮手巻・チルド弁当…）</span></label></li>
-          </ul>
+          <ul class="tasks a"></ul>
         </div>
         <div class="tasks-group">
           <h3><span class="badge badge-b">B 余裕</span> 時間が余ったときにできたら助かること</h3>
-          <ul class="tasks b">
-            <li><label class="task-item"><input type="checkbox"><span class="task-text">余裕があれば：前陳・清掃を追加</span></label></li>
-          </ul>
+          <ul class="tasks b"></ul>
         </div>
       </section>
 
@@ -1656,87 +1518,6 @@
         if (appEl) appEl.style.display = "block";
       }
 
-
-
-
-
-// ========= カスタム時間帯の一覧 =========
-// owner.html で settings/timeSlots に保存されたやつをここに入れる
-// 形式: [{ id, label, start, end, sortOrder }, ...]
-let activeTimeSlots = [];
-
-/**
- * settings/timeSlots ドキュメントから時間帯設定を読む
- * 無ければ従来のデフォルト時間帯を使う
- */
-async function loadTimeSlots(storeRef) {
-  try {
-    const doc = await storeRef.collection("settings").doc("timeSlots").get();
-
-    if (!doc.exists) {
-      // ▼ ドキュルト（今までのやつ）にフォールバック
-      activeTimeSlots = [
-        { id: "t6-9",  label: "朝の立ち上げ", start: "06:00", end: "09:00", sortOrder: 1 },
-        { id: "t9-12", label: "午前帯",       start: "09:00", end: "12:00", sortOrder: 2 },
-        { id: "t12-15",label: "昼ピーク",     start: "12:00", end: "15:00", sortOrder: 3 },
-        { id: "t15-18",label: "午後帯",       start: "15:00", end: "18:00", sortOrder: 4 },
-        { id: "t18-21",label: "夕方ピーク",   start: "18:00", end: "21:00", sortOrder: 5 },
-        { id: "t21-24",label: "深夜帯",       start: "21:00", end: "24:00", sortOrder: 6 }
-      ];
-      return;
-    }
-
-    const data = doc.data() || {};
-
-    // owner.html 側でこういう形で保存してる想定:
-    // { slots: [ {id, label, start, end, sortOrder}, ... ] }
-    if (Array.isArray(data.slots) && data.slots.length) {
-      activeTimeSlots = data.slots.slice().sort((a, b) =>
-        (a.sortOrder ?? 0) - (b.sortOrder ?? 0)
-      );
-      return;
-    }
-
-    // もし "06:00-09:00 朝の立ち上げ" みたいなテキストだけ保存してる場合
-    if (typeof data.text === "string") {
-      activeTimeSlots = data.text
-        .split("\n")
-        .map(line => line.trim())
-        .filter(Boolean)
-        .map((line, idx) => {
-          const m = line.match(/^(\d{1,2}:\d{2})\s*-\s*(\d{1,2}:\d{2})\s*(.+)$/);
-          if (m) {
-            return {
-              id: `slot${idx + 1}`,
-              start: m[1],
-              end:   m[2],
-              label: m[3],
-              sortOrder: idx + 1
-            };
-          }
-          // パースできなかった行はそのままラベルだけ
-          return {
-            id: `slot${idx + 1}`,
-            start: null,
-            end:   null,
-            label: line,
-            sortOrder: idx + 1
-          };
-        });
-    }
-  } catch (e) {
-    console.error("時間帯設定の取得に失敗", e);
-  }
-}
-
-
-
-
-
-
-
-      
-
       // =============================
       // 本体初期化（STORE_ID / storeRef がセット済みで呼ぶ）
       // =============================
@@ -1759,7 +1540,11 @@ async function loadTimeSlots(storeRef) {
           }
         }
 
-        
+        // ★ ヘッダーナビを表示（CSSでは display: none なので JSでON）
+        const navElForDisplay = document.querySelector(".nav");
+        if (navElForDisplay) {
+          navElForDisplay.style.display = "flex";
+        }
 
         // ===== DMM風メニュー開閉 =====
         const appMenuBtn = document.getElementById("appMenuBtn");
@@ -1947,224 +1732,141 @@ async function loadTimeSlots(storeRef) {
         updateTimeDisplay();
         setInterval(updateTimeDisplay, 1000);
 
-                // =============================
-        // timeSlots の定義（owner.html → settings/timeSlots を反映）
         // =============================
+        // timeSlots の定義（デフォルト + Firestore）
+        // =============================
+        // index.html に最初からある8個のセクションを「順番」で保持しておく
+        const originalSlotIdsInDom = ["t6-8","t9-11","t12-14","t15-17","t18-20","t21-23","t0-2","t3-5"];
+        const initialSlotSectionEls = originalSlotIdsInDom
+          .map((id) => document.getElementById(id))
+          .filter(Boolean);
 
-        // タスク定義 & チェック状態で使うIDリスト（デフォルト）
-        let timeSlotIds = [
-          "t6-8","t9-11","t12-14","t15-17","t18-20","t21-23","t0-2","t3-5"
+        // 実際に使うセクション配列（必要に応じて増やす）
+        let timeSlotSectionEls = [...initialSlotSectionEls];
+
+        // テンプレート（1枚目）をクローン用に保持
+        const slotTemplate = initialSlotSectionEls[0]
+          ? initialSlotSectionEls[0].cloneNode(true)
+          : null;
+
+        if (slotTemplate) {
+          // id は後から付け直すので一旦外す
+          slotTemplate.removeAttribute("id");
+          slotTemplate.dataset.slotId = "";
+
+          const titleEl = slotTemplate.querySelector(".slot-title");
+          const noteEl  = slotTemplate.querySelector(".slot-note");
+          if (titleEl) titleEl.textContent = "";
+          if (noteEl)  noteEl.textContent  = "";
+
+          // タスクは Firestore から入れるのでテンプレは空にしておく
+          slotTemplate.querySelectorAll("ul.tasks").forEach((ul) => {
+            ul.innerHTML = "";
+          });
+
+          // 念のため進捗バーがあれば削除
+          const prog = slotTemplate.querySelector(".slot-progress");
+          if (prog) prog.remove();
+        }
+
+        // 必要な数だけセクションを増やす（24個までOK）
+        function ensureSlotSectionCount(count) {
+          if (!slotTemplate) return;
+          if (timeSlotSectionEls.length >= count) return;
+
+          // 既存スロットのいちばん最後と同じ親に追加する
+          const last = timeSlotSectionEls[timeSlotSectionEls.length - 1];
+          const container = last ? last.parentElement : null;
+          if (!container) return;
+
+          while (timeSlotSectionEls.length < count) {
+            const newSection = slotTemplate.cloneNode(true);
+            container.appendChild(newSection);
+            timeSlotSectionEls.push(newSection);
+          }
+        }
+
+        // デフォルトの時間帯定義（owner.html 側と同じIDにしておく）
+        let timeSlotConfigs = [
+          { id: "t6-8",  label: "6:00〜8:00",  note: "朝の立ち上げ", fromHour: 6,  toHour: 8  },
+          { id: "t9-11", label: "9:00〜11:00", note: "午前帯",       fromHour: 9,  toHour: 11 },
+          { id: "t12-14",label: "12:00〜14:00",note: "昼帯",         fromHour: 12, toHour: 14 },
+          { id: "t15-17",label: "15:00〜17:00",note: "夕方前",       fromHour: 15, toHour: 17 },
+          { id: "t18-20",label: "18:00〜20:00",note: "夕方〜夜",     fromHour: 18, toHour: 20 },
+          { id: "t21-23",label: "21:00〜23:00",note: "夜帯",         fromHour: 21, toHour: 23 },
+          { id: "t0-2",  label: "0:00〜2:00",  note: "深夜前半",     fromHour: 0,  toHour: 2  },
+          { id: "t3-5",  label: "3:00〜5:00",  note: "早朝",         fromHour: 3,  toHour: 5  }
         ];
 
-        const DEFAULT_SLOT_IDS = [
-          "t6-8","t9-11","t12-14","t15-17",
-          "t18-20","t21-23","t0-2","t3-5"
-        ];
-        const DEFAULT_SLOT_TITLES = [
-          "朝の立ち上げ",
-          "午前帯",
-          "昼ピーク",
-          "夕方前",
-          "夕方〜夜",
-          "夜帯",
-          "深夜前半",
-          "早朝"
-        ];
+        let timeSlotIds = timeSlotConfigs.map((s) => s.id);
+
+        // DOMに timeSlotConfigs を反映（タイトル・サブタイトル・セクションID / nav）
+        function applyTimeSlotsToUI() {
+          // セクション側
+          timeSlotSectionEls.forEach((sectionEl, index) => {
+            const cfg = timeSlotConfigs[index];
+            if (!cfg) {
+              sectionEl.style.display = "none";
+              return;
+            }
+            sectionEl.style.display = "";
+            sectionEl.id = cfg.id;
+            sectionEl.dataset.slotId = cfg.id;
+
+            const titleEl = sectionEl.querySelector(".slot-title");
+            const noteEl  = sectionEl.querySelector(".slot-note");
+            if (titleEl && cfg.label) titleEl.textContent = cfg.label;
+            if (noteEl && cfg.note)   noteEl.textContent  = cfg.note;
+          });
+
+          // ヘッダー nav
+          const nav = document.querySelector(".nav");
+          if (nav) {
+            nav.innerHTML = "";
+            timeSlotConfigs.forEach((cfg) => {
+              const a = document.createElement("a");
+              a.href = `#${cfg.id}`;
+              a.textContent = cfg.label || cfg.id;
+              nav.appendChild(a);
+            });
+          }
+
+          // 今やっている時間帯判定にも反映
+          setDynamicTimeSlots(timeSlotConfigs);
+        }
 
         async function loadTimeSlotsConfig() {
-  let slots = [];
-
-  try {
-    const snap = await storeRef
-      .collection("settings")
-      .doc("timeSlots")
-      .get();
-
-    if (snap.exists) {
-      const data = snap.data() || {};
-      if (Array.isArray(data.slots)) {
-        slots = data.slots;
-      }
-    }
-  } catch (e) {
-    console.error("timeSlots 読み込みエラー:", e);
-  }
-
-  // ★ カスタム時間帯を「今の時間帯へ」判定ロジックに反映
-  setDynamicTimeSlots(slots);
-
-  const navEl = document.querySelector(".nav");
-  if (navEl) {
-    navEl.innerHTML = "";
-  }
-
-  const pad = (v) => String(v).padStart(2, "0");
-  const usedSlotIds = [];
-
-  // =============================
-  // ① カスタム timeSlots がある場合
-  //    → その個数ぶんだけカードを使う
-  //    → 余ったカードは非表示にする
-  // =============================
-  if (Array.isArray(slots) && slots.length) {
-    for (let i = 0; i < DEFAULT_SLOT_IDS.length; i++) {
-      const baseId  = DEFAULT_SLOT_IDS[i];   // 例: "t6-8"
-      const section = document.getElementById(baseId);
-      if (!section) continue;
-
-      // Firestore にデータが無いカードは「使わない」→ 非表示
-      if (i >= slots.length) {
-        section.style.display = "none";
-        continue;
-      }
-
-      section.style.display = ""; // 念のため表示ON
-
-      const slot    = slots[i] || {};
-      const titleEl = section.querySelector(".slot-title");
-      const noteEl  = section.querySelector(".slot-note");
-
-      // --- Firestore 側のフィールド想定 ---
-      // id        : "t6-9" など（無ければ既存のIDを使う）
-      // label     : "朝の立ち上げ"
-      // note      : 右上の小さい説明文
-      // startHour : 6
-      // endHour   : 9
-      const label = slot.label || slot.name || slot.title || DEFAULT_SLOT_TITLES[i];
-      const note  = slot.note  || slot.description || "";
-
-      let timeText = "";
-      if (slot.startHour != null && slot.endHour != null) {
-        timeText = `${pad(slot.startHour)}:00〜${pad(slot.endHour)}:00`;
-      } else if (slot.timeRange || slot.range || slot.time) {
-        timeText = slot.timeRange || slot.range || slot.time;
-      }
-
-      // section の id （アンカー用）
-      const slotId = slot.id || baseId;
-      section.id = slotId;
-      usedSlotIds.push(slotId);
-
-      // 見出しテキスト
-      if (titleEl) {
-        titleEl.textContent = timeText
-          ? `${timeText} ${label}`
-          : label;
-      }
-      if (noteEl) {
-        noteEl.textContent = note || "";
-      }
-
-      // ナビボタン
-      if (navEl) {
-        const a = document.createElement("a");
-        a.href = `#${slotId}`;
-        a.textContent = slot.navLabel || label || timeText || `時間帯${i + 1}`;
-        navEl.appendChild(a);
-      }
-    }
-  } else {
-    // =============================
-    // ② カスタム無し（従来どおり 8枚全部表示）
-    // =============================
-    DEFAULT_SLOT_IDS.forEach((baseId, i) => {
-      const section = document.getElementById(baseId);
-      if (!section) return;
-      section.style.display = ""; // 念のため表示ON
-
-      const slotId = baseId;
-      usedSlotIds.push(slotId);
-
-      if (navEl) {
-        const label = DEFAULT_SLOT_TITLES[i] || `時間帯${i + 1}`;
-        const a = document.createElement("a");
-        a.href = `#${slotId}`;
-        a.textContent = label;
-        navEl.appendChild(a);
-      }
-    });
-  }
-
-  if (navEl && usedSlotIds.length) {
-    navEl.style.display = "flex";
-  }
-
-  // ここで「有効な時間帯IDだけ」を全体に共有
-  timeSlotIds = usedSlotIds;
-}
-
-
-
-          const pad = (v) => String(v).padStart(2, "0");
-          const usedSlotIds = [];
-
-          // 今の index.html にはカードが 8枚しかないので、8枚分だけマスタを流し込む
-          for (let i = 0; i < DEFAULT_SLOT_IDS.length; i++) {
-            const baseId  = DEFAULT_SLOT_IDS[i]; // 例: "t6-8"
-            const section = document.getElementById(baseId);
-            if (!section) continue;
-
-            const slot    = slots[i] || {};
-            const titleEl = section.querySelector(".slot-title");
-            const noteEl  = section.querySelector(".slot-note");
-
-            // --- Firestore 側のフィールド想定 ---
-            // id         : "t6-9" など（無ければ既存のIDを使う）
-            // label      : "朝の立ち上げ"
-            // note       : 右上の小さい説明文
-            // startHour  : 6
-            // endHour    : 9
-            const label = slot.label || slot.name || slot.title || DEFAULT_SLOT_TITLES[i];
-            const note  = slot.note  || slot.description || "";
-
-            let timeText = "";
-
-            if (slot.startHour != null && slot.endHour != null) {
-              timeText = `${pad(slot.startHour)}:00〜${pad(slot.endHour)}:00`;
-            } else if (slot.timeRange || slot.range || slot.time) {
-              // 文字列で "06:00〜09:00" を持ってるパターン
-              timeText = slot.timeRange || slot.range || slot.time;
-            }
-
-            // section の id （アンカー用）
-            const slotId = slot.id || baseId;
-            section.id = slotId;
-            usedSlotIds.push(slotId);
-
-            // タイトル書き換え: 「06:00〜09:00 朝の立ち上げ」 みたいな感じ
-            if (titleEl) {
-              if (timeText) {
-                titleEl.textContent = `${timeText} ${label}`;
-              } else {
-                titleEl.textContent = label;
+          try {
+            const doc = await storeRef.collection("settings").doc("timeSlots").get();
+            if (doc.exists) {
+              const data = doc.data() || {};
+              const slots = Array.isArray(data.slots) ? data.slots : [];
+              if (slots.length) {
+                // Firestore の slots を優先
+                timeSlotConfigs = slots.map((s, index) => {
+                  const base = timeSlotConfigs[index] || {};
+                  const id = s.id || s.slotId || base.id || `slot${index + 1}`;
+                  const label = s.label || s.title || base.label || id;
+                  const note  = s.note  || s.subtitle || base.note  || "";
+                  const fromHour = Number(
+                    s.fromHour ?? s.startHour ?? s.from ?? s.start ?? base.fromHour ?? 0
+                  );
+                  const toHour = Number(
+                    s.toHour ?? s.endHour ?? s.to ?? s.end ?? base.toHour ?? 0
+                  );
+                  return { id, label, note, fromHour, toHour };
+                });
               }
             }
-
-            // 右上の説明
-            if (noteEl) {
-              noteEl.textContent = note || "";
-            }
-
-            // ヘッダーの時間帯ナビを作り直し
-            if (navEl) {
-              const a = document.createElement("a");
-              a.href = `#${slotId}`;
-              a.textContent =
-                slot.navLabel ||    // nav 用の短いラベルがあれば
-                label ||            // なければラベル
-                timeText ||         // それも無ければ時間だけ
-                `時間帯${i + 1}`;
-              navEl.appendChild(a);
-            }
+          } catch (e) {
+            console.error("timeSlots 設定の読み込みエラー", e);
           }
 
-          // .nav を表示
-          if (navEl && usedSlotIds.length) {
-            navEl.style.display = "flex";
-          }
+          // timeSlots の数だけカードを増やす
+          ensureSlotSectionCount(timeSlotConfigs.length);
 
-          // 以降のタスク処理で使う ID 一覧を上書き
-          timeSlotIds = usedSlotIds;
+          timeSlotIds = timeSlotConfigs.map((s) => s.id);
+          applyTimeSlotsToUI();
         }
 
         // タスク定義 & チェック状態
@@ -2268,6 +1970,7 @@ async function loadTimeSlots(storeRef) {
                   buildTasksFromDefinition(slotId, ulA, tasksA, "A");
                   buildTasksFromDefinition(slotId, ulB, tasksB, "B");
                 } else {
+                  // Firestore に定義がない場合 → 既存 li を ID 付与で使う（テンプレが空なら何も出ない）
                   const setupFromExisting = (ul, groupLabel) => {
                     ul.querySelectorAll("li").forEach((li, index) => {
                       const cb = li.querySelector('input[type="checkbox"]');
@@ -2631,25 +2334,12 @@ async function loadTimeSlots(storeRef) {
         }
 
         // ★ ここで timeSlots を読み込み → その後にバーとタスクを構築
-              // 7:00 の自動リセット
-      setupDailyResetAt7AM();
-
-      // ★ 時間帯マスタを読んでからバーとタスクを構築
-      loadTimeSlotsConfig()
-        .then(() => {
-          // ここで timeSlots 反映済み
+        loadTimeSlotsConfig().then(() => {
           initializeProgressBars();
-          return loadTaskDefinitions();
-        })
-        .then(() => {
-          updateCompletionUI();
-        })
-        .catch((err) => {
-          console.error("初期処理でエラー:", err);
+          loadTaskDefinitions().then(updateCompletionUI);
         });
 
-
-        
+        setupDailyResetAt7AM();
       } // startApp ここまで
 
       // =============================
