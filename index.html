@@ -141,7 +141,7 @@
     margin-top: 2px;
   }
 
-  /* DMM風 9ドットメニュー */
+    /* メニューボタン（共通） */
   .app-menu-btn {
     border: none;
     background: transparent;
@@ -155,18 +155,23 @@
   .app-menu-btn:hover {
     background: rgba(255,255,255,0.08);
   }
-  .dots-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 4px);
-    grid-auto-rows: 4px;
+
+  /* 三本線メニューアイコン */
+  .hamburger-icon {
+    display: inline-flex;
+    flex-direction: column;
     gap: 3px;
+    padding: 4px 2px;
   }
-  .dots-grid span {
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background: #fff;
+
+  .hamburger-icon span {
+    display: block;
+    width: 18px;
+    height: 2px;
+    border-radius: 999px;
+    background: #fff;   /* 黒ヘッダーの上で白い線 */
   }
+
 
   /* ナビ（時間帯ジャンプ） */
   .nav {
