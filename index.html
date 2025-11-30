@@ -802,7 +802,8 @@
     border-radius: 10px 10px 0 0;
   }
   #notice-section .slot-header {
-    align-items: center;
+    align-items: 
+    center;
     margin-bottom: 6px;
   }
   #notice-section .slot-title {
@@ -949,8 +950,6 @@
 }
 
 
-    
-    
   </style>
 </head>
 <body>
@@ -1022,6 +1021,7 @@
 
       <!-- 時間帯ナビ -->
       <nav class="nav">
+        <!-- ★ JSで timeSlots 設定から上書き生成する -->
         <a href="#t6-8">6〜8時</a>
         <a href="#t9-11">9〜11時</a>
         <a href="#t12-14">12〜14時</a>
@@ -1041,11 +1041,6 @@
     </header>
 
     <main>
-
-
-
-
-      
       <!-- 現在時刻表示 -->
       <div id="time-display" style="padding: 10px; color: #333;">
         時刻を読み込み中…
@@ -1084,17 +1079,14 @@
             <li>お知らせを読み込み中...</li>
           </ul>
           <div class="notice-bottom-row">
-  <button id="notice-read-btn" class="notice-read-btn">
-    すべて読んだことにする
-  </button>
+            <button id="notice-read-btn" class="notice-read-btn">
+              すべて読んだことにする
+            </button>
 
-  <a href="notice.html" class="notice-center-link">
-    ▶ お知らせセンターを見る
-  </a>
-</div>
-
-          <!-- ここまで追加 -->
-
+            <a href="notice.html" class="notice-center-link">
+              ▶ お知らせセンターを見る
+            </a>
+          </div>
         </div>
       </section>
 
@@ -1118,8 +1110,9 @@
       </section>
 
       <!-- ===== 以下、時間帯ごとのタスク ===== -->
+      <!-- ★ この8つのセクションに「上から順に」timeSlotsを当てはめる -->
 
-      <!-- 6〜8時 -->
+      <!-- 6〜8時（初期） -->
       <section id="t6-8" class="slot">
         <div class="slot-header">
           <div class="slot-title">6:00〜8:00</div>
@@ -1384,7 +1377,6 @@
         </div>
       </section>
 
-
       <!-- ================== グローバル設定メニュー ================== -->
       <div class="app-menu-overlay" id="appMenuOverlay">
         <div class="app-menu-sheet">
@@ -1454,61 +1446,54 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
+    // ===== お知らせ（日付フォーマット） =====
+    function formatDateForSummary(ts) {
+      if (!ts) return "";
+      const d = ts.toDate();
+      const mm = String(d.getMonth() + 1).padStart(2, "0");
+      const dd = String(d.getDate()).padStart(2, "0");
+      const hh = String(d.getHours()).padStart(2, "0");
+      const mi = String(d.getMinutes()).padStart(2, "0");
+      return `${mm}/${dd} ${hh}:${mi}`;
+    }
 
+    const ownerNewsSummaryList = document.getElementById("ownerNewsSummaryList");
+    const ownerNewsSummaryEmpty = document.getElementById("ownerNewsSummaryEmpty");
 
+    // ownerNews の「最新3件だけ」をリアルタイムで取得（要素があるときだけ）
+    if (ownerNewsSummaryList && ownerNewsSummaryEmpty) {
+      db.collection("ownerNews")
+        .orderBy("createdAt", "desc")
+        .limit(3)
+        .onSnapshot((snap) => {
+          ownerNewsSummaryList.innerHTML = "";
 
+          if (snap.empty) {
+            ownerNewsSummaryEmpty.style.display = "block";
+            return;
+          }
+          ownerNewsSummaryEmpty.style.display = "none";
 
- // ===== お知らせ（日付フォーマット） =====
-  function formatDateForSummary(ts) {
-    if (!ts) return "";
-    const d = ts.toDate();
-    const mm = String(d.getMonth() + 1).padStart(2, "0");
-    const dd = String(d.getDate()).padStart(2, "0");
-    const hh = String(d.getHours()).padStart(2, "0");
-    const mi = String(d.getMinutes()).padStart(2, "0");
-    return `${mm}/${dd} ${hh}:${mi}`;
-  }
+          snap.forEach((doc) => {
+            const data = doc.data();
+            const div = document.createElement("div");
+            div.className = "owner-news-item";
 
-  const ownerNewsSummaryList = document.getElementById("ownerNewsSummaryList");
-  const ownerNewsSummaryEmpty = document.getElementById("ownerNewsSummaryEmpty");
+            const title = data.title || "(タイトルなし)";
+            const body = (data.body || "").replace(/\n/g, "　");
+            const author = data.author || "オーナー";
+            const date = formatDateForSummary(data.createdAt);
 
-  // ownerNews の「最新3件だけ」をリアルタイムで取得
-  db.collection("ownerNews")
-    .orderBy("createdAt", "desc")
-    .limit(3)
-    .onSnapshot((snap) => {
-      ownerNewsSummaryList.innerHTML = "";
+            div.innerHTML = `
+              <div class="owner-news-item-title">・${title}</div>
+              <div class="owner-news-item-body">${body}</div>
+              <div class="owner-news-item-meta">${author} ／ ${date}</div>
+            `;
+            ownerNewsSummaryList.appendChild(div);
+          });
+        });
+    }
 
-      if (snap.empty) {
-        ownerNewsSummaryEmpty.style.display = "block";
-        return;
-      }
-      ownerNewsSummaryEmpty.style.display = "none";
-
-      snap.forEach((doc) => {
-        const data = doc.data();
-        const div = document.createElement("div");
-        div.className = "owner-news-item";
-
-        const title = data.title || "(タイトルなし)";
-        const body = (data.body || "").replace(/\n/g, "　");
-        const author = data.author || "オーナー";
-        const date = formatDateForSummary(data.createdAt);
-
-        div.innerHTML = `
-          <div class="owner-news-item-title">・${title}</div>
-          <div class="owner-news-item-body">${body}</div>
-          <div class="owner-news-item-meta">${author} ／ ${date}</div>
-        `;
-        ownerNewsSummaryList.appendChild(div);
-      });
-    });
-    
-
-    
-
-
-    
     // ★ 店舗ごとのパスワード設定
     const STORE_PASSWORDS = {
       nambucho: "nanbu",
@@ -1589,16 +1574,50 @@
     }
 
     // =============================
-    // 時間帯ID 判定
+    // 時間帯ID 判定（owner.html の timeSlots にも対応）
     // =============================
+    let dynamicTimeSlots = null; // [{id,label,fromHour,toHour,note}, …]
+
+    function setDynamicTimeSlots(configs) {
+      dynamicTimeSlots = Array.isArray(configs) && configs.length ? configs : null;
+    }
+
     function getCurrentSlotIdByHour(hour) {
-      if (hour >= 6 && hour < 9)  return "t6-8";
-      if (hour >= 9 && hour < 12) return "t9-11";
-      if (hour >= 12 && hour < 15) return "t12-14";
-      if (hour >= 15 && hour < 18) return "t15-17";
-      if (hour >= 18 && hour < 21) return "t18-20";
-      if (hour >= 21 && hour < 24) return "t21-23";
-      if (hour >= 0 && hour < 3)   return "t0-2";
+      const h = ((hour % 24) + 24) % 24;
+
+      // ★ カスタム timeSlots がある場合はこちらを優先
+      if (dynamicTimeSlots && dynamicTimeSlots.length) {
+        for (const s of dynamicTimeSlots) {
+          const from = Number(
+            s.fromHour ?? s.startHour ?? s.from ?? s.start ?? 0
+          );
+          const to = Number(
+            s.toHour ?? s.endHour ?? s.to ?? s.end ?? 0
+          );
+          if (Number.isNaN(from) || Number.isNaN(to)) continue;
+
+          if (from === to) continue; // 無効
+
+          if (from < to) {
+            // 通常パターン（例：9〜12）
+            if (h >= from && h < to) return s.id;
+          } else {
+            // 0時またぎ（例：21〜3）
+            if (h >= from || h < to) return s.id;
+          }
+        }
+        // どれにも当てはまらなければ先頭を返す
+        return dynamicTimeSlots[0]?.id || "t6-8";
+      }
+
+      // ★ カスタムなし → 旧固定ロジック
+      if (h >= 6 && h < 9)  return "t6-8";
+      if (h >= 9 && h < 12) return "t9-11";
+      if (h >= 12 && h < 15) return "t12-14";
+      if (h >= 15 && h < 18) return "t15-17";
+      if (h >= 18 && h < 21) return "t18-20";
+      if (h >= 21 && h < 24) return "t21-23";
+      if (h >= 0 && h < 3)   return "t0-2";
       return "t3-5";
     }
 
@@ -1641,7 +1660,7 @@
       // 本体初期化（STORE_ID / storeRef がセット済みで呼ぶ）
       // =============================
       function startApp() {
-        // 店舗ID / パスワード表示
+        // 店舗ID / パスワード表示（※ index.html には非表示だけど一応）
         const storeIdDisplay = document.getElementById("storeIdDisplay");
         const storePassDisplay = document.getElementById("storePassDisplay");
 
@@ -1657,6 +1676,12 @@
             storePassDisplay.value = "";
             storePassDisplay.placeholder = "未設定";
           }
+        }
+
+        // ★ ヘッダーナビを表示（CSSでは display: none なので JSでON）
+        const navEl = document.querySelector(".nav");
+        if (navEl) {
+          navEl.style.display = "flex";
         }
 
         // ===== DMM風メニュー開閉 =====
@@ -1845,8 +1870,96 @@
         updateTimeDisplay();
         setInterval(updateTimeDisplay, 1000);
 
+        // =============================
+        // timeSlots の定義（デフォルト + Firestore）
+        // =============================
+        // index.html に最初からある8個のセクションを「順番」で保持しておく
+        const originalSlotIdsInDom = ["t6-8","t9-11","t12-14","t15-17","t18-20","t21-23","t0-2","t3-5"];
+        const timeSlotSectionEls = originalSlotIdsInDom
+          .map((id) => document.getElementById(id))
+          .filter(Boolean);
+
+        // デフォルトの時間帯定義（owner.html 側と同じIDにしておく）
+        let timeSlotConfigs = [
+          { id: "t6-8",  label: "6:00〜8:00",  note: "朝の立ち上げ", fromHour: 6,  toHour: 8  },
+          { id: "t9-11", label: "9:00〜11:00", note: "午前帯",       fromHour: 9,  toHour: 11 },
+          { id: "t12-14",label: "12:00〜14:00",note: "昼帯",         fromHour: 12, toHour: 14 },
+          { id: "t15-17",label: "15:00〜17:00",note: "夕方前",       fromHour: 15, toHour: 17 },
+          { id: "t18-20",label: "18:00〜20:00",note: "夕方〜夜",     fromHour: 18, toHour: 20 },
+          { id: "t21-23",label: "21:00〜23:00",note: "夜帯",         fromHour: 21, toHour: 23 },
+          { id: "t0-2",  label: "0:00〜2:00",  note: "深夜前半",     fromHour: 0,  toHour: 2  },
+          { id: "t3-5",  label: "3:00〜5:00",  note: "早朝",         fromHour: 3,  toHour: 5  }
+        ];
+
+        let timeSlotIds = timeSlotConfigs.map((s) => s.id);
+
+        // DOMに timeSlotConfigs を反映（タイトル・サブタイトル・セクションID / nav）
+        function applyTimeSlotsToUI() {
+          // セクション側
+          timeSlotSectionEls.forEach((sectionEl, index) => {
+            const cfg = timeSlotConfigs[index];
+            if (!cfg) {
+              sectionEl.style.display = "none";
+              return;
+            }
+            sectionEl.style.display = "";
+            sectionEl.id = cfg.id;
+            sectionEl.dataset.slotId = cfg.id;
+
+            const titleEl = sectionEl.querySelector(".slot-title");
+            const noteEl  = sectionEl.querySelector(".slot-note");
+            if (titleEl && cfg.label) titleEl.textContent = cfg.label;
+            if (noteEl && cfg.note)   noteEl.textContent  = cfg.note;
+          });
+
+          // ヘッダー nav
+          const nav = document.querySelector(".nav");
+          if (nav) {
+            nav.innerHTML = "";
+            timeSlotConfigs.forEach((cfg) => {
+              const a = document.createElement("a");
+              a.href = `#${cfg.id}`;
+              a.textContent = cfg.label || cfg.id;
+              nav.appendChild(a);
+            });
+          }
+
+          // 今やっている時間帯判定にも反映
+          setDynamicTimeSlots(timeSlotConfigs);
+        }
+
+        async function loadTimeSlotsConfig() {
+          try {
+            const doc = await storeRef.collection("settings").doc("timeSlots").get();
+            if (doc.exists) {
+              const data = doc.data() || {};
+              const slots = Array.isArray(data.slots) ? data.slots : [];
+              if (slots.length) {
+                // Firestore の slots を優先
+                timeSlotConfigs = slots.map((s, index) => {
+                  const base = timeSlotConfigs[index] || {};
+                  const id = s.id || s.slotId || base.id || `slot${index + 1}`;
+                  const label = s.label || s.title || base.label || id;
+                  const note  = s.note  || s.subtitle || base.note  || "";
+                  const fromHour = Number(
+                    s.fromHour ?? s.startHour ?? s.from ?? s.start ?? base.fromHour ?? 0
+                  );
+                  const toHour = Number(
+                    s.toHour ?? s.endHour ?? s.to ?? s.end ?? base.toHour ?? 0
+                  );
+                  return { id, label, note, fromHour, toHour };
+                });
+              }
+            }
+          } catch (e) {
+            console.error("timeSlots 設定の読み込みエラー", e);
+          }
+
+          timeSlotIds = timeSlotConfigs.map((s) => s.id);
+          applyTimeSlotsToUI();
+        }
+
         // タスク定義 & チェック状態
-        const timeSlotIds = ["t6-8","t9-11","t12-14","t15-17","t18-20","t21-23","t0-2","t3-5"];
         const checkboxMap = new Map();
         let latestCheckedIds = new Set();
 
@@ -2048,9 +2161,6 @@
             action: target.checked ? "check" : "uncheck"
           });
         });
-
-        initializeProgressBars();
-        loadTaskDefinitions().then(updateCompletionUI);
 
         // 引き継ぎメモ（共通）
         const handoverSlots  = document.querySelectorAll(".handover-slot");
@@ -2311,6 +2421,12 @@
             }
           });
         }
+
+        // ★ ここで timeSlots を読み込み → その後にバーとタスクを構築
+        loadTimeSlotsConfig().then(() => {
+          initializeProgressBars();
+          loadTaskDefinitions().then(updateCompletionUI);
+        });
 
         setupDailyResetAt7AM();
       } // startApp ここまで
