@@ -1541,10 +1541,12 @@
         }
 
         // ★ ヘッダーナビを表示（CSSでは display: none なので JSでON）
-        const navElForDisplay = document.querySelector(".nav");
-        if (navElForDisplay) {
-          navElForDisplay.style.display = "flex";
-        }
+        // ★ ヘッダーナビは使わないので表示しない
+// const navElForDisplay = document.querySelector(".nav");
+// if (navElForDisplay) {
+//   navElForDisplay.style.display = "flex";
+// }
+
 
         // ===== DMM風メニュー開閉 =====
         const appMenuBtn = document.getElementById("appMenuBtn");
