@@ -2536,11 +2536,15 @@
         }
 
         // ログイン成功
-        STORE_ID = id;
+         STORE_ID = id;
         storeRef = db.collection("stores").doc(STORE_ID);
         saveLoginCache(STORE_ID);
-        showApp();
-        startApp();
+
+        // ★ 先に時間帯設定を読み込んでからアプリ起動
+        loadTimeSlotsConfig().then(() => {
+          showApp();
+          startApp();
+        });
       }
 
       if (loginBtn) {
