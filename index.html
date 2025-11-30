@@ -1491,6 +1491,131 @@
 
 
 
+    // storeRef はスクリプト後半で
+    //   let STORE_ID = null;
+    //   let storeRef = null;
+    // みたいに作ってあるやつをそのまま使う
+
+    async function loadTimeSlotsConfig() {
+      // storeRef がまだ無ければ、とりあえずデフォルトで DOM だけ整える
+      if (!storeRef) {
+        SLOT_CONFIG = getDefaultSlotConfig();
+        timeSlotIds = SLOT_CONFIG.map((s) => s.id);
+        applyTimeSlotsToDom();
+        setupSlotRanges();
+        return;
+      }
+
+      try {
+        const ref  = storeRef.collection("settings").doc("timeSlots");
+        const snap = await ref.get();
+
+        if (snap.exists) {
+          const data  = snap.data() || {};
+          const slots = Array.isArray(data.slots) ? data.slots : [];
+          if (slots.length > 0) {
+            SLOT_CONFIG = slots;
+          } else {
+            SLOT_CONFIG = getDefaultSlotConfig();
+          }
+        } else {
+          SLOT_CONFIG = getDefaultSlotConfig();
+        }
+      } catch (e) {
+        console.error("時間帯設定の読み込みエラー:", e);
+        SLOT_CONFIG = getDefaultSlotConfig();
+      }
+
+      timeSlotIds = SLOT_CONFIG.map((s) => s.id);
+
+      applyTimeSlotsToDom();
+      setupSlotRanges();
+    }
+
+    // nav と 各時間帯セクションを SLOT_CONFIG から作り直す
+    function applyTimeSlotsToDom() {
+      // --- nav を作り直す ---
+      const navEl = document.querySelector(".nav");
+      if (navEl) {
+        navEl.innerHTML = "";
+        SLOT_CONFIG.forEach((slot) => {
+          const a = document.createElement("a");
+          a.href = `#${slot.id}`;
+          a.textContent = slot.label || slot._raw || slot.id;
+          navEl.appendChild(a);
+        });
+      }
+
+      // --- 各時間帯セクションをテンプレから生成 ---
+      const firstSlotSection = document.querySelector("section.slot");
+      if (!firstSlotSection) return;
+
+      const parent         = firstSlotSection.parentElement;
+      const template       = firstSlotSection.cloneNode(true);
+
+      // 「slot セクションのあと」に来る最初の要素（お知らせなど）をアンカーにする
+      let anchor = firstSlotSection;
+      while (anchor && anchor.classList.contains("slot")) {
+        anchor = anchor.nextElementSibling;
+      }
+
+      // 既存の slot セクションを全部削除
+      let ptr = firstSlotSection;
+      while (ptr && ptr.classList.contains("slot")) {
+        const next = ptr.nextElementSibling;
+        parent.removeChild(ptr);
+        ptr = next;
+      }
+
+      // SLOT_CONFIG から新しいセクションを生成
+      SLOT_CONFIG.forEach((slot) => {
+        const sec = template.cloneNode(true);
+        sec.id = slot.id;
+
+        const titleEl = sec.querySelector(".slot-title");
+        if (titleEl) {
+          titleEl.textContent = slot.label || slot._raw || titleEl.textContent;
+        }
+
+        const noteEl = sec.querySelector(".slot-note");
+        if (noteEl) {
+          // 今はメモ用の note 情報は無いので一旦空にしておく
+          noteEl.textContent = "";
+        }
+
+        // 中身のタスクは Firestore から再描画するのでいったん空にしておく
+        sec.querySelectorAll("ul.tasks").forEach((ul) => {
+          ul.innerHTML = "";
+        });
+
+        if (anchor) {
+          parent.insertBefore(sec, anchor);
+        } else {
+          parent.appendChild(sec);
+        }
+      });
+    }
+
+    // 「今はどの時間帯か？」判定用に、ID から時間帯レンジを作っておく
+    function setupSlotRanges() {
+      SLOT_RANGES = SLOT_CONFIG
+        .map((slot) => {
+          const m = (slot.id || "").match(/^t(\d+)-(\d+)$/);
+          if (!m) return null;
+          return {
+            id: slot.id,
+            start: Number(m[1]), // 時
+            end:   Number(m[2])  // 時
+          };
+        })
+        .filter(Boolean);
+    }
+
+    
+
+
+
+
     
 
 
