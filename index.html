@@ -1891,28 +1891,32 @@
         ];
 
         async function loadTimeSlotsConfig() {
-          let slots = [];
+  let slots = [];
 
-          try {
-            const snap = await storeRef
-              .collection("settings")
-              .doc("timeSlots")
-              .get();
+  try {
+    const snap = await storeRef
+      .collection("settings")
+      .doc("timeSlots")
+      .get();
 
-            if (snap.exists) {
-              const data = snap.data() || {};
-              if (Array.isArray(data.slots)) {
-                slots = data.slots;
-              }
-            }
-          } catch (e) {
-            console.error("timeSlots 読み込みエラー:", e);
-          }
+    if (snap.exists) {
+      const data = snap.data() || {};
+      if (Array.isArray(data.slots)) {
+        slots = data.slots;
+      }
+    }
+  } catch (e) {
+    console.error("timeSlots 読み込みエラー:", e);
+  }
 
-          const navEl = document.querySelector(".nav");
-          if (navEl) {
-            navEl.innerHTML = "";
-          }
+  // ★ カスタム時間帯を「今の時間帯へ」判定ロジックに反映
+  setDynamicTimeSlots(slots);
+
+  const navEl = document.querySelector(".nav");
+  if (navEl) {
+    navEl.innerHTML = "";
+  }
+
 
           const pad = (v) => String(v).padStart(2, "0");
           const usedSlotIds = [];
