@@ -90,18 +90,21 @@
     }
 
     /* ===== 左サイドバー（タイミー風） ===== */
-    .sidebar {
-      width: 230px;
-      background: #f7f7f8;
-      border-right: 1px solid #ddd;
-      padding: 12px 10px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      position: sticky;
-      top: 0;
-      align-self: flex-start;
-    }
+.sidebar {
+  width: 230px;
+  background: #f7f7f8;
+  border-right: 1px solid #ddd;
+  padding: 12px 10px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  /* ↓ ここを変更 */
+  /* position: sticky;  は一旦ナシにする  */
+  /* top: 0;            も削除 */
+  /* align-self: flex-start; も削除 */
+  min-height: 100vh;        /* 画面の高さぶんは必ず塗る */
+}
+
 
     .sidebar-header {
       padding: 4px 8px 6px;
