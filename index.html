@@ -2561,12 +2561,15 @@
       // =============================
       // 自動ログイン判定
       // =============================
-      const cachedId = getCachedLoginStoreId();
+            const cachedId = getCachedLoginStoreId();
       if (cachedId) {
         STORE_ID = cachedId;
         storeRef = db.collection("stores").doc(STORE_ID);
-        showApp();
-        startApp();
+
+        loadTimeSlotsConfig().then(() => {
+          showApp();
+          startApp();
+        });
       } else {
         showLogin();
       }
