@@ -613,7 +613,199 @@
 }
 
 
+.ai-btn {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 9999;
+  background: #111;
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  border: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  display: none; /* ← 最初は非表示 */
+}
+.ai-btn:active {
+  opacity: 0.7;
+}
 
+
+
+
+
+
+
+
+
+
+    
+
+/* ========== シフトAIタブ用レイアウト ========== */
+.shiftai-layout {
+  max-width: 1100px;
+  margin: 0 auto 32px;
+  padding: 4px;
+}
+
+/* 上の説明ヘッダー */
+.shiftai-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.shiftai-title {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.shiftai-subtitle {
+  font-size: 12px;
+  color: #666;
+}
+
+.shiftai-tag {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 10px;
+  background: #111;
+  color: #fff;
+}
+
+/* カード本体：既存 .card に近い雰囲気 */
+.shiftai-card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  padding: 16px 18px;
+  margin-bottom: 16px;
+}
+
+.shiftai-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+/* 行レイアウト */
+.shiftai-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 10px;
+  align-items: flex-start;
+}
+
+.shiftai-label {
+  width: 90px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #444;
+  padding-top: 3px;
+}
+
+.shiftai-field {
+  flex: 1;
+  font-size: 12px;
+}
+
+/* ラジオ・チップ */
+.shiftai-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-right: 14px;
+  font-size: 12px;
+}
+
+.shiftai-date-input {
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.shiftai-help {
+  font-size: 11px;
+  color: #777;
+  margin-top: 3px;
+}
+
+.shiftai-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.shiftai-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  font-size: 11px;
+  background: #f9fafb;
+}
+
+/* ボタンまわり */
+.shiftai-actions {
+  margin-top: 14px;
+}
+
+.shiftai-primary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 18px;
+  border-radius: 999px;
+  border: none;
+  background: #111827;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.shiftai-primary-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.shiftai-note {
+  margin-top: 6px;
+  font-size: 11px;
+  color: #777;
+}
+
+/* プレビュー部分 */
+.shiftai-empty {
+  font-size: 12px;
+  color: #555;
+}
+
+.shiftai-preview-area {
+  margin-top: 8px;
+}
+
+/* スマホレイアウト */
+@media (max-width: 720px) {
+  .shiftai-row {
+    flex-direction: column;
+  }
+  .shiftai-label {
+    width: auto;
+  }
+}
+
+
+
+
+
+
+
+    
 
     
     
@@ -660,6 +852,10 @@
 
   <!-- ② 本体アプリ（ログイン後に表示） -->
   <div id="ownerApp" style="display:none;">
+    <!-- 👇ここにAIボタンを追加 -->
+  <button id="aiOptimizeBtn" class="ai-btn">
+    🤖 AI最適化
+  </button>
     <!-- ★モバイル用トップバー -->
     <div class="mobile-topbar">
       <button type="button" class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
@@ -737,6 +933,14 @@
       <span class="label-text">シフト表設定</span>
     </span>
   </button>
+   
+   <button type="button" data-view="shiftai">
+  <span class="label">
+    <span class="label-icon">🧠</span>
+    <span class="label-text">シフト作成</span>
+  </span>
+</button>
+   
 </nav>
 
 
@@ -1109,6 +1313,104 @@
             <div class="status" id="analyticsStatus"></div>
           </section>
         </section>
+
+        <!-- ⑦ シフト作成（AI） -->
+        <section id="view-shiftai" class="view-panel">
+          <div class="shiftai-layout">
+            <!-- ヘッダー -->
+            <header class="shiftai-header">
+              <div>
+                <h1 class="shiftai-title">シフト作成（AI補助）</h1>
+                <p class="shiftai-subtitle">
+                  対象期間を選んで「AI最適化」を実行すると、この下にAI提案シフトが表示されます。
+                </p>
+              </div>
+              <div class="shiftai-tag">β版</div>
+            </header>
+
+            <!-- 条件入力エリア -->
+            <section class="shiftai-card">
+              <h2 class="shiftai-card-title">対象期間と条件</h2>
+
+              <!-- 期間の種類：週 / 月 -->
+              <div class="shiftai-row">
+                <div class="shiftai-label">対象</div>
+                <div class="shiftai-field">
+                  <label class="shiftai-radio">
+                    <input type="radio" name="shiftaiRangeType" value="week" checked>
+                    <span>週単位</span>
+                  </label>
+                  <label class="shiftai-radio">
+                    <input type="radio" name="shiftaiRangeType" value="month">
+                    <span>月単位</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- 基準日 / 基準月 -->
+              <div class="shiftai-row">
+                <div class="shiftai-label">
+                  <span data-shiftai-date-label>基準日</span>
+                </div>
+                <div class="shiftai-field">
+                  <input
+                    type="date"
+                    id="shiftaiBaseDate"
+                    class="shiftai-date-input"
+                  >
+                  <p class="shiftai-help">
+                    週の場合：この日を含む1週間をAIで最適化します。<br>
+                    月の場合：この日が属する月をAIで最適化します。
+                  </p>
+                </div>
+              </div>
+
+              <!-- AIが考えるときの優先度（今はダミーだけど将来使う） -->
+              <div class="shiftai-row">
+                <div class="shiftai-label">AIの優先度</div>
+                <div class="shiftai-field shiftai-chips">
+                  <label class="shiftai-chip">
+                    <input type="checkbox" checked>
+                    <span>売上・客数を重視</span>
+                  </label>
+                  <label class="shiftai-chip">
+                    <input type="checkbox" checked>
+                    <span>スタッフの負担バランス</span>
+                  </label>
+                  <label class="shiftai-chip">
+                    <input type="checkbox">
+                    <span>人件費を抑える</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- メインボタン -->
+              <div class="shiftai-actions">
+                <button id="shiftaiPrimaryBtn" class="shiftai-primary-btn">
+                  <span id="shiftaiPrimaryBtnLabel">この週をAIで最適化</span>
+                </button>
+                <p class="shiftai-note">
+                  まずはテスト版として OpenAI を直接呼び出す予定です。<br>
+                  安定したら Cloud Functions 経由に切り替えます。
+                </p>
+              </div>
+            </section>
+
+            <!-- AIの結果プレビュー（今は空っぽ） -->
+            <section class="shiftai-card">
+              <h2 class="shiftai-card-title">AIのシフト提案プレビュー</h2>
+              <p class="shiftai-empty" id="shiftaiPreviewEmpty">
+                まだAIは実行されていません。上の「AI最適化」ボタンを押すと、
+                ここに <strong>1週間 or 1ヶ月分のシフト案</strong> がカード形式で表示されます。
+              </p>
+
+              <!-- 後でJSで中身を埋めるエリア -->
+              <div id="shiftaiPreviewArea" class="shiftai-preview-area">
+                <!-- 例：日別カード・時間帯別の表をここに生成する -->
+              </div>
+            </section>
+          </div>
+        </section>
       </main>
     </div>
   </div>
@@ -1282,11 +1584,201 @@ if (STORE_ID && ALLOWED_STORES.includes(STORE_ID)) {
     }
 
     document.addEventListener("DOMContentLoaded", () => {
+  // =============================
+  // AI最適化テスト版（OpenAI直叩き）
+  // =============================
+  const aiBtn = document.getElementById("aiOptimizeBtn");
+  const shiftaiPrimaryBtn = document.getElementById("shiftaiPrimaryBtn");
+  const shiftaiPreviewArea = document.getElementById("shiftaiPreviewArea");
+  const shiftaiPreviewEmpty = document.getElementById("shiftaiPreviewEmpty");
+  const shiftaiBaseDateInput = document.getElementById("shiftaiBaseDate");
+
+  // ★ 自分の OpenAI APIキーをここに入れる（テスト用）
+  const OPENAI_API_KEY = "";
+
+  async function runShiftAiTest() {
+    if (!shiftaiPreviewArea || !shiftaiPrimaryBtn) return;
+
+    // ボタン状態変更
+    const oldLabel = shiftaiPrimaryBtn.textContent;
+    shiftaiPrimaryBtn.disabled = true;
+    shiftaiPrimaryBtn.textContent = "AIに問い合わせ中…";
+
+    try {
+      // 週 / 月 & 基準日
+      const checked = document.querySelector('input[name="shiftaiRangeType"]:checked');
+      const mode = checked ? checked.value : "week";
+      const baseDate = shiftaiBaseDateInput.value || getCurrentBusinessKey();
+
+      // テスト用ダミーデータ（あとで Firestore から読む形に差し替え）
+      const payload = {
+        mode,
+        baseDate,
+        storeId: STORE_ID || "test-store",
+        businessHours: { open: "06:00", close: "23:00" },
+        staff: [
+          { id: "takahashi", name: "高橋", roles: ["レジ", "品出し"], maxHoursPerWeek: 28, canNight: true },
+          { id: "moriwaki",  name: "森脇",  roles: ["レジ"],             maxHoursPerWeek: 20, canNight: false },
+          { id: "udagawa",   name: "宇田川", roles: ["品出し", "揚げ物"], maxHoursPerWeek: 24, canNight: true }
+        ],
+        requiredSlots: [
+          { timeRange: "06:00-09:00", minStaff: 2 },
+          { timeRange: "09:00-12:00", minStaff: 1 },
+          { timeRange: "12:00-15:00", minStaff: 2 },
+          { timeRange: "15:00-18:00", minStaff: 2 },
+          { timeRange: "18:00-22:00", minStaff: 3 }
+        ],
+        weekdayRules: {
+          Fri: { peakMultiplier: 1.2, note: "金曜夜は客数多め" },
+          Sat: { peakMultiplier: 1.3, note: "土曜は全体的に多い" }
+        },
+        events: [
+          {
+            date: baseDate,
+            timeRange: "18:00-21:00",
+            type: "peak",
+            note: "会社帰りピーク"
+          }
+        ]
+      };
+
+      const systemPrompt = `
+あなたはコンビニのシフト作成AIです。
+与えられたJSONをもとに、1週間分のシフト案を日本語で作成してください。
+
+・スタッフごとに「合計勤務時間」が極端にならないようにバランスを取る
+・requiredSlots.minStaff を満たすように配置する
+・連続勤務は最大8時間までにする
+・出力フォーマットは次のようなMarkdownテキストにしてください：
+
+# シフト案（YYYY-MM-DD〜YYYY-MM-DD）
+
+## 1日目（YYYY-MM-DD）
+- 06:00-09:00: 高橋 / 宇田川
+- 09:00-12:00: 高橋
+...
+
+## スタッフ別集計
+- 高橋: 合計 XX時間
+- 森脇: 合計 XX時間
+- 宇田川: 合計 XX時間
+`.trim();
+
+      const userPrompt = `
+以下のJSONを元に、${mode === "week" ? "1週間" : "1ヶ月"}のシフト案を作成してください。
+
+\`\`\`json
+${JSON.stringify(payload, null, 2)}
+\`\`\`
+`.trim();
+
+      // ==== OpenAI API 呼び出し ====
+      const res = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + OPENAI_API_KEY
+        },
+        body: JSON.stringify({
+          model: "gpt-4.1-mini",
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userPrompt }
+          ]
+        })
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error("OpenAIエラー: " + text);
+      }
+
+      const data = await res.json();
+      const content = data.choices?.[0]?.message?.content || "(AIから内容が返ってきませんでした)";
+
+      // プレビュー描画
+      if (shiftaiPreviewEmpty) {
+        shiftaiPreviewEmpty.style.display = "none";
+      }
+      shiftaiPreviewArea.innerHTML = "";
+
+      const card = document.createElement("div");
+      card.style.whiteSpace = "pre-wrap";
+      card.style.fontSize = "12px";
+      card.textContent = content;
+
+      shiftaiPreviewArea.appendChild(card);
+    } catch (err) {
+      console.error(err);
+      alert("AI呼び出しでエラーが起きました: " + (err.message || err));
+    } finally {
+      shiftaiPrimaryBtn.disabled = false;
+      shiftaiPrimaryBtn.textContent = oldLabel;
+    }
+  }
+
+  // メインのボタンに紐づけ
+  if (shiftaiPrimaryBtn) {
+    shiftaiPrimaryBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      runShiftAiTest();
+    });
+  }
+
+  // 右上の黒い「AI最適化」ボタン → 同じ処理を叩く
+  if (aiBtn) {
+    aiBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      runShiftAiTest();
+    });
+  }
+
   // storeId がまだ設定されていない場合は、Firestore系の初期化はスキップ
   if (!storeRef) {
     console.warn("STORE_ID が未設定のため、Firestoreの処理はまだ実行しません。ログイン後にページを再読み込みしてください。");
     return;
   }
+
+  // =============================
+  // シフトAIビュー用のUI制御（週 / 月切り替え）
+  // =============================
+  (function () {
+    const rangeRadios = document.querySelectorAll('input[name="shiftaiRangeType"]');
+    const dateInput = document.getElementById("shiftaiBaseDate");
+    const dateLabel = document.querySelector("[data-shiftai-date-label]");
+    const primaryBtnLabel = document.getElementById("shiftaiPrimaryBtnLabel");
+
+    if (!rangeRadios.length || !dateInput || !dateLabel || !primaryBtnLabel) {
+      return; // まだ shiftai ビューを作っていない場合は何もしない
+    }
+
+    // 初期値：今日の営業日を基準日にセット
+    if (!dateInput.value) {
+      dateInput.value = getCurrentBusinessKey(); // "YYYY-MM-DD"
+    }
+
+    function updateUI() {
+      const checked = document.querySelector('input[name="shiftaiRangeType"]:checked');
+      const mode = checked ? checked.value : "week";
+
+      if (mode === "week") {
+        dateLabel.textContent = "基準日";
+        primaryBtnLabel.textContent = "この週をAIで最適化";
+      } else {
+        dateLabel.textContent = "基準月";
+        primaryBtnLabel.textContent = "この月をAIで最適化";
+      }
+    }
+
+    rangeRadios.forEach((r) => {
+      r.addEventListener("change", updateUI);
+    });
+
+    updateUI();
+  })();
+
+
+
       // =============================
       // オーナーID / 端末名の保存＆自動セット
       // =============================
@@ -1370,6 +1862,17 @@ function activateView(viewId) {
     }
     runAnalyticsRef();
   }
+
+ // ★ AIボタン制御（ここを追加）
+  const aiBtn = document.getElementById("aiOptimizeBtn");
+  if (aiBtn) {
+    if (viewId === "shiftai") {
+      aiBtn.style.display = "block";
+    } else {
+      aiBtn.style.display = "none";
+    }
+  }
+  
 }
 
 // 左メニューボタンにクリックイベントを付与
