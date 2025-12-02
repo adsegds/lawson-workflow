@@ -968,17 +968,14 @@
       管理画面に入るためのパスワードを入力してください。
     </div>
 
+    <label for="storeIdInput">店舗ID</label>
+    <input
+      id="storeIdInput"
+      type="text"
+      placeholder="例：nambucho"
+      autocomplete="off"
+    />
 
-
-<label for="storeIdInput">店舗ID</label>
-<input
-  id="storeIdInput"
-  type="text"
-  placeholder="例：nambucho"
-  autocomplete="off"
-/>
-
-    
     <label for="ownerPasswordInput">パスワード</label>
     <input
       id="ownerPasswordInput"
@@ -1002,9 +999,10 @@
   <!-- ② 本体アプリ（ログイン後に表示） -->
   <div id="ownerApp" style="display:none;">
     <!-- 👇ここにAIボタンを追加 -->
-  <button id="aiOptimizeBtn" class="ai-btn">
-    🤖 AI最適化
-  </button>
+    <button id="aiOptimizeBtn" class="ai-btn">
+      🤖 AI最適化
+    </button>
+
     <!-- ★モバイル用トップバー -->
     <div class="mobile-topbar">
       <button type="button" class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
@@ -1032,67 +1030,65 @@
           </div>
         </div>
 
- <nav class="sidebar-nav">
-  <button type="button" data-view="news" class="active">
-    <span class="label">
-      <span class="label-icon">🛎</span>
-      <span class="label-text">お知らせ管理</span>
-    </span>
-  </button>
+        <nav class="sidebar-nav">
+          <button type="button" data-view="news" class="active">
+            <span class="label">
+              <span class="label-icon">🛎</span>
+              <span class="label-text">お知らせ管理</span>
+            </span>
+          </button>
 
-  <!-- ★ 追加：お知らせセンター（notice.html を開く用） -->
-  <button type="button" data-view="notice-center">
-    <span class="label">
-      <span class="label-icon">📢</span>
-      <span class="label-text">お知らせセンター</span>
-    </span>
-  </button>
+          <!-- ★ 追加：お知らせセンター（notice.html を開く用） -->
+          <button type="button" data-view="notice-center">
+            <span class="label">
+              <span class="label-icon">📢</span>
+              <span class="label-text">お知らせセンター</span>
+            </span>
+          </button>
 
-  <button type="button" data-view="tasks">
-    <span class="label">
-      <span class="label-icon">📝</span>
-      <span class="label-text">時間帯ごとのタスク編集</span>
-    </span>
-  </button>
+          <button type="button" data-view="tasks">
+            <span class="label">
+              <span class="label-icon">📝</span>
+              <span class="label-text">時間帯ごとのタスク編集</span>
+            </span>
+          </button>
 
-  <button type="button" data-view="handover">
-    <span class="label">
-      <span class="label-icon">📒</span>
-      <span class="label-text">引き継ぎメモ（ボタン編集）</span>
-    </span>
-  </button>
+          <button type="button" data-view="handover">
+            <span class="label">
+              <span class="label-icon">📒</span>
+              <span class="label-text">引き継ぎメモ（ボタン編集）</span>
+            </span>
+          </button>
 
-  <button type="button" data-view="logs">
-    <span class="label">
-      <span class="label-icon">⏱</span>
-      <span class="label-text">スタッフログ</span>
-    </span>
-  </button>
+          <button type="button" data-view="logs">
+            <span class="label">
+              <span class="label-icon">⏱</span>
+              <span class="label-text">スタッフログ</span>
+            </span>
+          </button>
 
-  <button type="button" data-view="analytics">
-    <span class="label">
-      <span class="label-icon">📊</span>
-      <span class="label-text">グラフ分析（β）</span>
-    </span>
-  </button>
+          <button type="button" data-view="analytics">
+            <span class="label">
+              <span class="label-icon">📊</span>
+              <span class="label-text">グラフ分析（β）</span>
+            </span>
+          </button>
 
-  <button type="button" data-view="shift">
-    <span class="label">
-      <span class="label-icon">📅</span>
-      <span class="label-text">シフト表設定</span>
-    </span>
-  </button>
-   
-   <button type="button" data-view="shiftai">
-  <span class="label">
-    <span class="label-icon">🧠</span>
-    <span class="label-text">シフト作成</span>
-  </span>
-</button>
-   
-</nav>
+          <!-- ★ ここが「シフト表」ビュー（新レイアウトが入る） -->
+          <button type="button" data-view="shift">
+            <span class="label">
+              <span class="label-icon">📅</span>
+              <span class="label-text">シフト表</span>
+            </span>
+          </button>
 
-
+          <button type="button" data-view="shiftai">
+            <span class="label">
+              <span class="label-icon">🧠</span>
+              <span class="label-text">シフト作成</span>
+            </span>
+          </button>
+        </nav>
 
         <div class="sidebar-footer">
           この画面で設定した内容が、スタッフ用チェック画面に反映されます。
@@ -1140,179 +1136,305 @@
 
         <!-- ② タスク定義編集 -->
         <section id="view-tasks" class="view-panel">
-         <section class="card" id="tasks-card">
-  <h2>時間帯ごとのタスク編集（taskSlots）</h2>
-  <p class="card-sub">
-    ① 時間帯の自動生成で「骨組み」を作り、<br>
-    ② 各時間帯ごとのタスクを編集して、<br>
-    ③ 必要ならカスタム編集で細かく調整するイメージです。
-  </p>
-
-  <!-- ① 時間帯の自動生成（営業開始〜終了と区切り時間） -->
-  <div class="row">
-    <label>時間帯の自動生成（営業開始〜終了と区切り時間）</label>
-    <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;">
-      <div style="min-width:120px;">
-        <div style="font-size:11px;color:#555;">開始</div>
-        <input type="time" id="slotConfigStart" value="06:00" />
-      </div>
-      <div style="min-width:120px;">
-        <div style="font-size:11px;color:#555;">終了</div>
-        <input type="time" id="slotConfigEnd" value="23:00" />
-      </div>
-      <div style="min-width:150px;">
-        <div style="font-size:11px;color:#555;">区切り</div>
-        <select id="slotConfigInterval">
-          <option value="15">15分ごと</option>
-          <option value="30">30分ごと</option>
-          <option value="60">1時間ごと</option>
-          <option value="120">2時間ごと</option>
-          <option value="180" selected>3時間ごと</option>
-          <option value="240">4時間ごと</option>
-          <option value="300">5時間ごと</option>
-        </select>
-      </div>
-      <div>
-        <button type="button" class="btn-secondary" id="slotConfigGenerateBtn">
-          この設定で時間帯を自動生成
-        </button>
-      </div>
-    </div>
-    <p class="hint">
-      ※「開始」「終了」と「区切り時間」を変えて「自動生成」すると、時間帯のリストが作り直されます。<br>
-      ※時間帯を作り直すと、新しい時間帯IDごとにタスクを管理できます（タスク内容は下の入力欄で編集）。
-    </p>
-  </div>
-
-  <hr>
-
-  <!-- ② 時間帯ごとのタスク編集（taskSlots） -->
-  <div class="row">
-    <label for="slotSelect">編集する時間帯</label>
-    <select id="slotSelect">
-      <!-- ★ 時間帯リストは JavaScript で自動生成 -->
-    </select>
-    <p class="slot-note">
-      時間帯を変更すると、その時間帯のタスク定義を Firestore から読み込みます。
-    </p>
-  </div>
-
-  <div class="row">
-    <label for="tasksAInput">Aタスク（必須）</label>
-    <textarea
-      id="tasksAInput"
-      placeholder="例）&#10;CDC納品・片づけ（2便）&#10;ベーカリー納品・片づけ（2便）"
-    ></textarea>
-    <div class="hint">1行につき1タスク。空行は無視されます。</div>
-  </div>
-
-  <div class="row">
-    <label for="tasksBInput">Bタスク（余裕あれば）</label>
-    <textarea
-      id="tasksBInput"
-      placeholder="例）&#10;店内・店頭ゴミ箱の清掃&#10;サービスコーナー清掃"
-    ></textarea>
-    <div class="hint">1行につき1タスク。空行は無視されます。</div>
-  </div>
-
-  <div class="btn-row">
-    <button type="button" class="btn-secondary" id="reloadSlotBtn">
-      選択中の時間帯を再読み込み
-    </button>
-    <button type="button" class="btn-primary" id="saveSlotBtn">
-      この内容で保存
-    </button>
-  </div>
-  <div class="status" id="taskStatus"></div>
-
-  <hr>
-
-  <p class="hint">
-    ※保存すると、その時間帯のチェック状態（完了チェック）だけリセットされます（他の時間帯はそのまま）。<br>
-    ※チェックリスト本体の HTML（スタッフ用画面）は書き換え不要です。この画面は定義だけをいじる役割。
-  </p>
-
-  <hr>
-
-  <!-- ③ 時間帯のカスタム編集（不規則な区切りに対応） -->
-  <div class="row">
-    <label>時間帯のカスタム編集（不規則な区切りに対応）</label>
-    <textarea
-      id="slotCustomInput"
-      placeholder="例）&#10;06:00-09:00 朝の立ち上げ&#10;09:00-12:00 午前帯&#10;12:00-14:00 昼ピーク&#10;14:00-15:00 14時廃棄・仕込み帯&#10;15:00-18:00 夕方前&#10;18:00-21:00 夕方〜夜ピーク&#10;21:00-22:00 21時廃棄・補充&#10;22:00-24:00 夜ラスト&#10;00:00-03:00 深夜前半&#10;03:00-06:00 早朝立ち上げ"
-    ></textarea>
-    <div class="hint">
-      1行につき1時間帯です。<br>
-      形式：<code>HH:MM-HH:MM ラベル</code>（ラベルは空でもOK。分は必ず00で入力してください）
-    </div>
-
-    <div class="btn-row">
-      <button type="button" class="btn-secondary" id="slotCustomLoadBtn">
-        現在の時間帯をテキストに展開
-      </button>
-      <button type="button" class="btn-primary" id="slotCustomSaveBtn">
-        このテキスト内容で時間帯を更新
-      </button>
-    </div>
-
-    <p class="hint">
-      ※このテキストで時間帯を更新すると、上の「編集する時間帯」プルダウンも新しいリストに入れ替わります。<br>
-      ※タスク内容はそのまま残りますが、新しい時間帯IDには新しくタスクを設定する必要があります。
-    </p>
-  </div>
-</section>
-
-        </section>
-
-        <!-- ③ シフト表設定 -->
-        <section id="view-shift" class="view-panel">
-          <section class="card" id="shift-card">
-            <h2>シフト表設定</h2>
+          <section class="card" id="tasks-card">
+            <h2>時間帯ごとのタスク編集（taskSlots）</h2>
             <p class="card-sub">
-              スタッフ画面からワンタップで開ける「シフト表画像」のURLを設定します。<br>
-              画像は Googleドライブ / Gyazo / 自分のサーバーなどにアップして、公開URLを貼ればOKです。
+              ① 時間帯の自動生成で「骨組み」を作り、<br>
+              ② 各時間帯ごとのタスクを編集して、<br>
+              ③ 必要ならカスタム編集で細かく調整するイメージです。
             </p>
 
-            <!-- URL 直接入力欄 -->
+            <!-- ① 時間帯の自動生成（営業開始〜終了と区切り時間） -->
             <div class="row">
-              <label for="shiftImageUrlInput">シフト表画像URL</label>
-              <input
-                type="text"
-                id="shiftImageUrlInput"
-                placeholder="https:// から始まる画像URLを貼ってください"
-              />
-              <div class="hint">
-                URLを直接貼ってもOKです。<br>
-                下の「画像ファイルをアップロード」で選ぶと、自動でここにURLが入ります。
+              <label>時間帯の自動生成（営業開始〜終了と区切り時間）</label>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;">
+                <div style="min-width:120px;">
+                  <div style="font-size:11px;color:#555;">開始</div>
+                  <input type="time" id="slotConfigStart" value="06:00" />
+                </div>
+                <div style="min-width:120px;">
+                  <div style="font-size:11px;color:#555;">終了</div>
+                  <input type="time" id="slotConfigEnd" value="23:00" />
+                </div>
+                <div style="min-width:150px;">
+                  <div style="font-size:11px;color:#555;">区切り</div>
+                  <select id="slotConfigInterval">
+                    <option value="15">15分ごと</option>
+                    <option value="30">30分ごと</option>
+                    <option value="60">1時間ごと</option>
+                    <option value="120">2時間ごと</option>
+                    <option value="180" selected>3時間ごと</option>
+                    <option value="240">4時間ごと</option>
+                    <option value="300">5時間ごと</option>
+                  </select>
+                </div>
+                <div>
+                  <button type="button" class="btn-secondary" id="slotConfigGenerateBtn">
+                    この設定で時間帯を自動生成
+                  </button>
+                </div>
               </div>
+              <p class="hint">
+                ※「開始」「終了」と「区切り時間」を変えて「自動生成」すると、時間帯のリストが作り直されます。<br>
+                ※時間帯を作り直すと、新しい時間帯IDごとにタスクを管理できます（タスク内容は下の入力欄で編集）。
+              </p>
             </div>
-
-            <!-- ファイルアップロード欄 -->
-            <div class="row">
-              <label for="shiftImageFileInput">シフト表画像ファイルをアップロード</label>
-              <input
-                type="file"
-                id="shiftImageFileInput"
-                accept="image/*"
-              />
-              <div class="hint">
-                ファイルを選ぶと自動で Firebase Storage にアップロードされ、<br>
-                URL欄とプレビューが更新されます。
-              </div>
-            </div>
-
-            <div class="btn-row">
-              <button type="button" class="btn-primary" id="shiftImageUrlSaveBtn">
-                この内容で保存
-              </button>
-            </div>
-            <div class="status" id="shiftStatus"></div>
 
             <hr>
 
-            <label>プレビュー</label>
-            <img id="shiftImagePreview" src="" alt="シフト表プレビュー">
+            <!-- ② 時間帯ごとのタスク編集（taskSlots） -->
+            <div class="row">
+              <label for="slotSelect">編集する時間帯</label>
+              <select id="slotSelect">
+                <!-- ★ 時間帯リストは JavaScript で自動生成 -->
+              </select>
+              <p class="slot-note">
+                時間帯を変更すると、その時間帯のタスク定義を Firestore から読み込みます。
+              </p>
+            </div>
+
+            <div class="row">
+              <label for="tasksAInput">Aタスク（必須）</label>
+              <textarea
+                id="tasksAInput"
+                placeholder="例）&#10;CDC納品・片づけ（2便）&#10;ベーカリー納品・片づけ（2便）"
+              ></textarea>
+              <div class="hint">1行につき1タスク。空行は無視されます。</div>
+            </div>
+
+            <div class="row">
+              <label for="tasksBInput">Bタスク（余裕あれば）</label>
+              <textarea
+                id="tasksBInput"
+                placeholder="例）&#10;店内・店頭ゴミ箱の清掃&#10;サービスコーナー清掃"
+              ></textarea>
+              <div class="hint">1行につき1タスク。空行は無視されます。</div>
+            </div>
+
+            <div class="btn-row">
+              <button type="button" class="btn-secondary" id="reloadSlotBtn">
+                選択中の時間帯を再読み込み
+              </button>
+              <button type="button" class="btn-primary" id="saveSlotBtn">
+                この内容で保存
+              </button>
+            </div>
+            <div class="status" id="taskStatus"></div>
+
+            <hr>
+
+            <p class="hint">
+              ※保存すると、その時間帯のチェック状態（完了チェック）だけリセットされます（他の時間帯はそのまま）。<br>
+              ※チェックリスト本体の HTML（スタッフ用画面）は書き換え不要です。この画面は定義だけをいじる役割。
+            </p>
+
+            <hr>
+
+            <!-- ③ 時間帯のカスタム編集（不規則な区切りに対応） -->
+            <div class="row">
+              <label>時間帯のカスタム編集（不規則な区切りに対応）</label>
+              <textarea
+                id="slotCustomInput"
+                placeholder="例）&#10;06:00-09:00 朝の立ち上げ&#10;09:00-12:00 午前帯&#10;12:00-14:00 昼ピーク&#10;14:00-15:00 14時廃棄・仕込み帯&#10;15:00-18:00 夕方前&#10;18:00-21:00 夕方〜夜ピーク&#10;21:00-22:00 21時廃棄・補充&#10;22:00-24:00 夜ラスト&#10;00:00-03:00 深夜前半&#10;03:00-06:00 早朝立ち上げ"
+              ></textarea>
+              <div class="hint">
+                1行につき1時間帯です。<br>
+                形式：<code>HH:MM-HH:MM ラベル</code>（ラベルは空でもOK。分は必ず00で入力してください）
+              </div>
+
+              <div class="btn-row">
+                <button type="button" class="btn-secondary" id="slotCustomLoadBtn">
+                  現在の時間帯をテキストに展開
+                </button>
+                <button type="button" class="btn-primary" id="slotCustomSaveBtn">
+                  このテキスト内容で時間帯を更新
+                </button>
+              </div>
+
+              <p class="hint">
+                ※このテキストで時間帯を更新すると、上の「編集する時間帯」プルダウンも新しいリストに入れ替わります。<br>
+                ※タスク内容はそのまま残りますが、新しい時間帯IDには新しくタスクを設定する必要があります。
+              </p>
+            </div>
           </section>
+        </section>
+
+        <!-- ③ シフト表（1週間レイアウト・新規） -->
+        <section id="view-shift" class="view-panel">
+          <div class="view-header">
+            <h2 class="view-title">シフト表</h2>
+            <p class="view-subtitle">
+              1週間分のシフトをここで編集・印刷できます。（まずはデザインのみ）
+            </p>
+          </div>
+
+          <div class="shiftboard-shell">
+            <!-- 上部ヘッダー（週切り替えなど） -->
+            <div class="shiftboard-header">
+              <div class="shiftboard-title">シフト予定実績表</div>
+
+              <div class="shiftboard-weeknav">
+                <button type="button">◀ 先週</button>
+                <button type="button">今週</button>
+                <button type="button">翌週 ▶</button>
+              </div>
+
+              <div class="shiftboard-meta">
+                対象週：<span id="shiftWeekRange">2025/12/01 ～ 2025/12/07</span>
+              </div>
+            </div>
+
+            <!-- シフト表本体 -->
+            <table class="shiftboard-table">
+              <!-- ヘッダー行（時間帯） -->
+              <tr class="shiftboard-head-row">
+                <th class="shiftboard-col-date">勤務日付</th>
+                <th>6:00〜9:00</th>
+                <th>9:00〜12:00</th>
+                <th>12:00〜15:00</th>
+                <th>15:00〜18:00</th>
+                <th>18:00〜21:00</th>
+                <th>21:00〜24:00</th>
+                <th>0:00〜3:00</th>
+                <th>3:00〜6:00</th>
+                <th class="shiftboard-col-summary">M/H</th>
+                <th class="shiftboard-col-summary">複員人数</th>
+              </tr>
+
+              <!-- 1日目（月） -->
+              <tr class="shiftboard-body-row">
+                <td class="shiftboard-col-date">
+                  <div>12/1</div>
+                  <div>月</div>
+                </td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-col-summary" contenteditable="true" data-placeholder="--:--"></td>
+                <td class="shiftboard-col-summary" contenteditable="true" data-placeholder="人数"></td>
+              </tr>
+
+              <!-- 2日目（火） -->
+              <tr class="shiftboard-body-row">
+                <td class="shiftboard-col-date">
+                  <div>12/2</div>
+                  <div>火</div>
+                </td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-col-summary" contenteditable="true" data-placeholder="--:--"></td>
+                <td class="shiftboard-col-summary" contenteditable="true" data-placeholder="人数"></td>
+              </tr>
+
+              <!-- 3日目（水） -->
+              <tr class="shiftboard-body-row">
+                <td class="shiftboard-col-date">
+                  <div>12/3</div>
+                  <div>水</div>
+                </td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-col-summary" contenteditable="true" data-placeholder="--:--"></td>
+                <td class="shiftboard-col-summary" contenteditable="true" data-placeholder="人数"></td>
+              </tr>
+
+              <!-- 4日目（木） -->
+              <tr class="shiftboard-body-row">
+                <td class="shiftboard-col-date">
+                  <div>12/4</div>
+                  <div>木</div>
+                </td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-col-summary" contenteditable="true" data-placeholder="--:--"></td>
+                <td class="shiftboard-col-summary" contenteditable="true" data-placeholder="人数"></td>
+              </tr>
+
+              <!-- 5日目（金） -->
+              <tr class="shiftboard-body-row">
+                <td class="shiftboard-col-date">
+                  <div>12/5</div>
+                  <div>金</div>
+                </td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-col-summary" contenteditable="true" data-placeholder="--:--"></td>
+                <td class="shiftboard-col-summary" contenteditable="true" data-placeholder="人数"></td>
+              </tr>
+
+              <!-- 6日目（土） -->
+              <tr class="shiftboard-body-row">
+                <td class="shiftboard-col-date shiftboard-day-sat">
+                  <div>12/6</div>
+                  <div>土</div>
+                </td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-col-summary" contenteditable="true" data-placeholder="--:--"></td>
+                <td class="shiftboard-col-summary" contenteditable="true" data-placeholder="人数"></td>
+              </tr>
+
+              <!-- 7日目（日） -->
+              <tr class="shiftboard-body-row">
+                <td class="shiftboard-col-date shiftboard-day-sun">
+                  <div>12/7</div>
+                  <div>日</div>
+                </td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-cell" contenteditable="true" data-placeholder="名前を入力…"></td>
+                <td class="shiftboard-col-summary" contenteditable="true" data-placeholder="--:--"></td>
+                <td class="shiftboard-col-summary" contenteditable="true" data-placeholder="人数"></td>
+              </tr>
+
+              <!-- 週合計行 -->
+              <tr class="shiftboard-footer-row">
+                <td class="shiftboard-footer-label" colspan="9">週合計</td>
+                <td class="shiftboard-col-summary" contenteditable="true" data-placeholder="合計M/H"></td>
+                <td class="shiftboard-col-summary" contenteditable="true" data-placeholder="延べ人数"></td>
+              </tr>
+            </table>
+          </div>
         </section>
 
         <!-- ④ 引き継ぎメモ用ボタン編集 -->
@@ -1563,6 +1685,8 @@
       </main>
     </div>
   </div>
+
+
 
   <!-- Chart.js（グラフ用） -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
