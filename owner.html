@@ -2520,14 +2520,167 @@ activateView("news");
         }
       }
 
-      // ---- ここから時間帯スロット自動生成 / カスタム保存（元のコードそのまま）----
-      // ※この辺の generateSlotsFromInputs / parseCustomSlotsFromTextarea は今のままコピペでOK
-      // （長いので省略せず、そのまま貼り替えてね）
+            // =============================
+      // 時間帯スロット 自動生成 / カスタム保存
+      // =============================
 
-      // ！！！ここより下の generateSlotsFromInputs ～ slotCustomSaveBtn の処理は
-      // 　今まで通りのコードをそのまま使ってOK！！！
+      // "HH:MM" → 分
+      function hmToMinutes(hm) {
+        const [h, m] = hm.split(":").map((n) => parseInt(n, 10));
+        return h * 60 + m;
+      }
 
-      // （↑さっき送ってくれた owner.html のそのままを貼れば大丈夫）
+      // 分 → "HH:MM"
+      function minutesToHm(min) {
+        const h = Math.floor(min / 60);
+        const m = min % 60;
+        return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+      }
+
+      // ---- 営業開始〜終了を interval で区切って自動生成 ----
+      function generateSlotsFromInputs() {
+        const start = slotConfigStartInput.value;   // 例: "06:00"
+        const end   = slotConfigEndInput.value;     // 例: "00:00"
+        const step  = parseInt(slotConfigIntervalSelect.value, 10); // 60 / 90 / 120
+
+        if (!start || !end || !step) return [];
+
+        let startMin = hmToMinutes(start);
+        let endMin   = hmToMinutes(end);
+
+        // 00:00 / 24:00 は翌日の24:00として扱う
+        if (endMin === 0) endMin = 24 * 60;
+
+        const slots = [];
+        let cur = startMin;
+
+        while (cur < endMin) {
+          const next = Math.min(cur + step, endMin);
+          const s = minutesToHm(cur);
+          const e = minutesToHm(next);
+
+          slots.push({
+            id: `t${s.replace(":", "")}-${e.replace(":", "")}`, // 例: "t0600-0900"
+            label: `${s}〜${e}`,
+            _raw: `${s}-${e}`, // textarea に書く生テキスト
+          });
+
+          cur = next;
+        }
+
+        return slots;
+      }
+
+      // ---- カスタムテキストから時間帯を読み込む ----
+      // 形式: "06:00-09:00 朝の立ち上げ"
+      function parseCustomSlotsFromTextarea() {
+        const text = slotCustomInput.value || "";
+        return text
+          .split("\n")
+          .map((v) => v.trim())
+          .filter((v) => v !== "")
+          .map((line) => {
+            // 先頭に "HH:MM-HH:MM" があるパターン
+            const m = line.match(/^(\d{2}:\d{2})-(\d{2}:\d{2})(?:\s+(.*))?$/);
+            if (!m) {
+              // よく分からない行はそのまま1スロット扱い
+              return { id: line, label: line, _raw: line };
+            }
+
+            const s = m[1];         // 06:00
+            const e = m[2];         // 09:00
+            const label = m[3] || ""; // 「朝の立ち上げ」など（無くてもOK）
+
+            return {
+              id: `t${s.replace(":", "")}-${e.replace(":", "")}`,
+              label: label ? `${s}〜${e} ${label}` : `${s}〜${e}`,
+              _raw: line,
+            };
+          });
+      }
+
+      // ---- ① 自動生成ボタン：start / end / interval から slots を作る ----
+      slotConfigGenerateBtn.addEventListener("click", async () => {
+        const slots = generateSlotsFromInputs();
+        if (slots.length === 0) {
+          setTaskStatus("時間帯を生成できませんでした。開始・終了・区切りを確認してください。", false);
+          return;
+        }
+
+        // textarea に「06:00-09:00 〜」形式で反映
+        if (slotCustomInput) {
+          slotCustomInput.value = slots.map((s) => s._raw).join("\n");
+        }
+
+        // Firestore に保存（start / end / interval も一緒に）
+        try {
+          await timeSlotsConfigRef.set(
+            {
+              start: slotConfigStartInput.value,
+              end: slotConfigEndInput.value,
+              intervalMinutes: parseInt(slotConfigIntervalSelect.value, 10),
+              slots,
+            },
+            { merge: true }
+          );
+
+          renderSlotOptions(slots, false);
+          setTaskStatus("時間帯を自動生成して保存しました。", true);
+        } catch (e) {
+          console.error("timeSlotsConfig 自動生成保存エラー", e);
+          setTaskStatus("時間帯の保存に失敗しました。", false);
+        }
+      });
+
+      // ---- ② カスタム読み込みボタン：textarea → UI だけ（slots も保存） ----
+      slotCustomLoadBtn.addEventListener("click", async () => {
+        const slots = parseCustomSlotsFromTextarea();
+        if (!slots.length) {
+          setTaskStatus("有効な時間帯がありません。フォーマットを確認してください。", false);
+          return;
+        }
+
+        try {
+          // Firestore に slots を保存（start / end / interval は今の値のまま）
+          await timeSlotsConfigRef.set(
+            {
+              slots,
+            },
+            { merge: true }
+          );
+
+          renderSlotOptions(slots, false);
+          setTaskStatus("カスタム時間帯を読み込んで保存しました。", true);
+        } catch (e) {
+          console.error("timeSlotsConfig カスタム読み込みエラー", e);
+          setTaskStatus("カスタム時間帯の保存に失敗しました。", false);
+        }
+      });
+
+      // ---- ③ カスタム保存ボタン：textarea の内容をそのまま Firestore に保存 ----
+      slotCustomSaveBtn.addEventListener("click", async () => {
+        const slots = parseCustomSlotsFromTextarea();
+        if (!slots.length) {
+          setTaskStatus("保存できる時間帯がありません。", false);
+          return;
+        }
+
+        try {
+          await timeSlotsConfigRef.set(
+            {
+              slots,
+            },
+            { merge: true }
+          );
+
+          renderSlotOptions(slots, false);
+          setTaskStatus("カスタム時間帯を保存しました。", true);
+        } catch (e) {
+          console.error("timeSlotsConfig カスタム保存エラー", e);
+          setTaskStatus("カスタム時間帯の保存に失敗しました。", false);
+        }
+      });
+
 
 
       // =======================
