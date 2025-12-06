@@ -5,228 +5,427 @@
   <title>お知らせセンター</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f5f5f5;
-      color: #111;
-      line-height: 1.6;
-      font-size: 13px;
-    }
+  body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #f5f5f5;
+    color: #111;
+    line-height: 1.6;
+    font-size: 13px;
+  }
 
-    .app {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding-bottom: 40px;
-    }
+  .app {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 16px 0 40px;
+  }
 
-    .top-bar {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background: #111;
-      color: #fff;
-      padding: 10px 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
+  /* ===== ヘッダー ===== */
+  .top-bar {
+    position: sticky;
+    top: 0;
+    z-index: 4000;
+    background: transparent;
+  }
+
+  .top-bar-inner {
+    max-width: 1414px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #111;
+    color: #fff;
+    padding: 14px 16px 10px;
+    border-radius: 0;
+  }
+
+  .top-bar h1 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+    letter-spacing: 0.3px;
+    text-transform: none;
+    color: #fff;
+  }
+
+  .role-select {
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: auto;
+  }
+
+  .role-select select {
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 12px;
+    background: #ffffff;
+    color: #111;
+  }
+
+  .menu-btn {
+    border: none;
+    background: transparent;
+    padding: 4px;
+    border-radius: 999px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+  }
+
+  .menu-btn:hover {
+    background: rgba(255,255,255,0.12);
+  }
+
+  .hamburger-icon {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 4px 2px;
+  }
+
+  .hamburger-icon span {
+    display: block;
+    width: 18px;
+    height: 2px;
+    border-radius: 999px;
+    background: #fff;
+  }
+
+  /* ====== タブ ====== */
+  .tab-nav {
+    display: flex;
+    gap: 6px;
+    padding: 8px 12px 0;
+    background: #f5f5f5;
+    position: sticky;
+    top: 42px;
+    z-index: 9;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .tab-nav::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+  }
+
+  .tab-btn {
+    flex: 1 0 auto;
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid #dddddd;
+    background: #ffffff;
+    font-size: 11px;
+    cursor: pointer;
+    white-space: nowrap;
+    color: #333;
+  }
+
+  .tab-btn.active {
+    background: #111;
+    color: #fff;
+    border-color: #111;
+    font-weight: 600;
+  }
+
+  .tab-panel {
+    display: none;
+    padding: 18px 12px 0;
+  }
+
+  .tab-panel.active {
+    display: block;
+  }
+
+  .section-head {
+    margin: 0 0 12px;
+  }
+
+  .section-head h2 {
+    font-size: 13px;
+    font-weight: 600;
+    color: #111;
+  }
+
+  .section-head p {
+    font-size: 11px;
+    color: #666;
+  }
+
+  /* ====== カード ====== */
+  .card {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 10px 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    margin-bottom: 10px;
+    border: 1px solid #dddddd;
+  }
+
+  .form-group {
+    margin-bottom: 8px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 11px;
+    margin-bottom: 2px;
+    color: #555;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1px solid #cccccc;
+    font-size: 13px;
+    resize: vertical;
+    background: #ffffff;
+    color: #111;
+  }
+
+  textarea {
+    min-height: 60px;
+  }
+
+  .btn-row {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 6px;
+  }
+
+  .btn {
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+  }
+
+  .btn-primary {
+    background: #111;
+    color: #fff;
+  }
+
+  .btn-ghost {
+    background: #f0f0f0;
+    color: #333;
+  }
+
+  .item-title {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 2px;
+    color: #111;
+  }
+
+  .item-body {
+    font-size: 13px;
+    white-space: pre-wrap;
+    margin-bottom: 4px;
+    color: #333;
+  }
+
+  .item-meta {
+    font-size: 11px;
+    color: #777;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 999px;
+    font-size: 10px;
+    background: #f5f0d6;
+    color: #8a6d3b;
+    border: 1px solid #f0e2b8;
+  }
+
+  .badge-status {
+    background: #fbe5e5;
+    color: #b00000;
+    border-color: #f1c0c0;
+  }
+
+  .owner-only { display: none; }
+  .staff-only { display: block; }
+
+  body.role-owner .owner-only { display: block; }
+  body.role-staff .staff-only { display: block; }
+
+  .empty-text {
+    font-size: 12px;
+    color: #888;
+    padding: 4px 2px 2px;
+  }
+
+  .tab-note {
+    font-size: 12px;
+    color: #666;
+    line-height: 1.5;
+  }
+
+  /* 写真つきタスク用 */
+  .photo-thumb {
+    display: block;
+    width: 100%;
+    max-width: 520px;
+    aspect-ratio: 16 / 9;
+    object-fit: contain;
+    border-radius: 12px;
+    margin: 8px auto;
+    background: #000;
+  }
+
+  .photo-badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+
+  /* ===== ハンバーガーメニュー ===== */
+  .side-menu-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 4500;
+    display: none;
+  }
+
+  .side-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 260px;
+    height: 100%;
+    background: #ffffff;
+    color: #111;
+    z-index: 4600;
+    transform: translateX(-100%);
+    transition: transform 0.2s ease-out;
+    padding: 12px 0;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.2);
+  }
+
+  .side-menu-header {
+    padding: 0 16px 8px;
+    font-size: 13px;
+    font-weight: 600;
+    border-bottom: 1px solid #eeeeee;
+    margin-bottom: 4px;
+  }
+
+  .side-menu ul {
+    list-style: none;
+  }
+
+  .menu-item button,
+  .menu-item a {
+    width: 100%;
+    border: none;
+    background: transparent;
+    color: inherit;
+    text-align: left;
+    padding: 10px 16px;
+    font-size: 13px;
+    cursor: pointer;
+    display: block;
+    text-decoration: none;
+  }
+
+  .menu-item button:hover,
+  .menu-item a:hover {
+    background: rgba(0,0,0,0.04);
+  }
+
+  body.menu-open .side-menu-overlay {
+    display: block;
+  }
+
+  body.menu-open .side-menu {
+    transform: translateX(0);
+  }
+
+  @media (max-width: 480px) {
     .top-bar h1 {
-      font-size: 15px;
-      font-weight: 600;
+      font-size: 16px;
     }
-    .role-select {
-      font-size: 13px;
-    }
-    .role-select select {
-      padding: 4px 8px;
-      border-radius: 6px;
-      border: none;
-      font-size: 13px;
-    }
+  }
 
-    .tab-nav {
-      display: flex;
-      gap: 8px;
-      padding: 10px 14px 0;
-      background: #f5f5f5;
-      position: sticky;
-      top: 46px;
-      z-index: 9;
-    }
-    .tab-btn {
-      flex: 1;
-      padding: 8px;
-      border-radius: 999px;
-      border: 1px solid #ddd;
-      background: #fff;
-      font-size: 12px;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    .tab-btn.active {
-      background: #111;
-      color: #fff;
-      border-color: #111;
-      font-weight: 600;
-    }
+  /* 📌 Noticeページだけハンバーガーを非表示 */
+  .menu-btn {
+    display: none !important;
+  }
+  .mobile-menu-btn {
+    display: none !important;
+  }
 
-    .tab-panel {
-      display: none;
-      padding: 12px 14px 0;
-    }
-    .tab-panel.active {
-      display: block;
-    }
+  /* 📌 Noticeページ：コンテンツを中央寄せ */
+  .notice-wrapper,
+  #noticeList,
+  #noticeTabs,
+  #noticeHeader {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 960px;
+  }
 
-    .section-head {
-      margin-bottom: 8px;
-    }
-    .section-head h2 {
-      font-size: 14px;
-      font-weight: 600;
-    }
-    .section-head p {
-      font-size: 12px;
-      color: #555;
-    }
-
-    .card {
-      background: #fff;
-      border-radius: 10px;
-      padding: 10px 12px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-      margin-bottom: 10px;
-    }
-
-    .form-group {
-      margin-bottom: 8px;
-    }
-    .form-group label {
-      display: block;
-      font-size: 12px;
-      margin-bottom: 2px;
-    }
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      width: 100%;
-      padding: 6px 8px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 13px;
-      resize: vertical;
-    }
-    textarea {
-      min-height: 60px;
-    }
-
-    .btn-row {
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-      margin-top: 6px;
-    }
-    .btn {
-      padding: 6px 12px;
-      border-radius: 999px;
-      border: none;
-      cursor: pointer;
-      font-size: 12px;
-    }
-    .btn-primary {
-      background: #111;
-      color: #fff;
-    }
-    .btn-ghost {
-      background: #eee;
-      color: #333;
-    }
-
-    .item-title {
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 2px;
-    }
-    .item-body {
-      font-size: 13px;
-      white-space: pre-wrap;
-      margin-bottom: 4px;
-    }
-    .item-meta {
-      font-size: 11px;
-      color: #777;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 1px 6px;
-      border-radius: 999px;
-      font-size: 10px;
-      background: #eee;
-      color: #555;
-    }
-    .badge-status {
-      background: #fbe5e5;
-      color: #b00;
-    }
-
-    /* 役割で表示切り替え */
-    .owner-only { display: none; }
-    .staff-only { display: none; }
-
-    body.role-owner .owner-only { display: block; }
-    body.role-staff .staff-only { display: block; }
-
-    .empty-text {
-      font-size: 12px;
-      color: #777;
-      padding: 4px 2px 2px;
-    }
-
-    .tab-note {
-      font-size: 12px;
-      color: #555;
-      line-height: 1.5;
-    }
-
-
-    
+  body {
+    padding-left: 0 !important;
+  }
   </style>
 </head>
-<body class="role-staff">
-  <div class="app">
-    <div class="top-bar">
-      <h1>南部町ローソン お知らせセンター</h1>
-      <div class="role-select">
-        あなたの立場：
-        <select id="roleSelect">
-          <option value="staff">スタッフ</option>
-          <option value="owner">オーナー</option>
-        </select>
-      </div>
-    </div>
 
+<body class="role-staff theme-dark">
+  <div class="top-bar">
+    <div class="top-bar-inner">
+      <button class="menu-btn" id="menuBtn" type="button">
+        <span class="hamburger-icon">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+      </button>
+      <h1>お知らせセンター</h1>
+    </div>
+  </div>
+
+  <div class="app">
     <!-- タブ -->
     <div class="tab-nav">
       <button class="tab-btn active" data-tab="ownerNews">① 経営者 → 全員</button>
       <button class="tab-btn" data-tab="reports">② スタッフ → 経営者</button>
       <button class="tab-btn" data-tab="board">③ 全員掲示板</button>
+      <button class="tab-btn" data-tab="taskPhotos">④ 写真つきタスク報告</button>
     </div>
 
-        <!-- ① 経営者 → 全員 -->
+    <!-- ① 経営者 → 全員 -->
     <section class="tab-panel active" id="tab-ownerNews">
       <div class="section-head">
         <h2>① 経営者 → 全員へのお知らせ</h2>
         <p>オーナーから全スタッフに伝えたいことをまとめて表示します。</p>
       </div>
 
-      <!-- ★ ここは「読むだけ」エリア -->
       <div class="card">
         <p class="tab-note">
           ※ここは経営者からの連絡専用です。<br>
@@ -234,11 +433,9 @@
         </p>
       </div>
 
-      <!-- 一覧（全員見れる） -->
       <div id="ownerNewsList"></div>
       <div id="ownerNewsEmpty" class="empty-text">まだお知らせはありません。</div>
     </section>
-
 
     <!-- ② スタッフ → 経営者 -->
     <section class="tab-panel" id="tab-reports">
@@ -247,7 +444,6 @@
         <p>ここから送った内容はオーナーだけが見れます。他のスタッフには表示されません。</p>
       </div>
 
-      <!-- スタッフ用：報告フォーム -->
       <div class="card staff-only">
         <form id="reportForm">
           <div class="form-group">
@@ -274,7 +470,6 @@
         </form>
       </div>
 
-      <!-- オーナー用：報告一覧 -->
       <div class="owner-only">
         <div id="reportsList"></div>
         <div id="reportsEmpty" class="empty-text">まだ報告はありません。</div>
@@ -288,7 +483,6 @@
         <p>みんなで共有したいことを気軽に書ける掲示板です。（業務に関係ある内容で）</p>
       </div>
 
-      <!-- 投稿フォーム（全員OK） -->
       <div class="card">
         <form id="boardForm">
           <div class="form-group">
@@ -305,38 +499,85 @@
         </form>
       </div>
 
-      <!-- 掲示板一覧 -->
       <div id="boardList"></div>
       <div id="boardEmpty" class="empty-text">まだ掲示板の投稿はありません。</div>
     </section>
+
+    <!-- ④ 写真つきタスク報告 -->
+    <section class="tab-panel" id="tab-taskPhotos">
+      <div class="section-head">
+        <h2>④ 写真つきタスク報告（Aタスク用）</h2>
+        <p>
+          「Aタスク（写真必須）」でアップロードされた写真をここにタイムライン形式で表示します。<br>
+          どの時間帯で・どのタスクを・誰が実施したかを、写真付きで確認できます。
+        </p>
+      </div>
+
+      <div id="photoList"></div>
+      <div id="photoEmpty" class="empty-text">まだ写真つきタスクの報告はありません。</div>
+    </section>
   </div>
 
-  <!-- Firebase v8（今のサイトと同じ系列） -->
+  <!-- サイドメニュー -->
+  <div class="side-menu-overlay" id="sideOverlay"></div>
+  <nav class="side-menu" id="sideMenu">
+    <div class="side-menu-header">メニュー</div>
+    <ul>
+      <li class="menu-item">
+        <button type="button" data-scroll="tab-taskPhotos">📷 写真つきタスク報告へ</button>
+      </li>
+      <li class="menu-item">
+        <button type="button" data-scroll="tab-ownerNews">📢 経営者 → 全員へ</button>
+      </li>
+      <li class="menu-item">
+        <button type="button" data-scroll="tab-board">💬 全員掲示板へ</button>
+      </li>
+      <li class="menu-item">
+        <button type="button" data-scroll="tab-reports">📩 スタッフ → 経営者へ</button>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Firebase v8 -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
   <script>
-    // ★ ここを自分の firebaseConfig に差し替え
+    // =============================
+    // Firebase 設定
+    // =============================
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      projectId: "YOUR_PROJECT_ID",
+      apiKey: "AIzaSyAPBMvTpzKCcPxLETncBqVR8fzf0cqKirc",
+      authDomain: "lawson-workflow.firebaseapp.com",
+      projectId: "lawson-workflow",
+      storageBucket: "lawson-workflow.firebasestorage.app",
+      messagingSenderId: "335371795694",
+      appId: "1:335371795694:web:3b0950a616d368b284c7ff",
+      measurementId: "G-BGENZNZMRC"
     };
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-
-    // ===== 役割切り替え =====
-    const roleSelect = document.getElementById("roleSelect");
-    function updateRole(role) {
-      document.body.classList.remove("role-owner", "role-staff");
-      document.body.classList.add(role === "owner" ? "role-owner" : "role-staff");
+    // =============================
+    // 店舗IDの取得（?store=xxx 必須）
+    // =============================
+    function getStoreId() {
+      const params = new URLSearchParams(location.search);
+      const s = params.get("store");
+      if (s && s.trim()) {
+        return s.trim();
+      }
+      alert("店舗IDが指定されていません。（notice.html?store=店舗ID の形式で開いてください）");
+      throw new Error("STORE_ID not set");
     }
-    roleSelect.addEventListener("change", (e) => {
-      updateRole(e.target.value);
-    });
-    updateRole(roleSelect.value);
+
+    // ★ 店舗ID & storeRef
+    const STORE_ID = getStoreId();
+    const storeRef = db.collection("stores").doc(STORE_ID);
+
+    // 役割（スタッフ固定）
+    document.body.classList.add("role-staff");
 
     // ===== タブ切り替え =====
     document.querySelectorAll(".tab-btn").forEach(btn => {
@@ -365,13 +606,13 @@
     }
 
     // ============================
-    // ① ownerNews（経営者 → 全員）※ここは読み取り専用
+    // ① ownerNews（経営者 → 全員）
     // ============================
     const ownerNewsList = document.getElementById("ownerNewsList");
     const ownerNewsEmpty = document.getElementById("ownerNewsEmpty");
 
-    // owner.html から投稿された ownerNews コレクションを読むだけ
-    db.collection("ownerNews")
+    storeRef
+      .collection("ownerNews")
       .orderBy("createdAt", "desc")
       .onSnapshot((snap) => {
         ownerNewsList.innerHTML = "";
@@ -382,7 +623,7 @@
         ownerNewsEmpty.style.display = "none";
 
         snap.forEach(doc => {
-          const data = doc.data();
+          const data = doc.data() || {};
           const div = document.createElement("div");
           div.className = "card";
 
@@ -403,7 +644,6 @@
         });
       });
 
-
     // ============================
     // ② reports（スタッフ → 経営者）
     // ============================
@@ -423,7 +663,7 @@
       }
 
       try {
-        await db.collection("reports").add({
+        await storeRef.collection("reports").add({
           category,
           message,
           staffName: name,
@@ -438,10 +678,11 @@
       }
     });
 
-    // オーナー用：一覧表示
-    db.collection("reports")
+    storeRef
+      .collection("reports")
       .orderBy("createdAt", "desc")
       .onSnapshot((snap) => {
+        if (!reportsList) return;
         reportsList.innerHTML = "";
         if (snap.empty) {
           reportsEmpty.style.display = "block";
@@ -450,7 +691,7 @@
         reportsEmpty.style.display = "none";
 
         snap.forEach(doc => {
-          const data = doc.data();
+          const data = doc.data() || {};
           const div = document.createElement("div");
           div.className = "card";
           const cat = data.category || "その他";
@@ -477,6 +718,9 @@
     const boardList = document.getElementById("boardList");
     const boardEmpty = document.getElementById("boardEmpty");
 
+    const photoList  = document.getElementById("photoList");
+    const photoEmpty = document.getElementById("photoEmpty");
+
     boardForm?.addEventListener("submit", async (e) => {
       e.preventDefault();
       const message = document.getElementById("boardMessage").value.trim();
@@ -488,7 +732,7 @@
       }
 
       try {
-        await db.collection("board").add({
+        await storeRef.collection("board").add({
           message,
           author,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -500,7 +744,8 @@
       }
     });
 
-    db.collection("board")
+    storeRef
+      .collection("board")
       .orderBy("createdAt", "desc")
       .onSnapshot((snap) => {
         boardList.innerHTML = "";
@@ -511,7 +756,7 @@
         boardEmpty.style.display = "none";
 
         snap.forEach(doc => {
-          const data = doc.data();
+          const data = doc.data() || {};
           const div = document.createElement("div");
           div.className = "card";
 
@@ -525,6 +770,85 @@
           boardList.appendChild(div);
         });
       });
+
+    // ============================
+    // ④ taskPhotos（写真つきタスク報告）
+    // ============================
+    storeRef
+      .collection("photoReports")  // ← ここは今のまま。後で taskPhotos に変えたくなったら言って！
+      .orderBy("createdAt", "desc")
+      .limit(100)
+      .onSnapshot((snap) => {
+        photoList.innerHTML = "";
+        if (snap.empty) {
+          photoEmpty.style.display = "block";
+          return;
+        }
+        photoEmpty.style.display = "none";
+
+        snap.forEach(doc => {
+          const data = doc.data() || {};
+          const div = document.createElement("div");
+          div.className = "card";
+
+          const imageUrl =
+            data.photourl ||
+            data.photoUrl ||
+            data.photoURL ||
+            data.url ||
+            "";
+
+          const taskLabel = data.taskLabel || "(タスク名なし)";
+          const slotLabel = data.slotId || "";
+          const staffName = data.deviceLabel || "（端末名 未設定）";
+          const bizDate   = data.businessKey || "";
+          const dateText  = data.createdAt ? formatDate(data.createdAt) : "";
+
+          div.innerHTML = `
+            <div class="photo-badge-row">
+              <span class="badge">Aタスク（写真必須）</span>
+              ${slotLabel ? `<span class="badge">${slotLabel}</span>` : ""}
+              ${bizDate ? `<span class="badge">営業日: ${bizDate}</span>` : ""}
+            </div>
+            ${imageUrl ? `<img src="${imageUrl}" alt="タスク写真" class="photo-thumb">` : ""}
+            <div class="item-title">${taskLabel}</div>
+            <div class="item-meta">
+              <span>投稿：${staffName}</span>
+              ${dateText ? `<span>${dateText}</span>` : ""}
+            </div>
+          `;
+          photoList.appendChild(div);
+        });
+      });
+
+    // ============================
+    // ハンバーガーメニュー開閉
+    // ============================
+    const menuBtn = document.getElementById("menuBtn");
+    const sideMenu = document.getElementById("sideMenu");
+    const sideOverlay = document.getElementById("sideOverlay");
+
+    function openMenu() {
+      document.body.classList.add("menu-open");
+    }
+    function closeMenu() {
+      document.body.classList.remove("menu-open");
+    }
+
+    menuBtn?.addEventListener("click", openMenu);
+    sideOverlay?.addEventListener("click", closeMenu);
+
+    sideMenu?.addEventListener("click", (e) => {
+      const target = e.target;
+      if (target.matches("[data-scroll]")) {
+        const panelId = target.getAttribute("data-scroll");
+        const panel = document.getElementById(panelId);
+        if (panel) {
+          panel.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+        closeMenu();
+      }
+    });
   </script>
 </body>
 </html>
