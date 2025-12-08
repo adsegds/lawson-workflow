@@ -1261,56 +1261,32 @@
   </style>
 </head>
 <body>
-   <!-- ① ログイン画面 -->
+  <!-- ① ログイン画面 -->
   <div id="ownerLogin" class="login-wrap">
     <div class="login-title">管理者 ログイン</div>
     <div class="login-sub">
-      新規登録 or ログインして管理画面に入ってください。
+      管理画面に入るためのパスワードを入力してください。
     </div>
 
-    <!-- タブ -->
-    <div class="login-tabs">
-      <button type="button" class="login-tab active" data-mode="login">ログイン</button>
-      <button type="button" class="login-tab" data-mode="register">新規登録</button>
+    <label for="storeIdInput">店舗ID</label>
+    <input
+      id="storeIdInput"
+      type="text"
+      placeholder="例：nambucho"
+      autocomplete="off"
+    />
+
+    <label for="ownerPasswordInput">パスワード</label>
+    <input
+      id="ownerPasswordInput"
+      type="password"
+      placeholder="パスワード"
+      autocomplete="current-password"
+    />
+
+    <div class="login-btn-row">
+      <button id="ownerLoginBtn" class="login-btn" type="button">ログイン</button>
     </div>
-
-    <!-- ▼ ログイン用フォーム -->
-    <div id="loginForm" class="login-form">
-      <label for="storeIdInput">店舗ID</label>
-      <input
-        id="storeIdInput"
-        type="text"
-        placeholder="例：nambucho"
-        autocomplete="off"
-      />
-
-      <label for="ownerPasswordInput">管理者パスワード</label>
-      <input
-        id="ownerPasswordInput"
-        type="password"
-        placeholder="パスワード"
-        autocomplete="current-password"
-      />
-
-      <div class="login-btn-row">
-        <button id="ownerLoginBtn" class="login-btn" type="button">ログイン</button>
-      </div>
-    </div>
-
-        <!-- ▼ 新規登録フォーム（signup.html へ飛ばすだけ） -->
-    <div id="registerForm" class="login-form" style="display:none;">
-      <p class="login-sub" style="margin-bottom: 16px;">
-        新規登録は専用ページから行います。<br>
-        下のボタンを押すと、新規登録ページ（signup.html）が開きます。
-      </p>
-
-      <div class="login-btn-row">
-        <button id="ownerRegisterBtn" class="login-btn" type="button">
-          🌟 新規登録ページを開く
-        </button>
-      </div>
-    </div>
-
 
     <p id="ownerLoginError" class="login-error"></p>
 
@@ -1320,10 +1296,9 @@
     </p>
   </div>
 
-
-    <!-- ② 本体アプリ（ログイン後に表示） -->
+  <!-- ② 本体アプリ（ログイン後に表示） -->
   <div id="ownerApp" style="display:none;">
-    <!-- 👇ここにAIボタンを追加 -->
+    <!-- 👇ここにAIボタン -->
     <button id="aiOptimizeBtn" class="ai-btn">
       🤖 AI最適化
     </button>
@@ -1345,7 +1320,7 @@
 
           <!-- ★ オーナー/店長 ID / 端末名 -->
           <div class="sidebar-owner-id">
-            <label for="ownerIdInput">オーナーID / 端末名</label>
+            <label for="ownerIdInput">管理者ID / 端末名</label>
             <input
               id="ownerIdInput"
               type="text"
@@ -1360,6 +1335,14 @@
             <span class="label">
               <span class="label-icon">🛎</span>
               <span class="label-text">お知らせ管理</span>
+            </span>
+          </button>
+
+          <!-- ★ お知らせセンター（別ページ） -->
+          <button type="button" data-view="notice-center">
+            <span class="label">
+              <span class="label-icon">📢</span>
+              <span class="label-text">お知らせセンター</span>
             </span>
           </button>
 
@@ -1391,18 +1374,19 @@
             </span>
           </button>
 
-          <button type="button" data-view="shift">
+          <!-- 🆕 シフト表デザイン（横棒タイプ） -->
+          <button type="button" data-view="shiftboard">
             <span class="label">
               <span class="label-icon">📅</span>
-              <span class="label-text">シフト表設定</span>
+              <span class="label-text">シフト表デザイン</span>
             </span>
           </button>
 
-          <!-- 🔑 ここが追加分 -->
-          <button type="button" data-view="auth">
+          <!-- 従来の画像URL版 -->
+          <button type="button" data-view="shift">
             <span class="label">
-              <span class="label-icon">🔑</span>
-              <span class="label-text">パスワード設定</span>
+              <span class="label-icon">🖼</span>
+              <span class="label-text">シフト表画像URL</span>
             </span>
           </button>
 
@@ -1421,24 +1405,15 @@
 
       <!-- ================= 右メイン ================= -->
       <main class="main">
-        <!-- ★ ここにヘッダー（タイトル＋ログアウトボタン） -->
         <header class="main-header">
-          <div class="main-header-text">
-            <div class="main-header-title">管理メニュー</div>
-            <div class="main-header-sub">
-              左のメニューから編集したい項目を選んでください。
-            </div>
+          <div class="main-header-title">管理メニュー</div>
+          <div class="main-header-sub">
+            左のメニューから編集したい項目を選んでください。
           </div>
-
-          <!-- ★ ログアウトボタン -->
-          <button id="ownerLogoutBtn" class="btn-logout" type="button">
-            ログアウト
-          </button>
         </header>
 
         <!-- ① お知らせ管理 -->
         <section id="view-news" class="view-panel active">
-          <!-- ① 店舗 → スタッフ（今まで通り） -->
           <section class="card" id="news-card">
             <h2>お知らせ管理（ownerNews）</h2>
             <p class="card-sub">
@@ -1464,47 +1439,10 @@
 
             <p class="hint">※最新20件まで表示。古いものから順に削除してOKです。</p>
             <ul class="news-list" id="newsList"></ul>
+          </section>
+        </section>
 
-            <!-- 👇 スタッフ用お知らせセンターのプレビューBOX -->
-            <section class="notice-preview-box">
-  <h3>スタッフ用 お知らせセンター</h3>
-  <p class="hint">
-    ※スタッフに見せるデザインの確認ができます。
-  </p>
-
-  <!-- 👇ここを書き換え -->
-  <a
-    id="staffNoticePreviewLink"
-    href="#"
-    class="btn-open-notice"
-    target="_blank"
-  >
-    👀 スタッフ画面をプレビュー表示
-  </a>
-</section>
-
-          </section> <!-- #news-card -->
-
-          <!-- ② スタッフ → 経営者（報告一覧） -->
-          <section class="card owner-reports-card" id="reports-card">
-            <h2>② スタッフ → 経営者（報告一覧）</h2>
-            <p class="card-sub">
-              note側のMT や スタッフ報告フォームから送られた内容が、
-              新しい順でここに表示されます。
-            </p>
-
-            <!-- 報告が無いときのメッセージ -->
-            <p id="adminReportsEmpty" class="empty-text">
-              まだ報告はありません。
-            </p>
-
-            <!-- 報告一覧（JSで .report-item がどんどん入る） -->
-            <div id="adminReportsList" class="reports-list"></div>
-          </section> <!-- #reports-card -->
-        </section> <!-- #view-news -->
-
-
-        <!-- ② タスク定義編集 -->
+        <!-- ② 時間帯タスク編集 -->
         <section id="view-tasks" class="view-panel">
           <section class="card" id="tasks-card">
             <h2>時間帯ごとのタスク編集（taskSlots）</h2>
@@ -1514,7 +1452,7 @@
               ③ 必要ならカスタム編集で細かく調整するイメージです。
             </p>
 
-            <!-- ① 時間帯の自動生成（営業開始〜終了と区切り時間） -->
+            <!-- ① 時間帯の自動生成 -->
             <div class="row">
               <label>時間帯の自動生成（営業開始〜終了と区切り時間）</label>
               <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;">
@@ -1552,53 +1490,31 @@
 
             <hr>
 
-            <!-- ② 時間帯ごとのタスク編集（taskSlots） -->
+            <!-- ② 時間帯ごとのタスク編集 -->
             <div class="row">
               <label for="slotSelect">編集する時間帯</label>
-              <select id="slotSelect">
-                <!-- ★ 時間帯リストは JavaScript で自動生成 -->
-              </select>
+              <select id="slotSelect"></select>
               <p class="slot-note">
                 時間帯を変更すると、その時間帯のタスク定義を Firestore から読み込みます。
               </p>
             </div>
 
-            <!-- 🆕 A-1：写真必須タスク -->
             <div class="row">
-              <label for="tasksPhotoInput">Aタスク（写真必須）</label>
-              <textarea
-                id="tasksPhotoInput"
-                placeholder="例）&#10;FFケース内部清掃（扉を開けて撮影）&#10;ホットスナックケース内部清掃（中の状態がわかるように撮影）"
-              ></textarea>
-              <div class="hint">
-                1行につき1タスク。<strong>証拠写真を必須にしたいタスク</strong>だけを書きます。<br>
-                スタッフ画面では Aタスクの中に混ざって表示され、写真投稿が完了するまでチェックできなくなります。
-              </div>
-            </div>
-
-            <!-- A-2：普通の必須タスク -->
-            <div class="row">
-              <label for="tasksAInput">Aタスク（必須・チェックのみ）</label>
+              <label for="tasksAInput">Aタスク（必須）</label>
               <textarea
                 id="tasksAInput"
-                placeholder="例）&#10;レジ前FF前陳&#10;米飯・おにぎり 前陳＆整理"
+                placeholder="例）&#10;CDC納品・片づけ（2便）&#10;ベーカリー納品・片づけ（2便）"
               ></textarea>
-              <div class="hint">
-                1行につき1タスク。<br>
-                写真が不要な「普通の必須タスク」をここに書きます。
-              </div>
+              <div class="hint">1行につき1タスク。空行は無視されます。</div>
             </div>
 
-            <!-- B：余裕あれば -->
             <div class="row">
               <label for="tasksBInput">Bタスク（余裕あれば）</label>
               <textarea
                 id="tasksBInput"
-                placeholder="例）&#10;店外ゴミ箱チェック&#10;バックルーム整理"
+                placeholder="例）&#10;店内・店頭ゴミ箱の清掃&#10;サービスコーナー清掃"
               ></textarea>
-              <div class="hint">
-                1行につき1タスク。空行は無視されます。
-              </div>
+              <div class="hint">1行につき1タスク。空行は無視されます。</div>
             </div>
 
             <div class="btn-row">
@@ -1620,7 +1536,7 @@
 
             <hr>
 
-            <!-- ③ 時間帯のカスタム編集（不規則な区切りに対応） -->
+            <!-- ③ カスタム時間帯編集 -->
             <div class="row">
               <label>時間帯のカスタム編集（不規則な区切りに対応）</label>
               <textarea
@@ -1649,8 +1565,76 @@
           </section>
         </section>
 
+        <!-- ③ シフト表デザイン（横棒レイアウト） -->
+        <section id="view-shiftboard" class="view-panel">
+          <section class="card">
+            <h2>シフト表デザイン</h2>
+            <p class="card-sub">
+              ローソンの「シフト予定実績表」風に、1週間分のシフトを横棒で表示します。<br>
+              今はテスト用のダミーデータですが、あとで入力フォームやAI結果をここに流し込みます。
+            </p>
 
-        <!-- ③ シフト表設定 -->
+            <div class="shiftboard-toolbar">
+              <div class="shiftboard-week-control">
+                <button type="button" class="btn-secondary" id="shiftPrevWeekBtn">◀ 先週</button>
+                <button type="button" class="btn-secondary" id="shiftThisWeekBtn">今週</button>
+                <button type="button" class="btn-secondary" id="shiftNextWeekBtn">翌週 ▶</button>
+              </div>
+              <div class="shiftboard-meta">
+                対象週：<span id="shiftWeekLabel">2025/12/01 ～ 2025/12/07</span>
+              </div>
+              <div class="shiftboard-actions">
+                <button type="button" class="btn-secondary" id="shiftPrintBtn">印刷</button>
+              </div>
+            </div>
+
+            <div class="shiftboard-shell">
+              <table class="shiftboard-table">
+                <thead>
+                  <tr>
+                    <th class="shiftboard-col-date">勤務日付</th>
+                    <!-- 6〜23, 0〜5 (24時間) -->
+                    <th class="shiftboard-col-hour">6</th>
+                    <th class="shiftboard-col-hour">7</th>
+                    <th class="shiftboard-col-hour">8</th>
+                    <th class="shiftboard-col-hour">9</th>
+                    <th class="shiftboard-col-hour">10</th>
+                    <th class="shiftboard-col-hour">11</th>
+                    <th class="shiftboard-col-hour">12</th>
+                    <th class="shiftboard-col-hour">13</th>
+                    <th class="shiftboard-col-hour">14</th>
+                    <th class="shiftboard-col-hour">15</th>
+                    <th class="shiftboard-col-hour">16</th>
+                    <th class="shiftboard-col-hour">17</th>
+                    <th class="shiftboard-col-hour">18</th>
+                    <th class="shiftboard-col-hour">19</th>
+                    <th class="shiftboard-col-hour">20</th>
+                    <th class="shiftboard-col-hour">21</th>
+                    <th class="shiftboard-col-hour">22</th>
+                    <th class="shiftboard-col-hour">23</th>
+                    <th class="shiftboard-col-hour">0</th>
+                    <th class="shiftboard-col-hour">1</th>
+                    <th class="shiftboard-col-hour">2</th>
+                    <th class="shiftboard-col-hour">3</th>
+                    <th class="shiftboard-col-hour">4</th>
+                    <th class="shiftboard-col-hour">5</th>
+                    <th class="shiftboard-col-mh">M/H</th>
+                    <th class="shiftboard-col-people">複員人数</th>
+                  </tr>
+                </thead>
+                <tbody id="shiftboardBody">
+                  <!-- JSで描画 -->
+                </tbody>
+              </table>
+            </div>
+
+            <p class="hint" style="margin-top:8px;">
+              ※ 今はサンプルデータで表示しています。あとでシフト入力フォームやAIのシフト案から自動生成できます。
+            </p>
+          </section>
+        </section>
+
+        <!-- ④ 旧：シフト表設定（画像URL方式） -->
         <section id="view-shift" class="view-panel">
           <section class="card" id="shift-card">
             <h2>シフト表設定</h2>
@@ -1701,7 +1685,7 @@
           </section>
         </section>
 
-        <!-- ④ 引き継ぎメモ用ボタン編集 -->
+        <!-- 引き継ぎメモ -->
         <section id="view-handover" class="view-panel">
           <section class="card" id="handover-card">
             <h2>引き継ぎメモ（ボタン文言の編集）</h2>
@@ -1737,38 +1721,7 @@
           </section>
         </section>
 
-        <!-- 🔑 パスワード設定（スタッフ用） -->
-        <section id="view-auth" class="view-panel">
-          <section class="card" id="auth-card">
-            <h2>スタッフ用 パスワード設定</h2>
-            <p class="card-sub">
-              スタッフ側ログイン用のパスワードを変更できます。<br>
-              ここで設定したパスワードを、スタッフ画面（index.html）のログインに使います。
-            </p>
-
-            <div class="row">
-              <label for="newStaffPassInput">新しいスタッフパスワード</label>
-              <input
-                id="newStaffPassInput"
-                type="password"
-                placeholder="例：staff1234"
-              />
-              <div class="hint">
-                ※英数字を混ぜて、スタッフにだけ共有してください。
-              </div>
-            </div>
-
-            <div class="btn-row">
-              <button id="changeStaffPassBtn" class="btn-primary" type="button">
-                🔑 パスワードを変更する
-              </button>
-            </div>
-
-            <p id="changeStaffPassMsg" class="status" style="margin-top:10px;"></p>
-          </section>
-        </section>
-
-        <!-- ⑤ スタッフログ -->
+        <!-- スタッフログ -->
         <section id="view-logs" class="view-panel">
           <section class="card" id="logs-card">
             <h2>スタッフログ（checklistLogs）</h2>
@@ -1794,7 +1747,7 @@
                 <input type="text" id="logDevice" placeholder="例：レジ横iPad">
               </div>
 
-              <!-- ★キーワード検索欄 -->
+              <!-- キーワード検索欄 -->
               <div class="field">
                 <label for="logKeyword">キーワード</label>
                 <input
@@ -1829,7 +1782,7 @@
           </section>
         </section>
 
-        <!-- ⑥ グラフ分析（β） -->
+        <!-- グラフ分析 -->
         <section id="view-analytics" class="view-panel">
           <section class="card" id="analytics-card">
             <h2>グラフ分析（β）</h2>
@@ -1880,7 +1833,7 @@
           </section>
         </section>
 
-        <!-- ⑦ シフト作成（AI） -->
+        <!-- シフト作成（AI） -->
         <section id="view-shiftai" class="view-panel">
           <div class="shiftai-layout">
             <!-- ヘッダー -->
@@ -1931,7 +1884,7 @@
                 </div>
               </div>
 
-              <!-- AIが考えるときの優先度（今はダミーだけど将来使う） -->
+              <!-- AIが考えるときの優先度（今はダミー） -->
               <div class="shiftai-row">
                 <div class="shiftai-label">AIの優先度</div>
                 <div class="shiftai-field shiftai-chips">
@@ -1945,7 +1898,7 @@
                   </label>
                   <label class="shiftai-chip">
                     <input type="checkbox">
-                    <span>人件費を抑える</span>
+                      <span>人件費を抑える</span>
                   </label>
                 </div>
               </div>
@@ -1962,7 +1915,7 @@
               </div>
             </section>
 
-            <!-- AIの結果プレビュー（今は空っぽ） -->
+            <!-- AIの結果プレビュー -->
             <section class="shiftai-card">
               <h2 class="shiftai-card-title">AIのシフト提案プレビュー</h2>
               <p class="shiftai-empty" id="shiftaiPreviewEmpty">
@@ -1970,16 +1923,16 @@
                 ここに <strong>1週間 or 1ヶ月分のシフト案</strong> がカード形式で表示されます。
               </p>
 
-              <!-- 後でJSで中身を埋めるエリア -->
               <div id="shiftaiPreviewArea" class="shiftai-preview-area">
-                <!-- 例：日別カード・時間帯別の表をここに生成する -->
+                <!-- ここにAI結果を描画 -->
               </div>
             </section>
           </div>
         </section>
       </main>
-    </div> <!-- /.layout -->
-  </div> <!-- /#ownerApp -->
+    </div>
+  </div>
+
 
 
    <!-- Chart.js（グラフ用） -->
@@ -3982,6 +3935,230 @@ activateView("news");
     runAnalyticsRef = runAnalytics;
     analyticsDateInputRef = analyticsDateInput;
   });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ===== シフト表デザイン（ダミーデータ版） =====
+
+// 6〜23, 0〜5 の順で24時間
+const SHIFT_HOURS = [6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,0,1,2,3,4,5];
+
+// まずはダミーで「それっぽい」データ
+const sampleShiftWeek = [
+  {
+    dateLabel: "12/1",
+    youbi: "月",
+    youbiClass: "",
+    mh: "18:45",
+    people: "3",
+    shifts: [
+      { name: "森脇 直美",   start: "06:00", end: "11:00" },
+      { name: "宇田川 美幸", start: "11:00", end: "17:00" },
+      { name: "北尾 龍哉",   start: "17:00", end: "23:00" }
+    ]
+  },
+  {
+    dateLabel: "12/2",
+    youbi: "火",
+    youbiClass: "",
+    mh: "24:26",
+    people: "3",
+    shifts: [
+      { name: "柳楽 真由美", start: "06:00", end: "12:00" },
+      { name: "宇田川 息子", start: "12:00", end: "18:00" },
+      { name: "田宮",         start: "18:00", end: "23:00" }
+    ]
+  },
+  {
+    dateLabel: "12/3",
+    youbi: "水",
+    youbiClass: "",
+    mh: "20:08",
+    people: "3",
+    shifts: [
+      { name: "岩田 康佑",   start: "06:00", end: "12:00" },
+      { name: "新開 沙耶",   start: "12:00", end: "18:00" },
+      { name: "宇田川 美幸", start: "18:00", end: "23:00" }
+    ]
+  },
+  {
+    dateLabel: "12/4",
+    youbi: "木",
+    youbiClass: "",
+    mh: "28:32",
+    people: "3",
+    shifts: [
+      { name: "柳楽 真由美", start: "06:00", end: "12:00" },
+      { name: "田宮",         start: "12:00", end: "18:00" },
+      { name: "北尾 龍哉",   start: "18:00", end: "23:00" }
+    ]
+  },
+  {
+    dateLabel: "12/5",
+    youbi: "金",
+    youbiClass: "",
+    mh: "29:35",
+    people: "3",
+    shifts: [
+      { name: "新開 沙耶",   start: "06:00", end: "11:00" },
+      { name: "宇田川 美幸", start: "11:00", end: "17:00" },
+      { name: "田宮",         start: "17:00", end: "23:00" }
+    ]
+  },
+  {
+    dateLabel: "12/6",
+    youbi: "土",
+    youbiClass: "sat",
+    mh: "28:32",
+    people: "3",
+    shifts: [
+      { name: "森脇 直美",   start: "06:00", end: "12:00" },
+      { name: "北尾 龍哉",   start: "12:00", end: "18:00" },
+      { name: "岩田 康佑",   start: "18:00", end: "23:00" }
+    ]
+  },
+  {
+    dateLabel: "12/7",
+    youbi: "日",
+    youbiClass: "sun",
+    mh: "22:66",
+    people: "2",
+    shifts: [
+      { name: "新開 沙耶",   start: "09:00", end: "18:00" },
+      { name: "宇田川 美幸", start: "18:00", end: "23:00" }
+    ]
+  }
+];
+
+function timeToHour(t) {
+  const [h] = t.split(":");
+  return parseInt(h, 10);
+}
+
+// 1本のシフトを時間軸に沿ってセル化
+function renderShiftCells(shift, withSummary, dayMh, dayPeople) {
+  const startH = timeToHour(shift.start);
+  const endH   = timeToHour(shift.end);
+
+  let html = "";
+
+  for (let i = 0; i < SHIFT_HOURS.length; i++) {
+    const h = SHIFT_HOURS[i];
+
+    if (h === startH) {
+      // 単純に「同じ日内で完結する」ケースだけ想定（06〜23）
+      const span = Math.max(1, endH - startH);
+      html += `
+        <td class="shiftboard-bar-cell" colspan="${span}">
+          <div class="shiftboard-bar">
+            <span class="shiftboard-bar-name">${shift.name}</span>
+            <span class="shiftboard-bar-time">${shift.start}〜${shift.end}</span>
+          </div>
+        </td>
+      `;
+      i += span - 1;
+    } else if (h < startH || h >= endH) {
+      html += `<td class="shiftboard-empty"></td>`;
+    }
+  }
+
+  if (withSummary) {
+    html += `<td class="shiftboard-col-mh">${dayMh || ""}</td>`;
+    html += `<td class="shiftboard-col-people">${dayPeople || ""}</td>`;
+  } else {
+    html += `<td class="shiftboard-col-mh"></td>`;
+    html += `<td class="shiftboard-col-people"></td>`;
+  }
+
+  return html;
+}
+
+// 1日ぶんを複数行に展開
+function renderDayRows(day) {
+  const rowCount = Math.max(day.shifts.length, 1);
+  let html = "";
+
+  day.shifts.forEach((shift, index) => {
+    const withSummary = index === 0;
+    html += "<tr>";
+
+    if (index === 0) {
+      html += `
+        <td class="shiftboard-col-date" rowspan="${rowCount}">
+          <div class="shiftboard-date-main">${day.dateLabel}</div>
+          <div class="shiftboard-date-week ${day.youbiClass || ""}">${day.youbi}</div>
+        </td>
+      `;
+    }
+
+    html += renderShiftCells(shift, withSummary, day.mh, day.people);
+    html += "</tr>";
+  });
+
+  return html;
+}
+
+function renderShiftBoard(week) {
+  const tbody = document.getElementById("shiftboardBody");
+  if (!tbody) return;
+  tbody.innerHTML = week.map(renderDayRows).join("");
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  // ダミーデータ描画
+  renderShiftBoard(sampleShiftWeek);
+
+  const printBtn = document.getElementById("shiftPrintBtn");
+  if (printBtn) {
+    printBtn.addEventListener("click", () => {
+      window.print();
+    });
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
   </script>
 
 
